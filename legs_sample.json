@@ -1,0 +1,247 @@
+[
+  {
+    "set_index": 0,
+    "set_number": 1,
+    "league_segment": {
+      "set_id": null,
+      "segment_id": null,
+      "label": "",
+      "segment_number": null
+    },
+    "game_name": "501",
+    "sudden_death_win": "N",
+    "darts_thrown": 22,
+    "leg_forfeit": null,
+    "is_forfeit": false,
+    "show_flag": false,
+    "score_type": "P",
+    "set_win": 0,
+    "score_edits": [],
+    "home": {
+      "players": [
+        {
+          "player_label": "Gerry Johnston"
+        }
+      ],
+      "mpr": null,
+      "ppr": "68.32",
+      "starting_points": 501,
+      "ending_points": 0,
+      "double_out_points": 40,
+      "ending_marks": null,
+      "is_handicap": false,
+      "win": true
+    },
+    "away": {
+      "players": [
+        {
+          "player_label": "Steve Rushton"
+        }
+      ],
+      "mpr": null,
+      "ppr": "53.29",
+      "starting_points": 501,
+      "ending_points": 128,
+      "ending_marks": null,
+      "double_out_points": null,
+      "is_handicap": false,
+      "win": false
+    }
+  },
+  {
+    "set_index": 0,
+    "set_number": 2,
+    "league_segment": {
+      "set_id": null,
+      "segment_id": null,
+      "label": "",
+      "segment_number": null
+    },
+    "game_name": "501",
+    "sudden_death_win": "N",
+    "darts_thrown": 28,
+    "leg_forfeit": null,
+    "is_forfeit": false,
+    "show_flag": false,
+    "score_type": "P",
+    "set_win": 0,
+    "score_edits": [],
+    "home": {
+      "players": [
+        {
+          "player_label": "Gerry Johnston"
+        }
+      ],
+      "mpr": null,
+      "ppr": "41.11",
+      "starting_points": 501,
+      "ending_points": 131,
+      "double_out_points": null,
+      "ending_marks": null,
+      "is_handicap": false,
+      "win": false
+    },
+    "away": {
+      "players": [
+        {
+          "player_label": "Steve Rushton"
+        }
+      ],
+      "mpr": null,
+      "ppr": "53.68",
+      "starting_points": 501,
+      "ending_points": 0,
+      "ending_marks": null,
+      "double_out_points": 16,
+      "is_handicap": false,
+      "win": true
+    }
+  },
+  {
+    "set_index": 0,
+    "set_number": 3,
+    "league_segment": {
+      "set_id": null,
+      "segment_id": null,
+      "label": "",
+      "segment_number": null
+    },
+    "game_name": "501",
+    "sudden_death_win": "N",
+    "darts_thrown": 16,
+    "leg_forfeit": null,
+    "is_forfeit": false,
+    "show_flag": false,
+    "score_type": "P",
+    "set_win": 0,
+    "score_edits": [],
+    "home": {
+      "players": [
+        {
+          "player_label": "Gerry Johnston"
+        }
+      ],
+      "mpr": null,
+      "ppr": "93.94",
+      "starting_points": 501,
+      "ending_points": 0,
+      "double_out_points": 32,
+      "ending_marks": null,
+      "is_handicap": false,
+      "win": true
+    },
+    "away": {
+      "players": [
+        {
+          "player_label": "Steve Rushton"
+        }
+      ],
+      "mpr": null,
+      "ppr": "39.40",
+      "starting_points": 501,
+      "ending_points": 304,
+      "ending_marks": null,
+      "double_out_points": null,
+      "is_handicap": false,
+      "win": false
+    }
+  },
+  {
+    "set_index": 0,
+    "set_number": 4,
+    "league_segment": {
+      "set_id": null,
+      "segment_id": null,
+      "label": "",
+      "segment_number": null
+    },
+    "game_name": "501",
+    "sudden_death_win": "N",
+    "darts_thrown": 16,
+    "leg_forfeit": null,
+    "is_forfeit": false,
+    "show_flag": false,
+    "score_type": "P",
+    "set_win": 0,
+    "score_edits": [],
+    "home": {
+      "players": [
+        {
+          "player_label": "Gerry Johnston"
+        }
+      ],
+      "mpr": null,
+      "ppr": "48.20",
+      "starting_points": 501,
+      "ending_points": 260,
+      "double_out_points": null,
+      "ending_marks": null,
+      "is_handicap": false,
+      "win": false
+    },
+    "away": {
+      "players": [
+        {
+          "player_label": "Steve Rushton"
+        }
+      ],
+      "mpr": null,
+      "ppr": "93.94",
+      "starting_points": 501,
+      "ending_points": 0,
+      "ending_marks": null,
+      "double_out_points": 32,
+      "is_handicap": false,
+      "win": true
+    }
+  },
+  {
+    "set_index": 0,
+    "set_number": 5,
+    "league_segment": {
+      "set_id": null,
+      "segment_id": null,
+      "label": "",
+      "segment_number": null
+    },
+    "game_name": "501",
+    "sudden_death_win": "N",
+    "darts_thrown": 22,
+    "leg_forfeit": null,
+    "is_forfeit": false,
+    "show_flag": false,
+    "score_type": "P",
+    "set_win": 0,
+    "score_edits": [],
+    "home": {
+      "players": [
+        {
+          "player_label": "Gerry Johnston"
+        }
+      ],
+      "mpr": null,
+      "ppr": "68.32",
+      "starting_points": 501,
+      "ending_points": 0,
+      "double_out_points": 18,
+      "ending_marks": null,
+      "is_handicap": false,
+      "win": true
+    },
+    "away": {
+      "players": [
+        {
+          "player_label": "Steve Rushton"
+        }
+      ],
+      "mpr": null,
+      "ppr": "65.86",
+      "starting_points": 501,
+      "ending_points": 40,
+      "ending_marks": null,
+      "double_out_points": null,
+      "is_handicap": false,
+      "win": false
+    }
+  }
+]

@@ -1,0 +1,276 @@
+{
+  "series_info": {
+    "name": "Atlantic Amateur Darts Series",
+    "total_events": 7,
+    "qualifying_events": 6,
+    "championship_event": 7
+  },
+  "players": {
+    "John Doe": {
+      "name": "John Doe",
+      "events_played": [
+        1
+      ],
+      "total_legs": 5,
+      "weighted_3da": 75.5,
+      "total_180s": 2,
+      "total_140s": 4,
+      "total_100s": 12,
+      "highest_finish": 120,
+      "best_first_9": 80.2,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-18T17:33:31.237966",
+          "three_dart_avg": 75.5,
+          "legs_played": 5,
+          "first_9_avg": 80.2,
+          "one_eighties": 2,
+          "one_forty_plus": 4,
+          "hundreds_plus": 12,
+          "high_finish": 120
+        }
+      ]
+    },
+    "Michael Smith": {
+      "name": "Michael Smith",
+      "events_played": [
+        1
+      ],
+      "total_legs": 8,
+      "weighted_3da": 85.3,
+      "total_180s": 3,
+      "total_140s": 7,
+      "total_100s": 18,
+      "highest_finish": 141,
+      "best_first_9": 88.5,
+      "qualified": true,
+      "event_wins": [
+        1
+      ],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-18T17:47:08.199307",
+          "three_dart_avg": 85.3,
+          "legs_played": 8,
+          "first_9_avg": 88.5,
+          "one_eighties": 3,
+          "one_forty_plus": 7,
+          "hundreds_plus": 18,
+          "high_finish": 141
+        }
+      ]
+    },
+    "Peter Wright": {
+      "name": "Peter Wright",
+      "events_played": [
+        1,
+        2
+      ],
+      "total_legs": 14,
+      "weighted_3da": 83.4,
+      "total_180s": 4,
+      "total_140s": 11,
+      "total_100s": 31,
+      "highest_finish": 138,
+      "best_first_9": 86.3,
+      "qualified": true,
+      "event_wins": [
+        2
+      ],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-18T17:47:08.201724",
+          "three_dart_avg": 82.7,
+          "legs_played": 7,
+          "first_9_avg": 85.2,
+          "one_eighties": 2,
+          "one_forty_plus": 5,
+          "hundreds_plus": 15,
+          "high_finish": 132
+        },
+        {
+          "event_id": 2,
+          "date": "2025-12-18T17:47:08.217465",
+          "three_dart_avg": 84.1,
+          "legs_played": 7,
+          "first_9_avg": 86.3,
+          "one_eighties": 2,
+          "one_forty_plus": 6,
+          "hundreds_plus": 16,
+          "high_finish": 138
+        }
+      ]
+    },
+    "Gary Anderson": {
+      "name": "Gary Anderson",
+      "events_played": [
+        1
+      ],
+      "total_legs": 6,
+      "weighted_3da": 79.4,
+      "total_180s": 1,
+      "total_140s": 4,
+      "total_100s": 12,
+      "highest_finish": 124,
+      "best_first_9": 82.1,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-18T17:47:08.204053",
+          "three_dart_avg": 79.4,
+          "legs_played": 6,
+          "first_9_avg": 82.1,
+          "one_eighties": 1,
+          "one_forty_plus": 4,
+          "hundreds_plus": 12,
+          "high_finish": 124
+        }
+      ]
+    },
+    "Rob Cross": {
+      "name": "Rob Cross",
+      "events_played": [
+        1
+      ],
+      "total_legs": 5,
+      "weighted_3da": 77.8,
+      "total_180s": 1,
+      "total_140s": 3,
+      "total_100s": 10,
+      "highest_finish": 100,
+      "best_first_9": 80.0,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-18T17:47:08.206822",
+          "three_dart_avg": 77.8,
+          "legs_played": 5,
+          "first_9_avg": 80.0,
+          "one_eighties": 1,
+          "one_forty_plus": 3,
+          "hundreds_plus": 10,
+          "high_finish": 100
+        }
+      ]
+    },
+    "Dave Chisnall": {
+      "name": "Dave Chisnall",
+      "events_played": [
+        1
+      ],
+      "total_legs": 5,
+      "weighted_3da": 76.2,
+      "total_180s": 0,
+      "total_140s": 2,
+      "total_100s": 9,
+      "highest_finish": 96,
+      "best_first_9": 78.5,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-18T17:47:08.209530",
+          "three_dart_avg": 76.2,
+          "legs_played": 5,
+          "first_9_avg": 78.5,
+          "one_eighties": 0,
+          "one_forty_plus": 2,
+          "hundreds_plus": 9,
+          "high_finish": 96
+        }
+      ]
+    },
+    "Nathan Aspinall": {
+      "name": "Nathan Aspinall",
+      "events_played": [
+        2
+      ],
+      "total_legs": 6,
+      "weighted_3da": 81.5,
+      "total_180s": 2,
+      "total_140s": 5,
+      "total_100s": 14,
+      "highest_finish": 120,
+      "best_first_9": 83.7,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 2,
+          "date": "2025-12-18T17:47:08.221024",
+          "three_dart_avg": 81.5,
+          "legs_played": 6,
+          "first_9_avg": 83.7,
+          "one_eighties": 2,
+          "one_forty_plus": 5,
+          "hundreds_plus": 14,
+          "high_finish": 120
+        }
+      ]
+    },
+    "Jonny Clayton": {
+      "name": "Jonny Clayton",
+      "events_played": [
+        2
+      ],
+      "total_legs": 5,
+      "weighted_3da": 78.9,
+      "total_180s": 1,
+      "total_140s": 3,
+      "total_100s": 11,
+      "highest_finish": 110,
+      "best_first_9": 81.2,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 2,
+          "date": "2025-12-18T17:47:08.225664",
+          "three_dart_avg": 78.9,
+          "legs_played": 5,
+          "first_9_avg": 81.2,
+          "one_eighties": 1,
+          "one_forty_plus": 3,
+          "hundreds_plus": 11,
+          "high_finish": 110
+        }
+      ]
+    }
+  },
+  "events": {
+    "1": {
+      "event_id": 1,
+      "participants": [
+        "John Doe",
+        "Michael Smith",
+        "Peter Wright",
+        "Gary Anderson",
+        "Rob Cross",
+        "Dave Chisnall"
+      ],
+      "winner": "Michael Smith",
+      "completed": true
+    },
+    "2": {
+      "event_id": 2,
+      "participants": [
+        "Peter Wright",
+        "Nathan Aspinall",
+        "Jonny Clayton"
+      ],
+      "winner": "Peter Wright",
+      "completed": true
+    }
+  },
+  "last_updated": "2025-12-18T17:47:08.230482"
+}

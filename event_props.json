@@ -1,0 +1,1928 @@
+{
+  "errors": {},
+  "flash": {
+    "message": null
+  },
+  "environment": "production",
+  "auth": {
+    "user": null,
+    "subscribed": null,
+    "has_subscriptions": null,
+    "fanAlerts": null,
+    "max_fan_alerts": 2
+  },
+  "ziggy": {
+    "url": "https://tv.dartconnect.com",
+    "port": null,
+    "defaults": [],
+    "routes": {
+      "sanctum.csrf-cookie": {
+        "uri": "sanctum/csrf-cookie",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "api.start-impersonation": {
+        "uri": "api/impersonate",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api.tournament.entries": {
+        "uri": "api/event/{tournament}/entries",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "api.tournament.bracket": {
+        "uri": "api/event/{tournament}/bracket/{tournamentEvent}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "api.tournament.round-robin": {
+        "uri": "api/event/{tournament}/round-robin/{tournamentEvent}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "event-options": {
+        "uri": "api/event-options",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api.tournament.matches": {
+        "uri": "api/event/{tournament}/matches",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "api.league.matches": {
+        "uri": "api/league/{league}/matches/{leagueSeason?}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api.league.matches.live": {
+        "uri": "api/league/{league}/matches/live/{leagueSeason?}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api.league.standings.matches": {
+        "uri": "api/league/{league}/standings/{leagueSeason}/matches",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api.league.standings.players": {
+        "uri": "api/league/{league}/standings/{leagueSeason}/players",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api.league.lineups": {
+        "uri": "api/league/{league}/lineups/{leagueSeason}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api.leagues.seasons.tv-scroller": {
+        "uri": "api/league/{league}/{leagueSeason}/tv-scroller",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api.rankings.show": {
+        "uri": "api/rankings/{ranking}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "ranking"
+        ],
+        "bindings": {
+          "ranking": "slug"
+        }
+      },
+      "api.rankings.players": {
+        "uri": "api/rankings/{ranking}/players/{player}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "ranking",
+          "player"
+        ],
+        "bindings": {
+          "ranking": "slug"
+        }
+      },
+      "api.wdf-point-table.countries": {
+        "uri": "api/wdf-point-table-countries/{wdfPointTable}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "wdfPointTable"
+        ],
+        "bindings": {
+          "wdfPointTable": "slug"
+        }
+      },
+      "api.wdf-point-table.countries.show": {
+        "uri": "api/wdf-point-table-countries/{wdfPointTable}/show",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "wdfPointTable"
+        ],
+        "bindings": {
+          "wdfPointTable": "slug"
+        }
+      },
+      "api.user": {
+        "uri": "api/user",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "api.user.update-board-calls": {
+        "uri": "api/user/update-board-calls",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api.fan-alerts.index": {
+        "uri": "api/fan-alerts",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api.fan-alerts.toggle-status": {
+        "uri": "api/fan-alerts/toggle-status",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api.fan-alerts.update-preferences": {
+        "uri": "api/fan-alerts/update-preferences",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api.fan-alerts.store": {
+        "uri": "api/fan-alerts/{memberId}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "memberId"
+        ]
+      },
+      "api.fan-alerts.destroy": {
+        "uri": "api/fan-alerts/{memberId}",
+        "methods": [
+          "DELETE"
+        ],
+        "parameters": [
+          "memberId"
+        ]
+      },
+      "api.search-fan-alerts": {
+        "uri": "api/search-fan-alerts",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api.request-follow-fan-alert": {
+        "uri": "api/request-follow-fan-alert",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api.my-dctv": {
+        "uri": "api/my-dctv/{tournament}/{tournamentEvent}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "api.tournaments.board-management-tool.matches": {
+        "uri": "api/board-management-tool/{tournament}/matches",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "api.tournaments.board-management-tool.messages.store": {
+        "uri": "api/board-management-tool/{tournament}/messages",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "api.tournaments.board-management-tool.messages.update": {
+        "uri": "api/board-management-tool/{tournament}/messages/{tournamentBoardMessage}/update",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentBoardMessage"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentBoardMessage": "id"
+        }
+      },
+      "api.tournaments.board-management-tool.report-no-show-scorekeeper": {
+        "uri": "api/board-management-tool/{tournamentEvent}/report-no-show-scorekeeper/{tournamentMatch}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournamentEvent",
+          "tournamentMatch"
+        ],
+        "bindings": {
+          "tournamentEvent": "id",
+          "tournamentMatch": "id"
+        }
+      },
+      "api.tournaments.board-management-tool.request-forfeit": {
+        "uri": "api/board-management-tool/forfeit/{tournamentEvent}/request-forfeit/{tournamentMatch}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournamentEvent",
+          "tournamentMatch"
+        ],
+        "bindings": {
+          "tournamentEvent": "id",
+          "tournamentMatch": "id"
+        }
+      },
+      "api.tournaments.board-management-tool.process-forfeit": {
+        "uri": "api/board-management-tool/forfeit/{tournamentEvent}/process-forfeit/{tournamentMatch}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournamentEvent",
+          "tournamentMatch"
+        ],
+        "bindings": {
+          "tournamentEvent": "id",
+          "tournamentMatch": "id"
+        }
+      },
+      "api.tournaments.board-management-tool.cancel-forfeit": {
+        "uri": "api/board-management-tool/forfeit/{tournamentEvent}/cancel-forfeit/{tournamentMatch}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournamentEvent",
+          "tournamentMatch"
+        ],
+        "bindings": {
+          "tournamentEvent": "id",
+          "tournamentMatch": "id"
+        }
+      },
+      "api2.start-impersonation": {
+        "uri": "api2/impersonate",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api2.tournaments.scheduled": {
+        "uri": "api2/events/{category}/scheduled",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "category"
+        ]
+      },
+      "api2.tournaments.soon": {
+        "uri": "api2/events/{category}/soon",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "category"
+        ]
+      },
+      "api2.tournament.search-suggestions": {
+        "uri": "api2/event/{category}/search-suggestions",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "category"
+        ]
+      },
+      "api2.tournament.entries": {
+        "uri": "api2/event/{tournament}/entries",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "api2.tournament.bracket": {
+        "uri": "api2/event/{tournament}/bracket/{tournamentEvent}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "api2.tournament.round-robin": {
+        "uri": "api2/event/{tournament}/round-robin/{tournamentEvent}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "api2.event-options": {
+        "uri": "api2/event-options",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api2.tournament.matches": {
+        "uri": "api2/event/{tournament}/matches",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "api2.tournament.legacy-matches": {
+        "uri": "api2/event/{tournament}/legacy-matches",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "api2.league.matches": {
+        "uri": "api2/league/{league}/matches/{leagueSeason?}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api2.league.matches.live": {
+        "uri": "api2/league/{league}/matches/live/{leagueSeason?}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api2.league.match-sets": {
+        "uri": "api2/league/{league}/match-sets/{leagueMatchId}/{seasonStatus}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league",
+          "leagueMatchId",
+          "seasonStatus"
+        ],
+        "bindings": {
+          "league": "id"
+        }
+      },
+      "api2.league.standings.matches": {
+        "uri": "api2/league/{league}/standings/{leagueSeason}/matches",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api2.league.standings.players": {
+        "uri": "api2/league/{league}/standings/{leagueSeason}/players",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "api2.league.match.live.sets": {
+        "uri": "api2/league/matches/live/{leagueMatchId}/{seasonStatus}/sets",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "leagueMatchId",
+          "seasonStatus"
+        ]
+      },
+      "api2.rankings.show": {
+        "uri": "api2/rankings/{ranking}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "ranking"
+        ],
+        "bindings": {
+          "ranking": "slug"
+        }
+      },
+      "api2.rankings.players": {
+        "uri": "api2/rankings/{ranking}/players/{player}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "ranking",
+          "player"
+        ],
+        "bindings": {
+          "ranking": "slug"
+        }
+      },
+      "api2.wdf-point-table.countries": {
+        "uri": "api2/wdf-point-table-countries/{wdfPointTable}",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "wdfPointTable"
+        ],
+        "bindings": {
+          "wdfPointTable": "slug"
+        }
+      },
+      "api2.wdf-point-table.countries.show": {
+        "uri": "api2/wdf-point-table-countries/{wdfPointTable}/show",
+        "methods": [
+          "POST"
+        ],
+        "parameters": [
+          "wdfPointTable"
+        ],
+        "bindings": {
+          "wdfPointTable": "slug"
+        }
+      },
+      "api2.countries": {
+        "uri": "api2/countries",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "api.notifications.unread-count": {
+        "uri": "api2/notifications/unread-count",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "api.notifications.mark-all-read": {
+        "uri": "api2/notifications/mark-all-read",
+        "methods": [
+          "POST"
+        ]
+      },
+      "api.notifications.index": {
+        "uri": "api2/notifications",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "api.notifications.show": {
+        "uri": "api2/notifications/{notification}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "notification"
+        ]
+      },
+      "api.notifications.update": {
+        "uri": "api2/notifications/{notification}",
+        "methods": [
+          "PUT",
+          "PATCH"
+        ],
+        "parameters": [
+          "notification"
+        ]
+      },
+      "api.notifications.destroy": {
+        "uri": "api2/notifications/{notification}",
+        "methods": [
+          "DELETE"
+        ],
+        "parameters": [
+          "notification"
+        ]
+      },
+      "start-impersonation": {
+        "uri": "start-impersonation/{impersonatorId}/{impersonatingId}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "impersonatorId",
+          "impersonatingId"
+        ]
+      },
+      "home": {
+        "uri": "/",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "event-categories.show": {
+        "uri": "events/{category}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "wheres": {
+          "category": "wdf|wsdt|pdc|league|dartconnect|league-event"
+        },
+        "parameters": [
+          "category"
+        ]
+      },
+      "tournaments.show": {
+        "uri": "event/{tournament}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.my-matches": {
+        "uri": "event/{tournament}/my-matches",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.matches": {
+        "uri": "event/{tournament}/matches",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.tvscoreboard": {
+        "uri": "event/{tournament}/tvscoreboard",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.board-assignments": {
+        "uri": "event/{tournament}/board-assignments",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.board-calls": {
+        "uri": "event/{tournament}/board-calls",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.playerboards": {
+        "uri": "event/{tournament}/playerboards",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.ko-board-groups": {
+        "uri": "event/{tournament}/ko-board-groups",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.groupboards": {
+        "uri": "event/{tournament}/groupboards",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.entries": {
+        "uri": "event/{tournament}/entries",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.confirmation": {
+        "uri": "event/{tournament}/confirmation",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.performance": {
+        "uri": "event/{tournament}/performance/{tournamentEvent}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "tournaments.board-management-tool": {
+        "uri": "event/{tournament}/board-management-tool",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.mydctv": {
+        "uri": "event/{tournament}/my-dctv",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.state": {
+        "uri": "event/{tournament}/state/{topic}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament",
+          "topic"
+        ]
+      },
+      "tournaments.tv-scroller": {
+        "uri": "event/{tournament}/tv-scroller",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.groups.index": {
+        "uri": "event/{tournament}/groups",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.groups.show": {
+        "uri": "event/{tournament}/groups/{tournamentEvent}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "tournaments.results.index": {
+        "uri": "event/{tournament}/results",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.results.show": {
+        "uri": "event/{tournament}/results/{tournamentEvent}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "tournaments.brackets.index": {
+        "uri": "event/{tournament}/brackets",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament"
+        ],
+        "bindings": {
+          "tournament": "id"
+        }
+      },
+      "tournaments.brackets.show": {
+        "uri": "event/{tournament}/brackets/{tournamentEvent}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "tournaments.brackets.rotator": {
+        "uri": "event/{tournament}/brackets/{tournamentEvent}/rotator",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "tournament",
+          "tournamentEvent"
+        ],
+        "bindings": {
+          "tournament": "id",
+          "tournamentEvent": "id"
+        }
+      },
+      "rankings.show": {
+        "uri": "rankings/{ranking}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "ranking"
+        ],
+        "bindings": {
+          "ranking": "slug"
+        }
+      },
+      "leagues.index": {
+        "uri": "leagues",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "leagues.show": {
+        "uri": "league/{league}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league"
+        ],
+        "bindings": {
+          "league": "id"
+        }
+      },
+      "leagues.tvscoreboard": {
+        "uri": "league/{league}/tvscoreboard",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league"
+        ],
+        "bindings": {
+          "league": "id"
+        }
+      },
+      "leagues.matches": {
+        "uri": "league/{league}/matches/{leagueSeason?}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "leagues.lineups": {
+        "uri": "league/{league}/lineups/{leagueSeason?}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "leagues.seasons.standings": {
+        "uri": "league/{league}/{leagueSeason}/standings",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "leagues.seasons.tv-scroller": {
+        "uri": "league/{league}/{leagueSeason}/tv-scroller",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "leagues.seasons.post-season.standings": {
+        "uri": "league/{league}/{leagueSeason}/ps/standings",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "leagues.seasons.post-season.brackets": {
+        "uri": "league/{league}/{leagueSeason}/ps/brackets",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id"
+        }
+      },
+      "leagues.seasons.post-season.brackets.show": {
+        "uri": "league/{league}/{leagueSeason}/ps/brackets/{leagueBracket}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "league",
+          "leagueSeason",
+          "leagueBracket"
+        ],
+        "bindings": {
+          "league": "id",
+          "leagueSeason": "id",
+          "leagueBracket": "id"
+        }
+      },
+      "wdf-world-cup-rankings.index": {
+        "uri": "wdf-world-cup-rankings-2023",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "wdf-europe-cup-2024-rankings.index": {
+        "uri": "wdf-europe-cup-2024-rankings",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "wdf-europe-cup-youth-2024-rankings.index": {
+        "uri": "wdf-europe-cup-youth-2024-rankings",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "wdf-europe-cup-2025-rankings.index": {
+        "uri": "wdf-europe-cup-2025-rankings",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "wdf-europe-cup-youth-2025-rankings.index": {
+        "uri": "wdf-europe-cup-youth-2025-rankings",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "wdf-world-cup-rankings-2025.index": {
+        "uri": "wdf-world-cup-rankings",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "wdf-world-cup-rankings.show": {
+        "uri": "wdf-rankings/{wdfPointTable}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "wdfPointTable"
+        ],
+        "bindings": {
+          "wdfPointTable": "slug"
+        }
+      },
+      "watch": {
+        "uri": "watch/{spectatorKey?}/{type?}/{tournament?}/{event?}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "wheres": {
+          "spectatorKey": "^(?!setup$)[a-zA-Z0-9]+$"
+        },
+        "parameters": [
+          "spectatorKey",
+          "type",
+          "tournament",
+          "event"
+        ]
+      },
+      "watch2": {
+        "uri": "watch2/{spectatorKey?}/{type?}/{tournament?}/{event?}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "spectatorKey",
+          "type",
+          "tournament",
+          "event"
+        ]
+      },
+      "live": {
+        "uri": "live/{spectatorKey?}/{type?}/{tournament?}/{event?}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "spectatorKey",
+          "type",
+          "tournament",
+          "event"
+        ]
+      },
+      "watch.league-lineup": {
+        "uri": "watch/league-lineup/{leagueMatchId}/{seasonStatus}/{leagueAmbSetId?}/{homeScore}/{awayScore}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "leagueMatchId",
+          "seasonStatus",
+          "leagueAmbSetId",
+          "homeScore",
+          "awayScore"
+        ]
+      },
+      "tv-scoreboard": {
+        "uri": "tvscoreboard/{spectatorKey?}/{type?}/{tournament?}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "spectatorKey",
+          "type",
+          "tournament"
+        ]
+      },
+      "stagescoreboard": {
+        "uri": "stagescoreboard/{spectatorKey?}/{type?}/{tournament?}/{event?}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "spectatorKey",
+          "type",
+          "tournament",
+          "event"
+        ]
+      },
+      "register": {
+        "uri": "register",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "login": {
+        "uri": "login",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "verify": {
+        "uri": "email/verify/{id}/{hash}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "id",
+          "hash"
+        ]
+      },
+      "password.request": {
+        "uri": "forgot-password",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "password.email": {
+        "uri": "forgot-password",
+        "methods": [
+          "POST"
+        ]
+      },
+      "password.reset": {
+        "uri": "reset-password/{token}",
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "parameters": [
+          "token"
+        ]
+      },
+      "password.store": {
+        "uri": "reset-password",
+        "methods": [
+          "POST"
+        ]
+      },
+      "membership": {
+        "uri": "membership",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "fan-alerts": {
+        "uri": "fan-alerts",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "notifications": {
+        "uri": "notifications",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "notifications.history": {
+        "uri": "notifications/history",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "profile": {
+        "uri": "profile",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "password.confirm": {
+        "uri": "confirm-password",
+        "methods": [
+          "GET",
+          "HEAD"
+        ]
+      },
+      "password.update": {
+        "uri": "password",
+        "methods": [
+          "PUT"
+        ]
+      },
+      "logout": {
+        "uri": "logout",
+        "methods": [
+          "POST"
+        ]
+      }
+    },
+    "location": "https://tv.dartconnect.com/event/mt_joe6163l_1/matches"
+  },
+  "chargebee_site": null,
+  "api2Url": "https://api2.dartconnect.com/",
+  "websocketUrl": "https://ws.dartconnect.com/",
+  "recapUrl": "https://recap.dartconnect.com/",
+  "recapv1Url": "https://recapv1.dartconnect.com/",
+  "appUrl": "https://app.dartconnect.com/",
+  "myUrl": "https://my.dartconnect.com/",
+  "statsUrl": "https://stats.dartconnect.com/",
+  "organizerUrl": "https://organizer.dartconnect.com/",
+  "tvoldUrl": "https://tvold.dartconnect.com/",
+  "leaderboardUrl": "https://leaderboard.dartconnect.com/",
+  "checkinUrl": "https://checkin.dartconnect.com/",
+  "regconnectUrl": "https://reg.dartconnect.com/",
+  "wssWatchWss": "wss://wss-watch.dartconnect.com/",
+  "wssWatch2Wss": "wss://wss-watch2.dartconnect.com/",
+  "wsWatchUrl": "https://ws-watch.dartconnect.com/",
+  "broadcastWss": "wss://broadcast.dartconnect.com/",
+  "countriesList": {
+    "AF": "Afghanistan",
+    "AL": "Albania",
+    "DZ": "Algeria",
+    "AS": "American Samoa",
+    "AD": "Andorra",
+    "AO": "Angola",
+    "AI": "Anguilla",
+    "AQ": "Antarctica",
+    "AG": "Antigua and Barbuda",
+    "AR": "Argentina",
+    "AM": "Armenia",
+    "AW": "Aruba",
+    "AU": "Australia",
+    "AT": "Austria",
+    "AZ": "Azerbaijan",
+    "BS": "Bahamas",
+    "BH": "Bahrain",
+    "BD": "Bangladesh",
+    "BB": "Barbados",
+    "BY": "Belarus",
+    "BE": "Belgium",
+    "BZ": "Belize",
+    "BJ": "Benin",
+    "BM": "Bermuda",
+    "BT": "Bhutan",
+    "BO": "Bolivia (Plurinational State of)",
+    "BQ": "Bonaire, Sint Eustatius and Saba",
+    "BA": "Bosnia and Herzegovina",
+    "BW": "Botswana",
+    "BV": "Bouvet Island",
+    "BR": "Brazil",
+    "IO": "British Indian Ocean Territory",
+    "BN": "Brunei Darussalam",
+    "BG": "Bulgaria",
+    "BF": "Burkina Faso",
+    "BI": "Burundi",
+    "CV": "Cabo Verde",
+    "KH": "Cambodia",
+    "CM": "Cameroon",
+    "CA": "Canada",
+    "CT": "Catalonia",
+    "KY": "Cayman Islands",
+    "CF": "Central African Republic",
+    "TD": "Chad",
+    "CL": "Chile",
+    "CN": "China",
+    "CX": "Christmas Island",
+    "CC": "Cocos (Keeling) Islands",
+    "CO": "Colombia",
+    "KM": "Comoros",
+    "CG": "Congo",
+    "CD": "Congo (Democratic Republic of the)",
+    "CK": "Cook Islands",
+    "CR": "Costa Rica",
+    "CI": "C\u00f4te d'Ivoire",
+    "HR": "Croatia",
+    "CU": "Cuba",
+    "CW": "Cura\u00e7ao",
+    "CY": "Cyprus",
+    "CZ": "Czechia",
+    "DK": "Denmark",
+    "DJ": "Djibouti",
+    "DM": "Dominica",
+    "DO": "Dominican Republic",
+    "EC": "Ecuador",
+    "EG": "Egypt",
+    "SV": "El Salvador",
+    "ZE": "England",
+    "GQ": "Equatorial Guinea",
+    "ER": "Eritrea",
+    "EE": "Estonia",
+    "SZ": "Eswatini",
+    "ET": "Ethiopia",
+    "FK": "Falkland Islands (Malvinas)",
+    "FO": "Faroe Islands",
+    "FJ": "Fiji",
+    "FI": "Finland",
+    "FR": "France",
+    "GF": "French Guiana",
+    "PF": "French Polynesia",
+    "TF": "French Southern Territories",
+    "GA": "Gabon",
+    "GM": "Gambia",
+    "GE": "Georgia",
+    "DE": "Germany",
+    "GH": "Ghana",
+    "GI": "Gibraltar",
+    "GR": "Greece",
+    "GL": "Greenland",
+    "GD": "Grenada",
+    "GP": "Guadeloupe",
+    "GU": "Guam",
+    "GT": "Guatemala",
+    "GG": "Guernsey",
+    "GN": "Guinea",
+    "GW": "Guinea-Bissau",
+    "GY": "Guyana",
+    "HT": "Haiti",
+    "HM": "Heard Island and McDonald Islands",
+    "VA": "Holy See",
+    "HN": "Honduras",
+    "HK": "Hong Kong",
+    "HU": "Hungary",
+    "IS": "Iceland",
+    "IN": "India",
+    "ID": "Indonesia",
+    "IR": "Iran (Islamic Republic of)",
+    "IQ": "Iraq",
+    "IE": "Ireland",
+    "IM": "Isle of Man",
+    "IL": "Israel",
+    "IT": "Italy",
+    "JM": "Jamaica",
+    "JP": "Japan",
+    "JE": "Jersey",
+    "JO": "Jordan",
+    "KZ": "Kazakhstan",
+    "KE": "Kenya",
+    "KI": "Kiribati",
+    "KP": "Korea (Democratic People's Republic of)",
+    "KR": "Korea (Republic of)",
+    "KW": "Kuwait",
+    "KG": "Kyrgyzstan",
+    "LA": "Lao People's Democratic Republic",
+    "LV": "Latvia",
+    "LB": "Lebanon",
+    "LS": "Lesotho",
+    "LR": "Liberia",
+    "LY": "Libya",
+    "LI": "Liechtenstein",
+    "LT": "Lithuania",
+    "LU": "Luxembourg",
+    "MO": "Macao",
+    "MK": "Macedonia (the former Yugoslav Republic of)",
+    "MG": "Madagascar",
+    "MW": "Malawi",
+    "MY": "Malaysia",
+    "MV": "Maldives",
+    "ML": "Mali",
+    "MT": "Malta",
+    "MH": "Marshall Islands",
+    "MQ": "Martinique",
+    "MR": "Mauritania",
+    "MU": "Mauritius",
+    "YT": "Mayotte",
+    "MX": "Mexico",
+    "FM": "Micronesia (Federated States of)",
+    "MD": "Moldova (Republic of)",
+    "MC": "Monaco",
+    "MN": "Mongolia",
+    "ME": "Montenegro",
+    "MS": "Montserrat",
+    "MA": "Morocco",
+    "MZ": "Mozambique",
+    "MM": "Myanmar",
+    "NA": "Namibia",
+    "NR": "Nauru",
+    "NP": "Nepal",
+    "NL": "Netherlands",
+    "NC": "New Caledonia",
+    "NZ": "New Zealand",
+    "NI": "Nicaragua",
+    "NE": "Niger",
+    "NG": "Nigeria",
+    "NU": "Niue",
+    "NF": "Norfolk Island",
+    "ZU": "Northern Ireland",
+    "ZI": "Northern Ireland (United Kingdom flag)",
+    "MP": "Northern Mariana Islands",
+    "NO": "Norway",
+    "OM": "Oman",
+    "PK": "Pakistan",
+    "PW": "Palau",
+    "PS": "Palestine, State of",
+    "PA": "Panama",
+    "PG": "Papua New Guinea",
+    "PY": "Paraguay",
+    "PE": "Peru",
+    "PH": "Philippines",
+    "PN": "Pitcairn",
+    "PL": "Poland",
+    "PT": "Portugal",
+    "PR": "Puerto Rico",
+    "QA": "Qatar",
+    "RE": "R\u00e9union",
+    "RO": "Romania",
+    "RU": "Russian Federation",
+    "RW": "Rwanda",
+    "BL": "Saint Barth\u00e9lemy",
+    "SH": "Saint Helena, Ascension and Tristan da Cunha",
+    "KN": "Saint Kitts and Nevis",
+    "LC": "Saint Lucia",
+    "MF": "Saint Martin (French part)",
+    "PM": "Saint Pierre and Miquelon",
+    "VC": "Saint Vincent and the Grenadines",
+    "WS": "Samoa",
+    "SM": "San Marino",
+    "ST": "Sao Tome and Principe",
+    "SA": "Saudi Arabia",
+    "ZS": "Scotland",
+    "SN": "Senegal",
+    "RS": "Serbia",
+    "SC": "Seychelles",
+    "SL": "Sierra Leone",
+    "SG": "Singapore",
+    "SX": "Sint Maarten (Dutch part)",
+    "SK": "Slovakia",
+    "SI": "Slovenia",
+    "SB": "Solomon Islands",
+    "SO": "Somalia",
+    "ZA": "South Africa",
+    "GS": "South Georgia and the South Sandwich Islands",
+    "SS": "South Sudan",
+    "ES": "Spain",
+    "LK": "Sri Lanka",
+    "SD": "Sudan",
+    "SR": "Suriname",
+    "SJ": "Svalbard and Jan Mayen",
+    "SE": "Sweden",
+    "CH": "Switzerland",
+    "SY": "Syrian Arab Republic",
+    "TW": "Taiwan, Province of China",
+    "TJ": "Tajikistan",
+    "TZ": "Tanzania, United Republic of",
+    "TH": "Thailand",
+    "TL": "Timor-Leste",
+    "TG": "Togo",
+    "TK": "Tokelau",
+    "TO": "Tonga",
+    "TT": "Trinidad and Tobago",
+    "TN": "Tunisia",
+    "TR": "Turkey",
+    "TM": "Turkmenistan",
+    "TC": "Turks and Caicos Islands",
+    "TV": "Tuvalu",
+    "UG": "Uganda",
+    "UA": "Ukraine",
+    "AE": "United Arab Emirates",
+    "GB": "United Kingdom",
+    "UM": "United States Minor Outlying Islands",
+    "US": "United States of America",
+    "UY": "Uruguay",
+    "UZ": "Uzbekistan",
+    "VU": "Vanuatu",
+    "VE": "Venezuela (Bolivarian Republic of)",
+    "VN": "Viet Nam",
+    "VG": "Virgin Islands (British)",
+    "VI": "Virgin Islands (U.S.)",
+    "WL": "Wales",
+    "WF": "Wallis and Futuna",
+    "EH": "Western Sahara",
+    "YE": "Yemen",
+    "ZM": "Zambia",
+    "ZW": "Zimbabwe",
+    "AX": "\u00c5land Islands"
+  },
+  "ukList": {
+    "ZE": "England",
+    "ZU": "Northern Ireland",
+    "ZS": "Scotland",
+    "WL": "Wales"
+  },
+  "tournamentInfo": {
+    "active_tournament_event": null,
+    "boards": {
+      "1": "Live Stream Board",
+      "2": "Board 2"
+    },
+    "audience": "LE",
+    "banner_audience": "dartconnect",
+    "bracket_api_url": null,
+    "bracket_interface": "DartConnect",
+    "bracket_version": "2.0.0",
+    "pdc_bracket_is_published": false,
+    "checkin_desc": "Atlantic Amateur Dart Series Event #1",
+    "dctv_alert_message": "",
+    "dctv_title": "Atlantic Amateur Dart Series Event #1",
+    "enable_my_board_group": "N",
+    "event_leaderboard_link": "https://leaderboard.dartconnect.com/leaderboard#T-mt_joe6163l_1-singles_01_501_si_do-all-all-all-all-all",
+    "use_new_tv_scoreboard": true,
+    "event_over": true,
+    "event_started": true,
+    "event_url": "https://www.facebook.com/share/15DxDfjrxgX/",
+    "events": [
+      {
+        "bracket_status": "C",
+        "bracket_type": "roundrobin",
+        "checkin_start_date": null,
+        "checkin_type": null,
+        "display_board_assignments": "Y",
+        "dc_status": "C",
+        "display_results": "Y",
+        "event_format": "S",
+        "event_label": "Round Robin",
+        "games": [
+          "Singles 501 SIDO"
+        ],
+        "has_multiple_game_types": false,
+        "id": 139841,
+        "is_grouped": "N",
+        "is_mydctv_enabled": "N",
+        "matches_count": 20,
+        "is_published": true,
+        "is_live": true,
+        "user_in_event": false,
+        "wdf_grading": null,
+        "wdf_ranking": null
+      },
+      {
+        "bracket_status": "C",
+        "bracket_type": "elimination",
+        "checkin_start_date": null,
+        "checkin_type": null,
+        "display_board_assignments": "Y",
+        "dc_status": "C",
+        "display_results": "Y",
+        "event_format": "S",
+        "event_label": "Winners Knockout",
+        "games": [
+          "Singles 501 SIDO"
+        ],
+        "has_multiple_game_types": false,
+        "id": 139844,
+        "is_grouped": "N",
+        "is_mydctv_enabled": "N",
+        "matches_count": 7,
+        "is_published": true,
+        "is_live": true,
+        "user_in_event": false,
+        "wdf_grading": null,
+        "wdf_ranking": null
+      },
+      {
+        "bracket_status": "C",
+        "bracket_type": "elimination",
+        "checkin_start_date": null,
+        "checkin_type": null,
+        "display_board_assignments": "Y",
+        "dc_status": "C",
+        "display_results": "Y",
+        "event_format": "S",
+        "event_label": "Consolation Knockout",
+        "games": [],
+        "has_multiple_game_types": false,
+        "id": 139847,
+        "is_grouped": "N",
+        "is_mydctv_enabled": "N",
+        "matches_count": 0,
+        "is_published": false,
+        "is_live": false,
+        "user_in_event": false,
+        "wdf_grading": null,
+        "wdf_ranking": null
+      }
+    ],
+    "timezone": "Atlantic/Reykjavik",
+    "has_elimination": true,
+    "has_ko_grouped": false,
+    "has_roundrobin": true,
+    "id": "mt_joe6163l_1",
+    "now_playing": 0,
+    "rankings": [],
+    "regconnect_published": false,
+    "regconnect_public_visible": false,
+    "show_checkin": false,
+    "single_board": "N",
+    "start_date": "2025-08-02",
+    "expiration_date": "2025-08-04",
+    "start_date_formatted": "Sat, 2 August 2025",
+    "expiration_date_formatted": "Mon, 4 August 2025",
+    "streaming_url": "https://www.facebook.com/share/15DxDfjrxgX/",
+    "tour_id": null,
+    "checkin_url": "https://checkin.dartconnect.com/tournaments/mt_joe6163l_1",
+    "tour_leaderboard_link": null,
+    "user_in_entries_list": null,
+    "user_in_events": false,
+    "is_tournament_admin": false,
+    "is_tournament_official": false,
+    "show_bracket": true
+  },
+  "isTvScoreboard": false,
+  "insignes": [
+    {
+      "small_url": "https://dartconnect.com/b/dctv-fan-alerts-3-small.jpg",
+      "large_url": "https://dartconnect.com/b/dctv-fan-alerts-3-large.jpg",
+      "adclass": "fanalerts-dc",
+      "link": "https://www.dartconnect.com/fans/fan-alerts/"
+    },
+    {
+      "small_url": "https://www.dartconnect.com/b/dc-premium-connect-small.jpg",
+      "large_url": "https://www.dartconnect.com/b/dc-premium-connect-large.jpg",
+      "adclass": "dc-premium-connect",
+      "link": "https://www.dartconnect.com/players/play-vs-friends/"
+    },
+    {
+      "small_url": "https://www.dartconnect.com/b/dc-premium-score-small.jpg",
+      "large_url": "https://www.dartconnect.com/b/dc-premium-score-large.jpg",
+      "adclass": "dc-premium-score",
+      "link": "https://www.dartconnect.com/join/"
+    }
+  ],
+  "wdfNations": [],
+  "tournamentEvents": [
+    {
+      "id": 139841,
+      "start_date": null,
+      "end_date": null,
+      "event_label": "Round Robin",
+      "display_order": 10,
+      "display_board_assignments": "Y",
+      "bracket_status": "C",
+      "display_results": "Y",
+      "special_event_type": "None",
+      "event_type": "roundrobin",
+      "event_format": "S",
+      "app_checkin_type": null,
+      "app_checkin_late_at": null,
+      "app_checkin_forfeit_at": null,
+      "diff": null,
+      "player_count": 10,
+      "match_count": 20,
+      "imported_match_count": 20,
+      "match_format": {
+        "id": 201353,
+        "org_id": 139841,
+        "org_level": "tournament",
+        "sets_limit": 1,
+        "legs_limit": 5,
+        "sets_mode": "BEST-OF",
+        "legs_mode": "BEST-OF"
+      }
+    },
+    {
+      "id": 139844,
+      "start_date": null,
+      "end_date": null,
+      "event_label": "Winners Knockout",
+      "display_order": 20,
+      "display_board_assignments": "Y",
+      "bracket_status": "C",
+      "display_results": "Y",
+      "special_event_type": "None",
+      "event_type": "elimination",
+      "event_format": "S",
+      "app_checkin_type": null,
+      "app_checkin_late_at": null,
+      "app_checkin_forfeit_at": null,
+      "diff": null,
+      "player_count": 8,
+      "match_count": 7,
+      "imported_match_count": 7,
+      "match_format": {
+        "id": 201356,
+        "org_id": 139844,
+        "org_level": "tournament",
+        "sets_limit": 5,
+        "legs_limit": 5,
+        "sets_mode": "BEST-OF",
+        "legs_mode": "BEST-OF"
+      }
+    },
+    {
+      "id": 139847,
+      "start_date": null,
+      "end_date": null,
+      "event_label": "Consolation Knockout",
+      "display_order": 30,
+      "display_board_assignments": "Y",
+      "bracket_status": "C",
+      "display_results": "Y",
+      "special_event_type": "None",
+      "event_type": "elimination",
+      "event_format": "S",
+      "app_checkin_type": null,
+      "app_checkin_late_at": null,
+      "app_checkin_forfeit_at": null,
+      "diff": null,
+      "player_count": 0,
+      "match_count": 0,
+      "imported_match_count": 0,
+      "match_format": {
+        "id": 201359,
+        "org_id": 139847,
+        "org_level": "tournament",
+        "sets_limit": 1,
+        "legs_limit": 3,
+        "sets_mode": "PLAY-ALL",
+        "legs_mode": "BEST-OF"
+      }
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AADS - Atlantic Amateur Darts Series</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container" id="mainContainer">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">Atlantic Amateur Darts Series</h1>
+                <p class="subtitle">2025 Championship Standings</p>
+            </div>
+            <div class="header-controls">
+                <button id="broadcastToggle" class="btn-toggle">
+                    <span class="icon">📺</span> Broadcast Mode
+                </button>
+                <button id="refreshBtn" class="btn-refresh">
+                    <span class="icon">🔄</span> Refresh
+                </button>
+                <button id="manageToggle" class="btn-manage">
+                    <span class="icon">⚙️</span> Manage
+                </button>
+            </div>
+        </header>
+
+        <!-- Management Panel -->
+        <div id="managementPanel" class="management-panel hidden">
+            <div class="management-grid">
+                <!-- Single Match Scraping -->
+                <div class="management-card">
+                    <h3>📊 Scrape Match</h3>
+                    <form id="singleMatchForm">
+                        <div class="form-group">
+                            <label for="matchUrl">Match Recap URL:</label>
+                            <input type="url" id="matchUrl" placeholder="https://recap.dartconnect.com/matches/..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventId">Event Number:</label>
+                            <select id="eventId" required>
+                                <option value="1">Event 1</option>
+                                <option value="2">Event 2</option>
+                                <option value="3">Event 3</option>
+                                <option value="4">Event 4</option>
+                                <option value="5">Event 5</option>
+                                <option value="6">Event 6</option>
+                                <option value="7">Tournament of Champions</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Scrape Match</button>
+                    </form>
+                </div>
+
+                <!-- Event Batch Scraping -->
+                <div class="management-card">
+                    <h3>🏆 Scrape Event</h3>
+                    <form id="eventScrapeForm">
+                        <div class="form-group">
+                            <label for="eventUrl">Event Page URL:</label>
+                            <input type="url" id="eventUrl" placeholder="https://tv.dartconnect.com/event/..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventIdBatch">Event Number:</label>
+                            <select id="eventIdBatch" required>
+                                <option value="1">Event 1</option>
+                                <option value="2">Event 2</option>
+                                <option value="3">Event 3</option>
+                                <option value="4">Event 4</option>
+                                <option value="5">Event 5</option>
+                                <option value="6">Event 6</option>
+                                <option value="7">Tournament of Champions</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Scrape All Matches</button>
+                    </form>
+                </div>
+
+                <!-- Event Management -->
+                <div class="management-card">
+                    <h3>⚙️ Event Management</h3>
+                    <div class="form-group">
+                        <label for="winnerEvent">Set Event Winner:</label>
+                        <select id="winnerEvent">
+                            <option value="">Select Event...</option>
+                            <option value="1">Event 1</option>
+                            <option value="2">Event 2</option>
+                            <option value="3">Event 3</option>
+                            <option value="4">Event 4</option>
+                            <option value="5">Event 5</option>
+                            <option value="6">Event 6</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="winnerPlayer">Winner:</label>
+                        <select id="winnerPlayer">
+                            <option value="">Select Player...</option>
+                        </select>
+                    </div>
+                    <button id="setWinnerBtn" class="btn btn-primary">Set Winner</button>
+                    
+                    <div class="danger-zone">
+                        <h4>⚠️ Danger Zone</h4>
+                        <button id="resetDbBtn" class="btn btn-danger">Reset Database</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="statusMessages" class="status-messages"></div>
+        </div>
+
+        <!-- Series Info Panel -->
+        <div class="info-panel" id="infoPanel">
+            <div class="info-card">
+                <div class="info-label">Total Events</div>
+                <div class="info-value" id="totalEvents">7</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Qualifying Events</div>
+                <div class="info-value" id="qualifyingEvents">6</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Players</div>
+                <div class="info-value" id="totalPlayers">0</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Qualified</div>
+                <div class="info-value qualified" id="qualifiedCount">0</div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div class="leaderboard-container">
+            <div class="section-header">
+                <h2>Championship Standings</h2>
+                <div class="sort-controls">
+                    <label for="sortBy">Sort by:</label>
+                    <select id="sortBy" class="sort-select">
+                        <option value="weighted_3da">3-Dart Average</option>
+                        <option value="total_180s">180s</option>
+                        <option value="total_140s">140+</option>
+                        <option value="highest_finish">Highest Finish</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Leaderboard Table -->
+            <div class="table-wrapper">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th class="rank-col">Rank</th>
+                            <th class="player-col">Player</th>
+                            <th class="stat-col">Events</th>
+                            <th class="stat-col highlight">3DA</th>
+                            <th class="stat-col">180s</th>
+                            <th class="stat-col">140+</th>
+                            <th class="stat-col">100+</th>
+                            <th class="stat-col">High Finish</th>
+                            <th class="status-col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Dynamic content loaded here -->
+                        <tr class="loading-row">
+                            <td colspan="9">
+                                <div class="loading-spinner"></div>
+                                <p>Loading standings...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer" id="footer">
+            <div class="footer-content">
+                <p>Last Updated: <span id="lastUpdated">Never</span></p>
+                <p class="footer-note">Auto-refresh every 30 seconds</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Load JavaScript -->
+    <script src="/static/js/overlay.js"></script>
+</body>
+</html>
