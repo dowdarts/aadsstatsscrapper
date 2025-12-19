@@ -508,6 +508,7 @@
                 <h2>🔐 Login to Your Account</h2>
                 <p style="margin-bottom: 20px; color: #888;">Access your organization's stats dashboard</p>
                 
+                <form onsubmit="event.preventDefault(); handleLogin();">
                 <div class="form-group">
                     <label for="loginEmail">Email</label>
                     <input type="email" id="loginEmail" class="form-control" placeholder="your@email.com">
@@ -518,9 +519,10 @@
                     <input type="password" id="loginPassword" class="form-control" placeholder="Enter password">
                 </div>
                 
-                <button class="btn" onclick="handleLogin()" style="width: 100%;">
+                <button type="submit" class="btn" style="width: 100%;">
                     🔓 Sign In
                 </button>
+                </form>
                 
                 <div id="loginStatus" style="margin-top: 15px;"></div>
             </div>
@@ -530,6 +532,7 @@
                 <h2>✨ Create Your Organization Account</h2>
                 <p style="margin-bottom: 20px; color: #888;">Get your own customizable stats display system</p>
                 
+                <form onsubmit="event.preventDefault(); handleSignup();">
                 <div class="form-group">
                     <label for="signupOrgName">Organization Name *</label>
                     <input type="text" id="signupOrgName" class="form-control" placeholder="Your Organization Name">
@@ -550,9 +553,10 @@
                     <input type="password" id="signupPasswordConfirm" class="form-control" placeholder="Re-enter password">
                 </div>
                 
-                <button class="btn" onclick="handleSignup()" style="width: 100%;">
+                <button type="submit" class="btn" style="width: 100%;">
                     ✨ Create Account & Setup Organization
                 </button>
+                </form>
                 
                 <div id="signupStatus" style="margin-top: 15px;"></div>
                 
@@ -1163,7 +1167,10 @@
         (function() {
             const SUPABASE_URL = 'https://kswwbqumgsdissnwuiab.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzd3dicXVtZ3NkaXNzbnd1aWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0ODMwNTIsImV4cCI6MjA4MDA1OTA1Mn0.b-z8JqL1dBYJcrrzSt7u6VAaFAtTOl1vqqtFFgHkJ50';
-            API_BASE = `${SUPABASE_URL}/functions/v1`;
+            
+            // Detect if running locally (Flask) or on GitHub Pages
+            const isLocalFlask = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            API_BASE = isLocalFlask ? '/api' : `${SUPABASE_URL}/functions/v1`;
 
             // Initialize Supabase client (prevent duplicate declarations from cached scripts)
             if (!window.aadsSupabaseClient) {
@@ -1196,7 +1203,7 @@
             content.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading...</div>';
             
             try {
-                const response = await fetch(`${API_BASE}/aads-api/stats`);
+                const response = await fetch(`${API_BASE}/stats`);
                 const data = await response.json();
                 
                 let html = '<table class="stats-table"><thead><tr>';
@@ -1244,9 +1251,10 @@
                 return;
             }
             
-            statusDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div>🔄 Starting comprehensive event scrape (this may take a few minutes)...</div>';
+            statusDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div>🔄 Starting scraper...</div>';
             
             try {
+                // Start the scrape job
                 const response = await fetch(`${API_BASE}/scrape-event`, {
                     method: 'POST',
                     headers: { 
@@ -1261,65 +1269,118 @@
                 
                 const result = await response.json();
                 
-                if (result.success) {
-                    const displayUrl = `stats-display.html?user=${user.id}`;
+                if (!result.success || !result.job_id) {
+                    statusDiv.innerHTML = `<div class="error-message">❌ ${result.message || 'Failed to start scraper'}</div>`;
+                    return;
+                }
+                
+                // Poll for progress
+                const jobId = result.job_id;
+                pollScrapeProgress(jobId, statusDiv);
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="error-message">❌ Error: ${error.message}</div>`;
+            }
+        }
+        
+        // Poll for scrape progress with progress bar
+        async function pollScrapeProgress(jobId, statusDiv) {
+            const pollInterval = 1000; // Poll every 1 second
+            
+            const poll = async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/scrape-progress/${jobId}`);
+                    const progress = await response.json();
                     
-                    // Build player summary
-                    let playerSummary = '';
-                    if (result.players) {
-                        playerSummary = '<div style="margin-top: 15px;"><h4>Player Summary:</h4><ul style="list-style: none; padding-left: 0;">';
-                        for (const [name, stats] of Object.entries(result.players)) {
-                            playerSummary += `<li>${name}: ${stats.match_count} matches`;
-                            if (stats.count_180s > 0) {
-                                playerSummary += `, ${stats.count_180s} x 180s`;
-                            }
-                            playerSummary += '</li>';
-                        }
-                        playerSummary += '</ul></div>';
-                    }
+                    // Build progress bar HTML
+                    const progressPercent = progress.progress || 0;
+                    let statsHtml = '';
                     
-                    // Build error list if any
-                    let errorList = '';
-                    if (result.errors && result.errors.length > 0) {
-                        errorList = '<div style="margin-top: 15px; color: #ffaa00;"><h4>Errors:</h4><ul>';
-                        result.errors.slice(0, 5).forEach(err => {
-                            errorList += `<li>${err}</li>`;
-                        });
-                        if (result.errors.length > 5) {
-                            errorList += `<li>... and ${result.errors.length - 5} more</li>`;
-                        }
-                        errorList += '</ul></div>';
+                    if (progress.total_matches > 0) {
+                        statsHtml = `
+                            <div style="margin-top: 15px; font-size: 13px;">
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px;">
+                                    <div>✅ Successful: <strong>${progress.successful}</strong></div>
+                                    <div>❌ Failed: <strong>${progress.failed}</strong></div>
+                                    <div>📊 Current: <strong>${progress.current_match}/${progress.total_matches}</strong></div>
+                                    <div>👥 Players: <strong>${Object.keys(progress.players || {}).length}</strong></div>
+                                </div>
+                                ${progress.current_match_name ? `<div style="color: rgba(0, 255, 136, 0.7); font-size: 11px;">Match ID: ${progress.current_match_name}</div>` : ''}
+                            </div>
+                        `;
                     }
                     
                     statusDiv.innerHTML = `
-                        <div class="success-message">
-                            <h3>✅ Event Scraped Successfully!</h3>
-                            <p>Successfully Scraped: ${result.successful}/${result.total_matches} matches</p>
-                            <p>Total Players: ${result.total_players}</p>
-                            ${result.failed > 0 ? `<p style="color: #ffaa00;">Failed: ${result.failed}</p>` : ''}
-                            ${playerSummary}
-                            ${errorList}
-                            <hr style="margin: 15px 0; border: 1px solid rgba(0, 255, 0, 0.3);">
-                            <p style="font-weight: bold;">📺 Stats are now live on your display!</p>
-                            <a href="${displayUrl}" target="_blank" rel="noopener" 
-                               style="display: inline-block; padding: 8px 16px; background: rgba(0, 255, 0, 0.2); 
-                                      color: #0f0; text-decoration: none; border-radius: 5px; margin-top: 10px; 
-                                      border: 1px solid rgba(0, 255, 0, 0.3);">
-                                View Your Public Stats →
-                            </a>
+                        <div style="margin-top: 15px; padding: 15px; background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 5px;">
+                            <div style="margin-bottom: 10px;">
+                                <strong>${progress.message || 'Processing...'}</strong>
+                            </div>
+                            <div style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; overflow: hidden; height: 30px; position: relative;">
+                                <div style="background: linear-gradient(90deg, #00ff88, #00dd77); height: 100%; width: ${progressPercent}%; transition: width 0.3s ease; display: flex; align-items: center; justify-content: center;">
+                                    <span style="color: #000; font-weight: bold; text-shadow: 0 0 5px rgba(255,255,255,0.8); position: absolute; left: 50%; transform: translateX(-50%);">
+                                        ${progressPercent}%
+                                    </span>
+                                </div>
+                            </div>
+                            ${statsHtml}
                         </div>
                     `;
                     
-                    // Refresh leaderboard after 1 second
-                    setTimeout(() => {
-                        loadLeaderboard();
-                    }, 1000);
-                } else {
-                    statusDiv.innerHTML = `<div class="error-message">Error: ${result.error}</div>`;
+                    // Check status
+                    if (progress.status === 'complete') {
+                        // Show final success message
+                        const displayUrl = `stats-display.html?user=${user.id}`;
+                        const results = progress.final_results || {};
+                        
+                        let playerSummary = '';
+                        if (results.players && Object.keys(results.players).length > 0) {
+                            playerSummary = '<div style="margin-top: 15px;"><h4>Player Summary:</h4><ul style="list-style: none; padding-left: 0;">';
+                            for (const [name, stats] of Object.entries(results.players)) {
+                                playerSummary += `<li>• <strong>${name}</strong>: ${stats.matches} matches`;
+                                if (stats.total_180s > 0) {
+                                    playerSummary += `, ${stats.total_180s} × 180s`;
+                                }
+                                playerSummary += '</li>';
+                            }
+                            playerSummary += '</ul></div>';
+                        }
+                        
+                        statusDiv.innerHTML = `
+                            <div class="success-message">
+                                <h3>✅ Event Scraped Successfully!</h3>
+                                <p>Successfully Scraped: <strong>${results.successful}/${results.total_matches}</strong> matches</p>
+                                <p>Total Players: <strong>${results.total_players || Object.keys(results.players || {}).length}</strong></p>
+                                ${results.failed > 0 ? `<p style="color: #ffaa00;">Failed: ${results.failed}</p>` : ''}
+                                ${playerSummary}
+                                <hr style="margin: 15px 0; border: 1px solid rgba(0, 255, 0, 0.3);">
+                                <p style="font-weight: bold;">📺 Stats are now live on your display!</p>
+                                <a href="${displayUrl}" target="_blank" rel="noopener" 
+                                   style="display: inline-block; padding: 8px 16px; background: rgba(0, 255, 0, 0.2); 
+                                          color: #0f0; text-decoration: none; border-radius: 5px; margin-top: 10px; 
+                                          border: 1px solid rgba(0, 255, 0, 0.3);">
+                                    View Your Public Stats →
+                                </a>
+                            </div>
+                        `;
+                        
+                        // Refresh leaderboard
+                        setTimeout(() => loadLeaderboard(), 1000);
+                        return;
+                    } else if (progress.status === 'error') {
+                        statusDiv.innerHTML = `<div class="error-message">❌ ${progress.message}</div>`;
+                        return;
+                    }
+                    
+                    // Continue polling
+                    setTimeout(poll, pollInterval);
+                    
+                } catch (error) {
+                    statusDiv.innerHTML = `<div class="error-message">❌ Error checking progress: ${error.message}</div>`;
                 }
-            } catch (error) {
-                statusDiv.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-            }
+            };
+            
+            // Start polling
+            poll();
         }
 
         // Load events list
@@ -1328,7 +1389,7 @@
             content.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading...</div>';
             
             try {
-                const response = await fetch(`${API_BASE}/aads-api/events`);
+                const response = await fetch(`${API_BASE}/events`);
                 const data = await response.json();
                 
                 if (data.events.length === 0) {
@@ -1370,7 +1431,7 @@
         // Load players list for dropdowns
         async function loadPlayersList() {
             try {
-                const response = await fetch(`${API_BASE}/aads-api/stats`);
+                const response = await fetch(`${API_BASE}/stats`);
                 const data = await response.json();
                 
                 const selects = ['player1Select', 'player2Select', 'playerAnalysisSelect', 'formPlayerSelect'];

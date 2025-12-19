@@ -245,6 +245,506 @@
           "high_finish": 110
         }
       ]
+    },
+    "Cormier": {
+      "name": "Cormier",
+      "events_played": [
+        1
+      ],
+      "total_legs": 93,
+      "weighted_3da": 66.68,
+      "total_180s": 9,
+      "total_140s": 27,
+      "total_100s": 81,
+      "highest_finish": 144,
+      "best_first_9": 94.0,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.266447",
+          "three_dart_avg": 66.67960288808663,
+          "legs_played": 31,
+          "first_9_avg": 94.0,
+          "one_eighties": 3,
+          "one_forty_plus": 9,
+          "hundreds_plus": 27,
+          "high_finish": 144
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.594832",
+          "three_dart_avg": 66.67960288808663,
+          "legs_played": 31,
+          "first_9_avg": 94.0,
+          "one_eighties": 3,
+          "one_forty_plus": 9,
+          "hundreds_plus": 27,
+          "high_finish": 144
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.346466",
+          "three_dart_avg": 66.67960288808663,
+          "legs_played": 31,
+          "first_9_avg": 94.0,
+          "one_eighties": 3,
+          "one_forty_plus": 9,
+          "hundreds_plus": 27,
+          "high_finish": 144
+        }
+      ]
+    },
+    "Holden": {
+      "name": "Holden",
+      "events_played": [
+        1
+      ],
+      "total_legs": 108,
+      "weighted_3da": 72.57,
+      "total_180s": 15,
+      "total_140s": 42,
+      "total_100s": 120,
+      "highest_finish": 122,
+      "best_first_9": 93.39,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.271157",
+          "three_dart_avg": 72.56764427625356,
+          "legs_played": 36,
+          "first_9_avg": 93.39,
+          "one_eighties": 5,
+          "one_forty_plus": 14,
+          "hundreds_plus": 40,
+          "high_finish": 122
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.600642",
+          "three_dart_avg": 72.56764427625356,
+          "legs_played": 36,
+          "first_9_avg": 93.39,
+          "one_eighties": 5,
+          "one_forty_plus": 14,
+          "hundreds_plus": 40,
+          "high_finish": 122
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.353221",
+          "three_dart_avg": 72.56764427625356,
+          "legs_played": 36,
+          "first_9_avg": 93.39,
+          "one_eighties": 5,
+          "one_forty_plus": 14,
+          "hundreds_plus": 40,
+          "high_finish": 122
+        }
+      ]
+    },
+    "Leblanc": {
+      "name": "Leblanc",
+      "events_played": [
+        1
+      ],
+      "total_legs": 42,
+      "weighted_3da": 55.43,
+      "total_180s": 0,
+      "total_140s": 0,
+      "total_100s": 9,
+      "highest_finish": 78,
+      "best_first_9": 67.08,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.274384",
+          "three_dart_avg": 55.4339378238342,
+          "legs_played": 14,
+          "first_9_avg": 67.08,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 3,
+          "high_finish": 78
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.604902",
+          "three_dart_avg": 55.4339378238342,
+          "legs_played": 14,
+          "first_9_avg": 67.08,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 3,
+          "high_finish": 78
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.357733",
+          "three_dart_avg": 55.4339378238342,
+          "legs_played": 14,
+          "first_9_avg": 67.08,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 3,
+          "high_finish": 78
+        }
+      ]
+    },
+    "Wallace": {
+      "name": "Wallace",
+      "events_played": [
+        1
+      ],
+      "total_legs": 75,
+      "weighted_3da": 63.36,
+      "total_180s": 3,
+      "total_140s": 9,
+      "total_100s": 33,
+      "highest_finish": 126,
+      "best_first_9": 74.67,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.277250",
+          "three_dart_avg": 63.36,
+          "legs_played": 25,
+          "first_9_avg": 74.67,
+          "one_eighties": 1,
+          "one_forty_plus": 3,
+          "hundreds_plus": 11,
+          "high_finish": 126
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.608842",
+          "three_dart_avg": 63.36,
+          "legs_played": 25,
+          "first_9_avg": 74.67,
+          "one_eighties": 1,
+          "one_forty_plus": 3,
+          "hundreds_plus": 11,
+          "high_finish": 126
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.365381",
+          "three_dart_avg": 63.36,
+          "legs_played": 25,
+          "first_9_avg": 74.67,
+          "one_eighties": 1,
+          "one_forty_plus": 3,
+          "hundreds_plus": 11,
+          "high_finish": 126
+        }
+      ]
+    },
+    "Leger": {
+      "name": "Leger",
+      "events_played": [
+        1
+      ],
+      "total_legs": 30,
+      "weighted_3da": 53.48,
+      "total_180s": 0,
+      "total_140s": 0,
+      "total_100s": 0,
+      "highest_finish": 40,
+      "best_first_9": 76.22,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.280302",
+          "three_dart_avg": 53.480857580398165,
+          "legs_played": 10,
+          "first_9_avg": 76.22,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 0,
+          "high_finish": 40
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.612244",
+          "three_dart_avg": 53.480857580398165,
+          "legs_played": 10,
+          "first_9_avg": 76.22,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 0,
+          "high_finish": 40
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.369948",
+          "three_dart_avg": 53.480857580398165,
+          "legs_played": 10,
+          "first_9_avg": 76.22,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 0,
+          "high_finish": 40
+        }
+      ]
+    },
+    "Velasquez": {
+      "name": "Velasquez",
+      "events_played": [
+        1
+      ],
+      "total_legs": 33,
+      "weighted_3da": 57.69,
+      "total_180s": 0,
+      "total_140s": 0,
+      "total_100s": 6,
+      "highest_finish": 124,
+      "best_first_9": 77.42,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.284198",
+          "three_dart_avg": 57.68571428571428,
+          "legs_played": 11,
+          "first_9_avg": 77.42,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 2,
+          "high_finish": 124
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.618689",
+          "three_dart_avg": 57.68571428571428,
+          "legs_played": 11,
+          "first_9_avg": 77.42,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 2,
+          "high_finish": 124
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.377840",
+          "three_dart_avg": 57.68571428571428,
+          "legs_played": 11,
+          "first_9_avg": 77.42,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 2,
+          "high_finish": 124
+        }
+      ]
+    },
+    "Johnston": {
+      "name": "Johnston",
+      "events_played": [
+        1
+      ],
+      "total_legs": 21,
+      "weighted_3da": 55.77,
+      "total_180s": 3,
+      "total_140s": 6,
+      "total_100s": 24,
+      "highest_finish": 112,
+      "best_first_9": 62.4,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.289375",
+          "three_dart_avg": 55.77049180327869,
+          "legs_played": 7,
+          "first_9_avg": 62.4,
+          "one_eighties": 1,
+          "one_forty_plus": 2,
+          "hundreds_plus": 8,
+          "high_finish": 112
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.625127",
+          "three_dart_avg": 55.77049180327869,
+          "legs_played": 7,
+          "first_9_avg": 62.4,
+          "one_eighties": 1,
+          "one_forty_plus": 2,
+          "hundreds_plus": 8,
+          "high_finish": 112
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.384381",
+          "three_dart_avg": 55.77049180327869,
+          "legs_played": 7,
+          "first_9_avg": 62.4,
+          "one_eighties": 1,
+          "one_forty_plus": 2,
+          "hundreds_plus": 8,
+          "high_finish": 112
+        }
+      ]
+    },
+    "Rushton": {
+      "name": "Rushton",
+      "events_played": [
+        1
+      ],
+      "total_legs": 30,
+      "weighted_3da": 57.54,
+      "total_180s": 0,
+      "total_140s": 0,
+      "total_100s": 9,
+      "highest_finish": 76,
+      "best_first_9": 68.2,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.293737",
+          "three_dart_avg": 57.54009819967267,
+          "legs_played": 10,
+          "first_9_avg": 68.2,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 3,
+          "high_finish": 76
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.630002",
+          "three_dart_avg": 57.54009819967267,
+          "legs_played": 10,
+          "first_9_avg": 68.2,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 3,
+          "high_finish": 76
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.389040",
+          "three_dart_avg": 57.54009819967267,
+          "legs_played": 10,
+          "first_9_avg": 68.2,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 3,
+          "high_finish": 76
+        }
+      ]
+    },
+    "Stewart": {
+      "name": "Stewart",
+      "events_played": [
+        1
+      ],
+      "total_legs": 18,
+      "weighted_3da": 64.14,
+      "total_180s": 3,
+      "total_140s": 6,
+      "total_100s": 30,
+      "highest_finish": 117,
+      "best_first_9": 78.58,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.298459",
+          "three_dart_avg": 64.14,
+          "legs_played": 6,
+          "first_9_avg": 78.58,
+          "one_eighties": 1,
+          "one_forty_plus": 2,
+          "hundreds_plus": 10,
+          "high_finish": 117
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.638749",
+          "three_dart_avg": 64.14,
+          "legs_played": 6,
+          "first_9_avg": 78.58,
+          "one_eighties": 1,
+          "one_forty_plus": 2,
+          "hundreds_plus": 10,
+          "high_finish": 117
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.393000",
+          "three_dart_avg": 64.14,
+          "legs_played": 6,
+          "first_9_avg": 78.58,
+          "one_eighties": 1,
+          "one_forty_plus": 2,
+          "hundreds_plus": 10,
+          "high_finish": 117
+        }
+      ]
+    },
+    "Milliea": {
+      "name": "Milliea",
+      "events_played": [
+        1
+      ],
+      "total_legs": 3,
+      "weighted_3da": 50.89,
+      "total_180s": 0,
+      "total_140s": 0,
+      "total_100s": 3,
+      "highest_finish": 20,
+      "best_first_9": 71.0,
+      "qualified": false,
+      "event_wins": [],
+      "event_history": [
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:12:47.305293",
+          "three_dart_avg": 50.894428152492665,
+          "legs_played": 1,
+          "first_9_avg": 71.0,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 1,
+          "high_finish": 20
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:13:04.642812",
+          "three_dart_avg": 50.894428152492665,
+          "legs_played": 1,
+          "first_9_avg": 71.0,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 1,
+          "high_finish": 20
+        },
+        {
+          "event_id": 1,
+          "date": "2025-12-19T07:16:23.400370",
+          "three_dart_avg": 50.894428152492665,
+          "legs_played": 1,
+          "first_9_avg": 71.0,
+          "one_eighties": 0,
+          "one_forty_plus": 0,
+          "hundreds_plus": 1,
+          "high_finish": 20
+        }
+      ]
     }
   },
   "events": {
@@ -256,7 +756,17 @@
         "Peter Wright",
         "Gary Anderson",
         "Rob Cross",
-        "Dave Chisnall"
+        "Dave Chisnall",
+        "Cormier",
+        "Holden",
+        "Leblanc",
+        "Wallace",
+        "Leger",
+        "Velasquez",
+        "Johnston",
+        "Rushton",
+        "Stewart",
+        "Milliea"
       ],
       "winner": "Michael Smith",
       "completed": true
@@ -272,5 +782,5 @@
       "completed": true
     }
   },
-  "last_updated": "2025-12-18T17:47:08.230482"
+  "last_updated": "2025-12-19T07:16:23.404854"
 }

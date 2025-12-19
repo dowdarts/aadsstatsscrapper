@@ -34,11 +34,19 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const { event_url, event_name } = await req.json();
+    const body = await req.json();
+    console.log('Request body:', JSON.stringify(body));
+    
+    const { event_url, event_name } = body;
 
     if (!event_url || !event_name) {
+      console.error('Missing required fields:', { event_url, event_name });
       return new Response(
-        JSON.stringify({ success: false, error: 'Missing event_url or event_name' }),
+        JSON.stringify({ 
+          success: false, 
+          error: `Missing required fields. event_url: ${event_url ? 'present' : 'missing'}, event_name: ${event_name ? 'present' : 'missing'}`,
+          received: body
+        }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
