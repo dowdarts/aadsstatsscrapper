@@ -6,14 +6,14 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <!-- v1.0.9-20251219-0035 -->
-    <title>AADS - Atlantic Amateur Darts Series - Comprehensive Stats</title>
+    <!-- v1.1.0-20251219-0200 -->
+    <title>AADS - Multi-Organization Darts Stats Platform</title>
     <meta name="description" content="Atlantic Amateur Darts Series - Comprehensive statistics, head-to-head, player analysis, and form tracking">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎯</text></svg>">
     
     <!-- Supabase CDN -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2?v=20251219003500"></script>
-    <script>window.ADMIN_VERSION = '1.0.9-20251219-0035';</script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2?v=20251219020000"></script>
+    <script>window.ADMIN_VERSION = '1.1.0-20251219-0200';</script>
     
     <style>
         * {
@@ -489,46 +489,77 @@
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="container" style="display: none;">
+    <!-- Auth Screen (Login/Signup) -->
+    <div id="authScreen" class="container" style="display: none;">
         <div class="header">
-            <h1>🔒 AADS Admin Login</h1>
-            <p>Sign in to manage statistics and events</p>
+            <h1>🎯 AADS Stats Platform</h1>
+            <p>Multi-Organization Darts Statistics & Display System</p>
         </div>
         
-        <div class="card" style="max-width: 500px; margin: 50px auto;">
-            <h2>🔐 Authentication Required</h2>
-            <p style="margin-bottom: 20px; color: #888;">Only authorized administrators can access this panel.</p>
-            
-            <div class="form-group">
-                <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" class="form-control" placeholder="admin@aadsdarts.com">
+        <div class="card" style="max-width: 550px; margin: 50px auto;">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button id="showLoginBtn" class="btn" onclick="showAuthForm('login')" style="flex: 1; background: #ffd700; color: #000;">🔓 Login</button>
+                <button id="showSignupBtn" class="btn" onclick="showAuthForm('signup')" style="flex: 1; background: transparent; border: 1px solid #ffd700; color: #ffd700;">✨ Create Account</button>
             </div>
             
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" class="form-control" placeholder="Enter password">
+            <!-- Login Form -->
+            <div id="loginForm" style="display: block;">
+                <h2>🔐 Login to Your Account</h2>
+                <p style="margin-bottom: 20px; color: #888;">Access your organization's stats dashboard</p>
+                
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter password">
+                </div>
+                
+                <button class="btn" onclick="handleLogin()" style="width: 100%;">
+                    🔓 Sign In
+                </button>
+                
+                <div id="loginStatus" style="margin-top: 15px;"></div>
             </div>
             
-            <button class="btn" onclick="handleLogin()" style="width: 100%;">
-                🔓 Sign In
-            </button>
-            
-            <div id="loginStatus" style="margin-top: 15px;"></div>
-            
-            <div style="margin-top: 30px; padding: 15px; background: rgba(100, 149, 237, 0.1); border: 1px solid rgba(100, 149, 237, 0.3); border-radius: 5px;">
-                <h3 style="color: #6495ED; margin-top: 0; font-size: 1em;">📝 First Time Setup</h3>
-                <p style="margin-bottom: 10px; font-size: 0.9em; line-height: 1.6;">
-                    To create your admin account:
-                </p>
-                <ol style="margin-left: 20px; line-height: 1.8; font-size: 0.9em;">
-                    <li>Go to <a href="https://supabase.com/dashboard/project/kswwbqumgsdissnwuiab/auth/users" target="_blank" style="color: #6495ED;">Supabase Dashboard → Authentication → Users</a></li>
-                    <li>Click "Add User" → "Create new user"</li>
-                    <li>Enter your email and password</li>
-                    <li>Uncheck "Auto Confirm User" (or confirm via email)</li>
-                    <li>Click "Create user"</li>
-                    <li>Use those credentials to login here</li>
-                </ol>
+            <!-- Signup Form -->
+            <div id="signupForm" style="display: none;">
+                <h2>✨ Create Your Organization Account</h2>
+                <p style="margin-bottom: 20px; color: #888;">Get your own customizable stats display system</p>
+                
+                <div class="form-group">
+                    <label for="signupOrgName">Organization Name *</label>
+                    <input type="text" id="signupOrgName" class="form-control" placeholder="Atlantic Amateur Darts Series">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupEmail">Email Address *</label>
+                    <input type="email" id="signupEmail" class="form-control" placeholder="admin@yourorg.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupPassword">Password *</label>
+                    <input type="password" id="signupPassword" class="form-control" placeholder="Min 6 characters">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupPasswordConfirm">Confirm Password *</label>
+                    <input type="password" id="signupPasswordConfirm" class="form-control" placeholder="Re-enter password">
+                </div>
+                
+                <button class="btn" onclick="handleSignup()" style="width: 100%;">
+                    ✨ Create Account & Setup Organization
+                </button>
+                
+                <div id="signupStatus" style="margin-top: 15px;"></div>
+                
+                <div style="margin-top: 20px; padding: 12px; background: rgba(100, 149, 237, 0.1); border: 1px solid rgba(100, 149, 237, 0.3); border-radius: 5px;">
+                    <p style="color: #6495ED; font-size: 0.9em; line-height: 1.6; margin: 0;">
+                        ℹ️ You'll get your own customizable stats display, scraper interface, and full control over colors, logos, and settings.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -536,13 +567,13 @@
     <!-- Main Admin Interface -->
     <div id="adminInterface" class="container" style="display: none;">
         <div class="header">
-        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.5); box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); z-index: 10000;">🎯 v1.0.9-20251219-0035</div>
+        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.5); box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); z-index: 10000;">🎯 v1.1.0-20251219-0200</div>
         <button onclick="handleLogout()" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 69, 0, 0.2); color: #ff6b00; border: 1px solid rgba(255, 107, 0, 0.5); padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">
             🚪 Logout
         </button>
-            <h1>🎯 AADS Statistics Center</h1>
-            <p>Atlantic Amateur Darts Series - Comprehensive Player Analysis</p>
-            <p style="font-size: 0.9em; color: #888; margin-top: 5px;">Logged in as: <span id="userEmail"></span></p>
+            <h1>🎯 <span id="orgName">AADS</span> Statistics Center</h1>
+            <p id="orgSubtitle">Multi-Organization Darts Stats Platform</p>
+            <p style="font-size: 0.9em; color: #888; margin-top: 5px;">Logged in as: <span id="userEmail"></span> | <a href="#" onclick="showTab('settings'); return false;" style="color: #6495ED;">⚙️ Settings</a></p>
         </div>
 
         <div class="nav-tabs">
@@ -555,6 +586,7 @@
             <button class="nav-tab" onclick="showTab('headToHead')">Head-to-Head</button>
             <button class="nav-tab" onclick="showTab('playerStats')">Player Analysis</button>
             <button class="nav-tab" onclick="showTab('form')">Current Form</button>
+            <button class="nav-tab" onclick="showTab('settings')" style="background: rgba(100, 149, 237, 0.2);">⚙️ Settings</button>
         </div>
 
         <!-- Leaderboard Tab -->
@@ -880,10 +912,198 @@
                 <div id="formContent"></div>
             </div>
         </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <div class="card" style="background: rgba(100, 149, 237, 0.1); border: 1px solid rgba(100, 149, 237, 0.3);">
+                <h2 style="color: #6495ED;">⚙️ Organization Settings & Customization</h2>
+                <p style="margin-bottom: 15px; line-height: 1.6;">
+                    Customize your stats display appearance, manage organization info, upload logos, and configure display settings.
+                    Changes apply to your public display page: <strong><span id="settingsDisplayUrl">Loading...</span></strong>
+                </p>
+            </div>
+
+            <!-- Organization Info Section -->
+            <div class="card">
+                <h2>🏢 Organization Information</h2>
+                <div class="form-group">
+                    <label for="settingsOrgName">Organization Name *</label>
+                    <input type="text" id="settingsOrgName" class="form-control" placeholder="Atlantic Amateur Darts Series">
+                </div>
+                
+                <div class="form-group">
+                    <label for="settingsOrgLogo">Organization Logo</label>
+                    <input type="file" id="settingsOrgLogo" accept="image/png,image/jpeg,image/svg+xml" class="form-control">
+                    <small style="color: #888;">PNG, JPG, or SVG - Max 2MB</small>
+                    <div id="orgLogoPreview" style="margin-top: 10px;"></div>
+                </div>
+
+                <button class="btn" onclick="saveOrganizationInfo()" style="background: #6495ED;">
+                    💾 Save Organization Info
+                </button>
+                <div id="orgInfoStatus" style="margin-top: 15px;"></div>
+            </div>
+
+            <!-- Display Configuration -->
+            <div class="card">
+                <h2>📊 Display Configuration</h2>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="settingsSeriesCount">Number of Series Events</label>
+                        <input type="number" id="settingsSeriesCount" class="form-control" min="1" max="20" value="3">
+                        <small style="color: #888;">How many series events to display</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingsSinglesCount">Number of Singles Events</label>
+                        <input type="number" id="settingsSinglesCount" class="form-control" min="1" max="20" value="5">
+                        <small style="color: #888;">How many singles events to display</small>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">Visible Statistics Sections</h3>
+                <div class="grid-2">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="settingsShowAverages" checked>
+                        <span>📊 Player Averages</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="settingsShowHighOut" checked>
+                        <span>🎯 High Checkouts</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="settingsShowTonPlus" checked>
+                        <span>💯 100+ Scores</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="settingsShowHighest" checked>
+                        <span>🔥 Highest Scores</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="settingsShowChampions" checked>
+                        <span>🏆 Event Champions</span>
+                    </label>
+                </div>
+
+                <button class="btn" onclick="saveDisplaySettings()" style="background: #6495ED; margin-top: 20px;">
+                    💾 Save Display Settings
+                </button>
+                <div id="displaySettingsStatus" style="margin-top: 15px;"></div>
+            </div>
+
+            <!-- Colors & Styling -->
+            <div class="card">
+                <h2>🎨 Colors & Styling</h2>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label for="settingsPrimaryColor">Primary Color</label>
+                        <input type="color" id="settingsPrimaryColor" value="#00d4ff" class="form-control" style="height: 50px;">
+                        <small style="color: #888;">Main accent color</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingsTextColor">Text Color</label>
+                        <input type="color" id="settingsTextColor" value="#ffffff" class="form-control" style="height: 50px;">
+                        <small style="color: #888;">Primary text</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingsBorderColor">Border Color</label>
+                        <input type="color" id="settingsBorderColor" value="#00d4ff" class="form-control" style="height: 50px;">
+                        <small style="color: #888;">Cards & borders</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingsBackgroundColor">Background Color</label>
+                        <input type="color" id="settingsBackgroundColor" value="#1a1a1a" class="form-control" style="height: 50px;">
+                        <small style="color: #888;">Page background</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingsHeaderBgColor">Header Background</label>
+                        <input type="color" id="settingsHeaderBgColor" value="#000000" class="form-control" style="height: 50px;">
+                        <small style="color: #888;">Header section</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingsSecondaryColor">Secondary Color</label>
+                        <input type="color" id="settingsSecondaryColor" value="#ffffff" class="form-control" style="height: 50px;">
+                        <small style="color: #888;">Secondary elements</small>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="saveColorSettings()" style="background: #6495ED; margin-top: 20px;">
+                    🎨 Save Color Settings
+                </button>
+                <div id="colorSettingsStatus" style="margin-top: 15px;"></div>
+            </div>
+
+            <!-- Sponsors & Partners -->
+            <div class="card">
+                <h2>🤝 Sponsors & Partners</h2>
+                <p style="margin-bottom: 15px; color: #888;">
+                    Upload sponsor/partner logos that will appear on your display page with clickable links.
+                </p>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="settingsShowSponsors" checked>
+                        <span>Show Sponsors on Display</span>
+                    </label>
+                    <div class="form-group" style="flex: 1; max-width: 250px;">
+                        <label for="settingsSponsorPosition">Sponsor Position</label>
+                        <select id="settingsSponsorPosition" class="form-control">
+                            <option value="bottom">Bottom of Page</option>
+                            <option value="top">Top of Page</option>
+                            <option value="sidebar">Sidebar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sponsorName">Sponsor Name</label>
+                    <input type="text" id="sponsorName" class="form-control" placeholder="Sponsor Company">
+                </div>
+
+                <div class="form-group">
+                    <label for="sponsorUrl">Sponsor Website URL</label>
+                    <input type="url" id="sponsorUrl" class="form-control" placeholder="https://sponsor.com">
+                    <small style="color: #888;">Optional - makes logo clickable</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="sponsorLogo">Sponsor Logo</label>
+                    <input type="file" id="sponsorLogo" accept="image/png,image/jpeg,image/svg+xml" class="form-control">
+                    <small style="color: #888;">PNG, JPG, or SVG - Max 2MB</small>
+                </div>
+
+                <button class="btn" onclick="addSponsor()" style="background: #28a745;">
+                    ➕ Add Sponsor
+                </button>
+                <div id="sponsorStatus" style="margin-top: 15px;"></div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">Current Sponsors</h3>
+                <div id="sponsorsList"></div>
+            </div>
+
+            <!-- Display URL Info -->
+            <div class="card" style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3);">
+                <h2>📺 Your Public Display Page</h2>
+                <p style="margin-bottom: 15px; line-height: 1.6;">
+                    Share this URL with your organization or embed it in OBS for live streaming:
+                </p>
+                <div class="form-group">
+                    <input type="text" id="displayUrlInput" class="form-control" readonly style="font-family: monospace; background: rgba(0,0,0,0.3);">
+                </div>
+                <button class="btn" onclick="copyDisplayUrl()" style="background: #ffd700; color: #000;">
+                    📋 Copy Display URL
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Supabase Configuration - v1.0.9-20251219-0035
+        // Supabase Configuration - v1.1.0-20251219-0200
         // Declare global variable
         var supabase;
         var API_BASE;
@@ -965,18 +1185,29 @@
                 return;
             }
             
+            // Get current user ID
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                statusDiv.innerHTML = '<div class="error-message">❌ Not authenticated</div>';
+                return;
+            }
+            
             statusDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Scraping event... This may take 1-2 minutes...</div>';
             
             try {
                 const response = await fetch(`${API_BASE}/scrape-event`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ event_url: url })
+                    body: JSON.stringify({ 
+                        event_url: url,
+                        user_id: user.id  // Include user_id for multi-tenant
+                    })
                 });
                 
                 const result = await response.json();
                 
                 if (result.success) {
+                    const displayUrl = `stats-display.html?user=${user.id}`;
                     statusDiv.innerHTML = `
                         <div class="success-message">
                             <h3>✅ Event Scraped Successfully!</h3>
@@ -985,12 +1216,12 @@
                             <p>Failed: ${result.failed_scrapes}</p>
                             <p>Players Updated: ${result.players_updated.length}</p>
                             <hr style="margin: 15px 0; border: 1px solid rgba(0, 255, 0, 0.3);">
-                            <p style="font-weight: bold;">📺 Stats are now live on the public display!</p>
-                            <a href="stats-display.html" target="_blank" rel="noopener" 
+                            <p style="font-weight: bold;">📺 Stats are now live on your display!</p>
+                            <a href="${displayUrl}" target="_blank" rel="noopener" 
                                style="display: inline-block; padding: 8px 16px; background: rgba(0, 255, 0, 0.2); 
                                       color: #0f0; text-decoration: none; border-radius: 5px; margin-top: 10px; 
                                       border: 1px solid rgba(0, 255, 0, 0.3);">
-                                View Public Stats →
+                                View Your Public Stats →
                             </a>
                         </div>
                     `;
@@ -1857,17 +2088,21 @@
             
             if (user) {
                 // User is logged in
-                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('adminInterface').style.display = 'block';
                 document.getElementById('userEmail').textContent = user.email;
+                
+                // Load organization settings
+                await loadOrganizationSettings();
+                
                 loadLeaderboard();
                 // Display version in console
-                console.log('%c🎯 AADS Admin v1.0.9-20251219-0035', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
-                console.log('%cUpdated: December 19, 2025 00:35', 'color: #888; font-size: 12px;');
+                console.log('%c🎯 AADS Multi-Tenant v1.1.0-20251219-0200', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
+                console.log('%cUpdated: December 19, 2025 02:00', 'color: #888; font-size: 12px;');
                 console.log('%cLogged in as: ' + user.email, 'color: #00ff88; font-size: 12px;');
             } else {
                 // User is not logged in
-                document.getElementById('loginScreen').style.display = 'block';
+                document.getElementById('authScreen').style.display = 'block';
                 document.getElementById('adminInterface').style.display = 'none';
             }
         }
@@ -1925,9 +2160,476 @@
             if (!confirmed) return;
             
             await supabase.auth.signOut();
-            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('authScreen').style.display = 'block';
             document.getElementById('adminInterface').style.display = 'none';
             document.getElementById('loginPassword').value = '';
+        }
+
+        // Show auth form (login or signup)
+        function showAuthForm(formType) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const loginBtn = document.getElementById('showLoginBtn');
+            const signupBtn = document.getElementById('showSignupBtn');
+            
+            if (formType === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                loginBtn.style.background = '#ffd700';
+                loginBtn.style.color = '#000';
+                signupBtn.style.background = 'transparent';
+                signupBtn.style.color = '#ffd700';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                signupBtn.style.background = '#ffd700';
+                signupBtn.style.color = '#000';
+                loginBtn.style.background = 'transparent';
+                loginBtn.style.color = '#ffd700';
+            }
+        }
+
+        // Handle signup
+        async function handleSignup() {
+            const orgName = document.getElementById('signupOrgName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+            const statusDiv = document.getElementById('signupStatus');
+            
+            // Validation
+            if (!orgName || !email || !password || !passwordConfirm) {
+                statusDiv.innerHTML = '<p style="color: #ff4444;">⚠️ Please fill in all fields</p>';
+                return;
+            }
+            
+            if (password !== passwordConfirm) {
+                statusDiv.innerHTML = '<p style="color: #ff4444;">⚠️ Passwords do not match</p>';
+                return;
+            }
+            
+            if (password.length < 6) {
+                statusDiv.innerHTML = '<p style="color: #ff4444;">⚠️ Password must be at least 6 characters</p>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<p style="color: #ffaa00;">🔄 Creating your account...</p>';
+            
+            try {
+                // Create auth user
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+                
+                if (authError) throw authError;
+                
+                if (!authData.user) {
+                    throw new Error('Account creation failed - no user returned');
+                }
+                
+                // Create organization record
+                const { error: orgError } = await supabase
+                    .from('organizations')
+                    .insert([{
+                        user_id: authData.user.id,
+                        organization_name: orgName
+                    }]);
+                
+                if (orgError) {
+                    console.error('Organization creation error:', orgError);
+                    // Don't throw - user is created, they can set org name later
+                }
+                
+                // Create default display settings
+                const { error: settingsError } = await supabase
+                    .from('display_settings')
+                    .insert([{
+                        user_id: authData.user.id,
+                        series_count: 3,
+                        singles_count: 5,
+                        visible_stats: {
+                            averages: true,
+                            high_out: true,
+                            ton_plus: true,
+                            highest_score: true,
+                            champions: true
+                        },
+                        primary_color: '#00d4ff',
+                        text_color: '#ffffff',
+                        border_color: '#00d4ff',
+                        background_color: '#1a1a1a',
+                        header_bg_color: '#000000',
+                        secondary_color: '#ffffff'
+                    }]);
+                
+                if (settingsError) {
+                    console.error('Settings creation error:', settingsError);
+                }
+                
+                statusDiv.innerHTML = '<p style="color: #00ff88;">✅ Account created! Logging you in...</p>';
+                
+                // Auto-login
+                setTimeout(async () => {
+                    await checkAuth();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                let errorMsg = error.message;
+                
+                if (error.message.includes('User already registered')) {
+                    errorMsg = 'This email is already registered. Please login instead.';
+                }
+                
+                statusDiv.innerHTML = `
+                    <div style="background: rgba(255, 69, 0, 0.1); border: 1px solid rgba(255, 69, 0, 0.3); padding: 15px; border-radius: 5px;">
+                        <p style="color: #ff4444; margin-bottom: 10px;">❌ <strong>Signup Failed</strong></p>
+                        <p style="color: #ffaa00; line-height: 1.6;">${errorMsg}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load organization settings
+        async function loadOrganizationSettings() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            
+            try {
+                // Get organization info
+                const { data: orgData } = await supabase
+                    .from('organizations')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .single();
+                
+                if (orgData) {
+                    document.getElementById('orgName').textContent = orgData.organization_name || 'AADS';
+                    document.getElementById('settingsOrgName').value = orgData.organization_name || '';
+                    
+                    if (orgData.logo_url) {
+                        document.getElementById('orgLogoPreview').innerHTML = 
+                            `<img src="${orgData.logo_url}" style="max-width: 200px; max-height: 100px; border: 1px solid #333; border-radius: 5px;">`;
+                    }
+                }
+                
+                // Get display settings
+                const { data: settingsData } = await supabase
+                    .from('display_settings')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .single();
+                
+                if (settingsData) {
+                    document.getElementById('settingsSeriesCount').value = settingsData.series_count || 3;
+                    document.getElementById('settingsSinglesCount').value = settingsData.singles_count || 5;
+                    
+                    // Load visible stats checkboxes
+                    const visibleStats = settingsData.visible_stats || {};
+                    document.getElementById('settingsShowAverages').checked = visibleStats.averages !== false;
+                    document.getElementById('settingsShowHighOut').checked = visibleStats.high_out !== false;
+                    document.getElementById('settingsShowTonPlus').checked = visibleStats.ton_plus !== false;
+                    document.getElementById('settingsShowHighest').checked = visibleStats.highest_score !== false;
+                    document.getElementById('settingsShowChampions').checked = visibleStats.champions !== false;
+                    
+                    // Load colors
+                    document.getElementById('settingsPrimaryColor').value = settingsData.primary_color || '#00d4ff';
+                    document.getElementById('settingsTextColor').value = settingsData.text_color || '#ffffff';
+                    document.getElementById('settingsBorderColor').value = settingsData.border_color || '#00d4ff';
+                    document.getElementById('settingsBackgroundColor').value = settingsData.background_color || '#1a1a1a';
+                    document.getElementById('settingsHeaderBgColor').value = settingsData.header_bg_color || '#000000';
+                    document.getElementById('settingsSecondaryColor').value = settingsData.secondary_color || '#ffffff';
+                    
+                    // Load sponsor settings
+                    document.getElementById('settingsShowSponsors').checked = settingsData.show_sponsors !== false;
+                    document.getElementById('settingsSponsorPosition').value = settingsData.sponsor_position || 'bottom';
+                }
+                
+                // Set display URL
+                const displayUrl = `${window.location.origin}/aadsstatsscrapper/stats-display.html?user=${user.id}`;
+                document.getElementById('displayUrlInput').value = displayUrl;
+                document.getElementById('settingsDisplayUrl').innerHTML = 
+                    `<a href="${displayUrl}" target="_blank" style="color: #6495ED;">${displayUrl}</a>`;
+                
+                // Load sponsors
+                await loadSponsors();
+                
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Save organization info
+        async function saveOrganizationInfo() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            
+            const orgName = document.getElementById('settingsOrgName').value;
+            const statusDiv = document.getElementById('orgInfoStatus');
+            
+            if (!orgName) {
+                statusDiv.innerHTML = '<p style="color: #ff4444;">⚠️ Organization name is required</p>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<p style="color: #ffaa00;">💾 Saving...</p>';
+            
+            try {
+                // Handle logo upload if file selected
+                let logoUrl = null;
+                const logoFile = document.getElementById('settingsOrgLogo').files[0];
+                
+                if (logoFile) {
+                    const fileExt = logoFile.name.split('.').pop();
+                    const fileName = `${user.id}/org-logo.${fileExt}`;
+                    
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('organization-logos')
+                        .upload(fileName, logoFile, { upsert: true });
+                    
+                    if (uploadError) throw uploadError;
+                    
+                    const { data: urlData } = supabase.storage
+                        .from('organization-logos')
+                        .getPublicUrl(fileName);
+                    
+                    logoUrl = urlData.publicUrl;
+                }
+                
+                // Upsert organization
+                const { error } = await supabase
+                    .from('organizations')
+                    .upsert([{
+                        user_id: user.id,
+                        organization_name: orgName,
+                        ...(logoUrl && { logo_url: logoUrl })
+                    }]);
+                
+                if (error) throw error;
+                
+                statusDiv.innerHTML = '<p style="color: #00ff88;">✅ Saved successfully!</p>';
+                
+                // Reload settings
+                setTimeout(() => {
+                    loadOrganizationSettings();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                statusDiv.innerHTML = `<p style="color: #ff4444;">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        // Save display settings
+        async function saveDisplaySettings() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            
+            const statusDiv = document.getElementById('displaySettingsStatus');
+            statusDiv.innerHTML = '<p style="color: #ffaa00;">💾 Saving...</p>';
+            
+            try {
+                const { error } = await supabase
+                    .from('display_settings')
+                    .upsert([{
+                        user_id: user.id,
+                        series_count: parseInt(document.getElementById('settingsSeriesCount').value),
+                        singles_count: parseInt(document.getElementById('settingsSinglesCount').value),
+                        visible_stats: {
+                            averages: document.getElementById('settingsShowAverages').checked,
+                            high_out: document.getElementById('settingsShowHighOut').checked,
+                            ton_plus: document.getElementById('settingsShowTonPlus').checked,
+                            highest_score: document.getElementById('settingsShowHighest').checked,
+                            champions: document.getElementById('settingsShowChampions').checked
+                        },
+                        show_sponsors: document.getElementById('settingsShowSponsors').checked,
+                        sponsor_position: document.getElementById('settingsSponsorPosition').value
+                    }]);
+                
+                if (error) throw error;
+                
+                statusDiv.innerHTML = '<p style="color: #00ff88;">✅ Display settings saved!</p>';
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                statusDiv.innerHTML = `<p style="color: #ff4444;">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        // Save color settings
+        async function saveColorSettings() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            
+            const statusDiv = document.getElementById('colorSettingsStatus');
+            statusDiv.innerHTML = '<p style="color: #ffaa00;">🎨 Saving...</p>';
+            
+            try {
+                const { error } = await supabase
+                    .from('display_settings')
+                    .upsert([{
+                        user_id: user.id,
+                        primary_color: document.getElementById('settingsPrimaryColor').value,
+                        text_color: document.getElementById('settingsTextColor').value,
+                        border_color: document.getElementById('settingsBorderColor').value,
+                        background_color: document.getElementById('settingsBackgroundColor').value,
+                        header_bg_color: document.getElementById('settingsHeaderBgColor').value,
+                        secondary_color: document.getElementById('settingsSecondaryColor').value
+                    }]);
+                
+                if (error) throw error;
+                
+                statusDiv.innerHTML = '<p style="color: #00ff88;">✅ Color settings saved!</p>';
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                statusDiv.innerHTML = `<p style="color: #ff4444;">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        // Add sponsor
+        async function addSponsor() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            
+            const name = document.getElementById('sponsorName').value;
+            const url = document.getElementById('sponsorUrl').value;
+            const logoFile = document.getElementById('sponsorLogo').files[0];
+            const statusDiv = document.getElementById('sponsorStatus');
+            
+            if (!name || !logoFile) {
+                statusDiv.innerHTML = '<p style="color: #ff4444;">⚠️ Name and logo are required</p>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<p style="color: #ffaa00;">📤 Uploading...</p>';
+            
+            try {
+                // Upload logo
+                const fileExt = logoFile.name.split('.').pop();
+                const fileName = `${user.id}/sponsor-${Date.now()}.${fileExt}`;
+                
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('sponsor-logos')
+                    .upload(fileName, logoFile);
+                
+                if (uploadError) throw uploadError;
+                
+                const { data: urlData } = supabase.storage
+                    .from('sponsor-logos')
+                    .getPublicUrl(fileName);
+                
+                // Create sponsor record
+                const { error } = await supabase
+                    .from('sponsors')
+                    .insert([{
+                        user_id: user.id,
+                        name: name,
+                        logo_url: urlData.publicUrl,
+                        website_url: url || null,
+                        is_active: true
+                    }]);
+                
+                if (error) throw error;
+                
+                statusDiv.innerHTML = '<p style="color: #00ff88;">✅ Sponsor added!</p>';
+                
+                // Clear form
+                document.getElementById('sponsorName').value = '';
+                document.getElementById('sponsorUrl').value = '';
+                document.getElementById('sponsorLogo').value = '';
+                
+                // Reload sponsors list
+                await loadSponsors();
+                
+            } catch (error) {
+                console.error('Add sponsor error:', error);
+                statusDiv.innerHTML = `<p style="color: #ff4444;">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        // Load sponsors list
+        async function loadSponsors() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('sponsors')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('display_order', { ascending: true });
+                
+                if (error) throw error;
+                
+                const listDiv = document.getElementById('sponsorsList');
+                
+                if (!data || data.length === 0) {
+                    listDiv.innerHTML = '<p style="color: #888;">No sponsors added yet</p>';
+                    return;
+                }
+                
+                let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">';
+                
+                data.forEach(sponsor => {
+                    html += `
+                        <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #333; text-align: center;">
+                            <img src="${sponsor.logo_url}" style="max-width: 100%; max-height: 80px; margin-bottom: 10px;">
+                            <p style="font-weight: bold; margin-bottom: 5px;">${sponsor.name}</p>
+                            ${sponsor.website_url ? `<p style="font-size: 0.8em; color: #888; word-break: break-all;">${sponsor.website_url}</p>` : ''}
+                            <button onclick="deleteSponsor('${sponsor.id}')" class="btn" style="background: #dc3545; font-size: 0.8em; padding: 5px 10px; margin-top: 10px;">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                listDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Load sponsors error:', error);
+            }
+        }
+
+        // Delete sponsor
+        async function deleteSponsor(sponsorId) {
+            if (!confirm('Delete this sponsor?')) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('sponsors')
+                    .delete()
+                    .eq('id', sponsorId);
+                
+                if (error) throw error;
+                
+                await loadSponsors();
+                
+            } catch (error) {
+                console.error('Delete sponsor error:', error);
+                alert('Error deleting sponsor: ' + error.message);
+            }
+        }
+
+        // Copy display URL
+        function copyDisplayUrl() {
+            const input = document.getElementById('displayUrlInput');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(input.value).then(() => {
+                    alert('✅ Display URL copied to clipboard!');
+                }).catch(() => {
+                    document.execCommand('copy');
+                    alert('✅ Display URL copied to clipboard!');
+                });
+            } else {
+                document.execCommand('copy');
+                alert('✅ Display URL copied to clipboard!');
+            }
         }
 
         // Add Enter key support for login
@@ -1940,6 +2642,16 @@
                     }
                 });
             }
+            
+            const signupPasswordConfirm = document.getElementById('signupPasswordConfirm');
+            if (signupPasswordConfirm) {
+                signupPasswordConfirm.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        handleSignup();
+                    }
+                });
+            }
+        });
         });
     </script>
 </body>
