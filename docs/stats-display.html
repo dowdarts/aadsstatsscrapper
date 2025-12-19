@@ -67,6 +67,17 @@
             filter: drop-shadow(0 0 10px var(--primary-gold));
         }
 
+        .aads-logo-img {
+            height: 80px;
+            width: auto;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
+            transition: transform 0.3s ease;
+        }
+
+        .aads-logo-img:hover {
+            transform: scale(1.05);
+        }
+
         .logo-text h1 {
             font-size: 1.8em;
             color: var(--primary-gold);
@@ -475,8 +486,20 @@
                 text-align: center;
             }
 
+            .logo {
+                flex-direction: column;
+            }
+
+            .aads-logo-img {
+                height: 60px;
+            }
+
             .logo-text h1 {
                 font-size: 1.3em;
+            }
+
+            .logo-text p {
+                font-size: 0.8em;
             }
 
             .nav-container {
@@ -505,6 +528,78 @@
                 flex-direction: column;
                 gap: 20px;
             }
+
+            .partners-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .partner-logo img {
+                max-height: 60px;
+            }
+
+            .footer-title {
+                font-size: 1.1em;
+            }
+        }
+
+        /* Footer - Partner Logos */
+        .footer {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            border-top: 3px solid var(--primary-gold);
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-title {
+            color: var(--primary-gold);
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            align-items: center;
+            justify-items: center;
+            margin-bottom: 30px;
+        }
+
+        .partner-logo {
+            transition: all 0.3s ease;
+            filter: grayscale(20%) brightness(0.9);
+            opacity: 0.85;
+        }
+
+        .partner-logo:hover {
+            filter: grayscale(0%) brightness(1);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .partner-logo img {
+            max-width: 100%;
+            height: auto;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* Embed Mode */
@@ -528,7 +623,7 @@
     <div class="header">
         <div class="header-content">
             <div class="logo">
-                <div class="logo-icon">🎯</div>
+                <img src="Officail AADS Logo.png" alt="AADS Logo" class="aads-logo-img">
                 <div class="logo-text">
                     <h1>ATLANTIC AMATEUR DARTS SERIES</h1>
                     <p>Official Statistics & Standings</p>
@@ -971,5 +1066,36 @@
             }
         }, 300000); // 5 minutes
     </script>
+
+    <!-- Footer - Partner Logos -->
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-title">🤝 Official Partners & Sponsors</div>
+            <div class="partners-grid">
+                <div class="partner-logo">
+                    <img src="AADS.COM LOGO-2.png" alt="AADS.com" title="AADS.com">
+                </div>
+                <div class="partner-logo">
+                    <img src="CGC official logo-1.png" alt="CGC" title="CGC">
+                </div>
+                <div class="partner-logo">
+                    <img src="CGC Venue Logo-1 (1).png" alt="CGC Venue" title="CGC Venue">
+                </div>
+                <div class="partner-logo">
+                    <img src="CGCTV logo.png" alt="CGC TV" title="CGC TV">
+                </div>
+                <div class="partner-logo">
+                    <img src="Untitled-1-CGCDARTS-COM IMPROVED LOGO.png" alt="CGC Darts" title="CGC Darts">
+                </div>
+                <div class="partner-logo">
+                    <img src="MDstudios Logo.png" alt="MD Studios" title="MD Studios">
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © 2025 Atlantic Amateur Darts Series. All rights reserved.<br>
+                Powered by AADS Official Statistics System
+            </div>
+        </div>
+    </div>
 </body>
 </html>
