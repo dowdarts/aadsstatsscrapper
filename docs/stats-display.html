@@ -786,15 +786,20 @@
     </div>
 
     <script>
-        // Supabase Configuration - v1.0.6-20251219-0018
+        // Supabase Configuration - v1.0.7-20251219-0320
         // Declare global variable
         var supabase;
         var API_BASE;
+        var USER_ID;
         
         (function() {
             const SUPABASE_URL = 'https://kswwbqumgsdissnwuiab.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzd3dicXVtZ3NkaXNzbnZ1aWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwOTk0ODUsImV4cCI6MjA4MTY3NTQ4NX0.w-VvEbvMJGQxl7q_4P4lxzrOHNR-5LYXGp0SYfvFBdk';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzd3dicXVtZ3NkaXNzbnZ1aWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0ODMwNTIsImV4cCI6MjA4MDA1OTA1Mn0.b-z8JqL1dBYJcrrzSt7u6VAaFAtTOl1vqqtFFgHkJ50';
             API_BASE = `${SUPABASE_URL}/functions/v1`;
+
+            // Get user_id from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            USER_ID = urlParams.get('user') || urlParams.get('user_id');
 
             // Initialize Supabase client (prevent duplicate declarations from cached scripts)
             if (!window.aadsSupabaseClient) {
@@ -833,7 +838,8 @@
         // Load Standings
         async function loadStandings() {
             try {
-                const response = await fetch(`${API_BASE}/aads-api/stats`);
+                const url = USER_ID ? `${API_BASE}/aads-api/stats?user_id=${USER_ID}` : `${API_BASE}/aads-api/stats`;
+                const response = await fetch(url);
                 const data = await response.json();
 
                 // Update stat cards
@@ -877,7 +883,8 @@
         // Load Events
         async function loadEvents() {
             try {
-                const response = await fetch(`${API_BASE}/aads-api/events`);
+                const url = USER_ID ? `${API_BASE}/aads-api/events?user_id=${USER_ID}` : `${API_BASE}/aads-api/events`;
+                const response = await fetch(url);
                 const data = await response.json();
 
                 const grid = document.getElementById('eventsGrid');
@@ -1000,7 +1007,8 @@
         // Load Statistics
         async function loadStatistics() {
             try {
-                const response = await fetch(`${API_BASE}/aads-api/stats`);
+                const url = USER_ID ? `${API_BASE}/aads-api/stats?user_id=${USER_ID}` : `${API_BASE}/aads-api/stats`;
+                const response = await fetch(url);
                 const data = await response.json();
 
                 const tbody = document.getElementById('topPerformersTable');
@@ -1059,7 +1067,8 @@
         // Load Players
         async function loadPlayers() {
             try {
-                const response = await fetch(`${API_BASE}/aads-api/stats`);
+                const url = USER_ID ? `${API_BASE}/aads-api/stats?user_id=${USER_ID}` : `${API_BASE}/aads-api/stats`;
+                const response = await fetch(url);
                 const data = await response.json();
 
                 const content = document.getElementById('playersContent');
