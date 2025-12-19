@@ -946,21 +946,61 @@
                 <div id="orgInfoStatus" style="margin-top: 15px;"></div>
             </div>
 
-            <!-- Display Configuration -->
+            <!-- Series/Seasons Management -->
             <div class="card">
-                <h2>📊 Display Configuration</h2>
+                <h2>🏆 Series & Events Configuration</h2>
+                
+                <!-- Add Series Form -->
+                <div style="background: rgba(100, 149, 237, 0.1); padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 15px;">➕ Add New Series/Season</h3>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="newSeriesName">Series Name</label>
+                            <input type="text" id="newSeriesName" class="form-control" placeholder="e.g., Winter Series 2024">
+                        </div>
+                        <div class="form-group">
+                            <label for="newSeriesNumEvents">Number of Events</label>
+                            <input type="number" id="newSeriesNumEvents" class="form-control" min="1" value="5">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="newSeriesIsToc">
+                            <span>🏆 Tournament of Champions (TOC)</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="newSeriesDisplay" checked>
+                            <span>👁️ Display on Stats Page</span>
+                        </label>
+                    </div>
+                    <button class="btn" onclick="addSeries()" style="background: #28a745; margin-top: 10px;">
+                        ➕ Add Series
+                    </button>
+                </div>
+                
+                <!-- Series List -->
+                <div style="margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 15px;">📋 Your Series/Seasons</h3>
+                    <div id="seriesList" style="max-height: 400px; overflow-y: auto;">
+                        <p style="color: #888; text-align: center; padding: 20px;">Loading series...</p>
+                    </div>
+                </div>
+                
+                <!-- Display Toggles -->
+                <h3 style="margin-bottom: 10px;">Display Options</h3>
                 <div class="grid-2">
-                    <div class="form-group">
-                        <label for="settingsSeriesCount">Number of Series Events</label>
-                        <input type="number" id="settingsSeriesCount" class="form-control" min="1" max="20" value="3">
-                        <small style="color: #888;">How many series events to display</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="settingsSinglesCount">Number of Singles Events</label>
-                        <input type="number" id="settingsSinglesCount" class="form-control" min="1" max="20" value="5">
-                        <small style="color: #888;">How many singles events to display</small>
-                    </div>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="settingsShowSeries" checked>
+                        <span>📊 Show Series Events</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="settingsShowStandalone" checked>
+                        <span>📌 Show Standalone Events</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="settingsShowToc" checked>
+                        <span>🏆 Show TOC Events</span>
+                    </label>
                 </div>
 
                 <h3 style="margin-top: 20px; margin-bottom: 10px;">Visible Statistics Sections</h3>
@@ -2324,8 +2364,10 @@
                     .single();
                 
                 if (settingsData) {
-                    document.getElementById('settingsSeriesCount').value = settingsData.series_count || 3;
-                    document.getElementById('settingsSinglesCount').value = settingsData.singles_count || 5;
+                    // Load display toggles
+                    document.getElementById('settingsShowSeries').checked = settingsData.show_series !== false;
+                    document.getElementById('settingsShowStandalone').checked = settingsData.show_standalone_events !== false;
+                    document.getElementById('settingsShowToc').checked = settingsData.show_toc_events !== false;
                     
                     // Load visible stats checkboxes
                     const visibleStats = settingsData.visible_stats || {};
@@ -2356,6 +2398,9 @@
                 
                 // Load sponsors
                 await loadSponsors();
+                
+                // Load series
+                await loadSeries();
                 
             } catch (error) {
                 console.error('Error loading settings:', error);
@@ -2436,8 +2481,9 @@
                     .from('display_settings')
                     .upsert([{
                         user_id: user.id,
-                        series_count: parseInt(document.getElementById('settingsSeriesCount').value),
-                        singles_count: parseInt(document.getElementById('settingsSinglesCount').value),
+                        show_series: document.getElementById('settingsShowSeries').checked,
+                        show_standalone_events: document.getElementById('settingsShowStandalone').checked,
+                        show_toc_events: document.getElementById('settingsShowToc').checked,
                         visible_stats: {
                             averages: document.getElementById('settingsShowAverages').checked,
                             high_out: document.getElementById('settingsShowHighOut').checked,
@@ -2595,6 +2641,179 @@
             }
         }
 
+        // === SERIES MANAGEMENT FUNCTIONS ===
+        
+        // Load all series for current user
+        async function loadSeries() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('series')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('display_order', { ascending: true });
+                
+                if (error) throw error;
+                
+                const listDiv = document.getElementById('seriesList');
+                
+                if (!data || data.length === 0) {
+                    listDiv.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No series created yet. Add your first series above!</p>';
+                    return;
+                }
+                
+                let html = '';
+                data.forEach((series, index) => {
+                    const isTocBadge = series.is_toc ? '<span style="background: #ffd700; color: #000; padding: 2px 8px; border-radius: 3px; font-size: 0.8em; margin-left: 10px;">🏆 TOC</span>' : '';
+                    const displayBadge = series.is_displayed ? 
+                        '<span style="background: #28a745; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 0.8em; margin-left: 5px;">👁️ Visible</span>' :
+                        '<span style="background: #6c757d; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 0.8em; margin-left: 5px;">🚫 Hidden</span>';
+                    
+                    html += `
+                        <div style="background: rgba(100, 149, 237, 0.1); padding: 15px; border-radius: 8px; border: 1px solid rgba(100, 149, 237, 0.3); margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h4 style="margin: 0 0 5px 0; color: #6495ED;">${series.name}${isTocBadge}${displayBadge}</h4>
+                                    <p style="margin: 0; color: #888; font-size: 0.9em;">📊 ${series.num_events} event${series.num_events > 1 ? 's' : ''}</p>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button onclick="toggleSeriesDisplay('${series.id}', ${!series.is_displayed})" class="btn" 
+                                        style="background: ${series.is_displayed ? '#6c757d' : '#28a745'}; font-size: 0.85em; padding: 8px 12px;">
+                                        ${series.is_displayed ? '🚫 Hide' : '👁️ Show'}
+                                    </button>
+                                    <button onclick="deleteSeries('${series.id}')" class="btn" style="background: #dc3545; font-size: 0.85em; padding: 8px 12px;">
+                                        🗑️ Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                listDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Load series error:', error);
+                document.getElementById('seriesList').innerHTML = 
+                    `<p style="color: #ff4444; text-align: center; padding: 20px;">❌ Error loading series: ${error.message}</p>`;
+            }
+        }
+        
+        // Add new series
+        async function addSeries() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            
+            const name = document.getElementById('newSeriesName').value.trim();
+            const numEvents = parseInt(document.getElementById('newSeriesNumEvents').value);
+            const isToc = document.getElementById('newSeriesIsToc').checked;
+            const isDisplayed = document.getElementById('newSeriesDisplay').checked;
+            
+            if (!name) {
+                alert('⚠️ Please enter a series name');
+                return;
+            }
+            
+            if (!numEvents || numEvents < 1) {
+                alert('⚠️ Please enter a valid number of events');
+                return;
+            }
+            
+            try {
+                // Get current max display_order
+                const { data: existing } = await supabase
+                    .from('series')
+                    .select('display_order')
+                    .eq('user_id', user.id)
+                    .order('display_order', { ascending: false })
+                    .limit(1);
+                
+                const displayOrder = existing && existing.length > 0 ? existing[0].display_order + 1 : 0;
+                
+                const { error } = await supabase
+                    .from('series')
+                    .insert({
+                        user_id: user.id,
+                        name: name,
+                        num_events: numEvents,
+                        is_toc: isToc,
+                        is_displayed: isDisplayed,
+                        display_order: displayOrder
+                    });
+                
+                if (error) throw error;
+                
+                // Clear form
+                document.getElementById('newSeriesName').value = '';
+                document.getElementById('newSeriesNumEvents').value = '5';
+                document.getElementById('newSeriesIsToc').checked = false;
+                document.getElementById('newSeriesDisplay').checked = true;
+                
+                // Reload series list
+                await loadSeries();
+                
+                // Show success message briefly
+                const successMsg = document.createElement('div');
+                successMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #28a745; color: white; padding: 15px 20px; border-radius: 5px; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);';
+                successMsg.textContent = '✅ Series added successfully!';
+                document.body.appendChild(successMsg);
+                setTimeout(() => successMsg.remove(), 3000);
+                
+            } catch (error) {
+                console.error('Add series error:', error);
+                alert(`❌ Error adding series: ${error.message}`);
+            }
+        }
+        
+        // Toggle series display on/off
+        async function toggleSeriesDisplay(seriesId, newDisplayState) {
+            try {
+                const { error } = await supabase
+                    .from('series')
+                    .update({ is_displayed: newDisplayState })
+                    .eq('id', seriesId);
+                
+                if (error) throw error;
+                
+                await loadSeries();
+                
+            } catch (error) {
+                console.error('Toggle series error:', error);
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+        
+        // Delete series
+        async function deleteSeries(seriesId) {
+            if (!confirm('⚠️ Delete this series? This action cannot be undone.')) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('series')
+                    .delete()
+                    .eq('id', seriesId);
+                
+                if (error) throw error;
+                
+                await loadSeries();
+                
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #dc3545; color: white; padding: 15px 20px; border-radius: 5px; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);';
+                successMsg.textContent = '✅ Series deleted';
+                document.body.appendChild(successMsg);
+                setTimeout(() => successMsg.remove(), 3000);
+                
+            } catch (error) {
+                console.error('Delete series error:', error);
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+        
+        // === SPONSOR MANAGEMENT FUNCTIONS ===
+        
         // Delete sponsor
         async function deleteSponsor(sponsorId) {
             if (!confirm('Delete this sponsor?')) return;
