@@ -493,6 +493,7 @@
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showTab('leaderboard')">Leaderboard</button>
             <button class="nav-tab" onclick="showTab('events')" style="background: rgba(255, 215, 0, 0.2); font-weight: bold; animation: pulse 2s infinite;">🔄 Event Manager (Scrape Here)</button>
+            <button class="nav-tab" onclick="showTab('embed')">📺 Embed & Share</button>
             <button class="nav-tab" onclick="showTab('eventDetails')">Event Details</button>
             <button class="nav-tab" onclick="showTab('achievements')">Achievements</button>
             <button class="nav-tab" onclick="showTab('allStats')">All Stats</button>
@@ -564,6 +565,79 @@
                 <button class="btn btn-secondary" onclick="loadEventsList()" style="margin-top: 15px;">
                     Load Events List
                 </button>
+            </div>
+        </div>
+
+        <!-- Embed & Share Tab -->
+        <div id="embed" class="tab-content">
+            <div class="card">
+                <h2>📺 Embed Stats Display on Your Website</h2>
+                <p style="margin-bottom: 20px; line-height: 1.6;">
+                    Use the code below to embed the professional stats display on your personal website, 
+                    tournament pages, or any other site. The embedded display will automatically show 
+                    the latest stats and update in real-time.
+                </p>
+
+                <h3 style="color: #ffd700; margin-top: 30px;">🔗 Direct Link</h3>
+                <p>Share this link with fans and players:</p>
+                <div class="form-group">
+                    <input type="text" id="directLink" class="form-control" 
+                           value="https://dowdarts.github.io/aadsstatsscrapper/stats-display.html" readonly>
+                    <button class="btn" onclick="copyToClipboard('directLink')" style="margin-top: 10px;">
+                        📋 Copy Link
+                    </button>
+                </div>
+
+                <h3 style="color: #ffd700; margin-top: 30px;">📦 Basic Embed Code</h3>
+                <p>Copy and paste this into your website's HTML:</p>
+                <div class="form-group">
+                    <textarea id="embedCode" class="form-control" readonly style="font-family: monospace; height: 120px; background: #000; color: #0f0; padding: 15px;">&lt;iframe 
+    src="https://dowdarts.github.io/aadsstatsscrapper/stats-display.html" 
+    width="100%" 
+    height="800px" 
+    frameborder="0"
+    style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);"&gt;
+&lt;/iframe&gt;</textarea>
+                    <button class="btn" onclick="copyToClipboard('embedCode')" style="margin-top: 10px;">
+                        📋 Copy Embed Code
+                    </button>
+                </div>
+
+                <h3 style="color: #ffd700; margin-top: 30px;">📱 Responsive Embed Code (Recommended)</h3>
+                <p>This version automatically adjusts to different screen sizes:</p>
+                <div class="form-group">
+                    <textarea id="responsiveCode" class="form-control" readonly style="font-family: monospace; height: 150px; background: #000; color: #0f0; padding: 15px;">&lt;div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden;"&gt;
+    &lt;iframe 
+        src="https://dowdarts.github.io/aadsstatsscrapper/stats-display.html" 
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; border-radius: 8px;"&gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;</textarea>
+                    <button class="btn" onclick="copyToClipboard('responsiveCode')" style="margin-top: 10px;">
+                        📋 Copy Responsive Code
+                    </button>
+                </div>
+
+                <h3 style="color: #ffd700; margin-top: 30px;">👁️ Live Preview</h3>
+                <p>See how the embedded stats display looks:</p>
+                <div style="border: 2px solid #ffd700; border-radius: 10px; overflow: hidden; margin-top: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <iframe src="stats-display.html" 
+                            width="100%" 
+                            height="600px" 
+                            frameborder="0"
+                            title="AADS Stats Display Preview">
+                    </iframe>
+                </div>
+                
+                <div style="background: rgba(0, 150, 255, 0.1); border: 1px solid rgba(0, 150, 255, 0.3); padding: 20px; border-radius: 10px; margin-top: 30px;">
+                    <h3 style="color: #4a9eff;">💡 Tips for Embedding</h3>
+                    <ul style="line-height: 1.8;">
+                        <li>The embedded display updates automatically every 5 minutes</li>
+                        <li>Works on all modern browsers and mobile devices</li>
+                        <li>Adjust the <code>height</code> value (e.g., 800px, 1000px) to fit your page layout</li>
+                        <li>The display is read-only - visitors cannot modify data</li>
+                        <li>Perfect for league websites, tournament pages, and promotional materials</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -1565,6 +1639,28 @@
                 content.innerHTML = html;
             } catch (error) {
                 content.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            element.setSelectionRange(0, 99999); // For mobile devices
+            
+            // Try the modern clipboard API first
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(element.value).then(() => {
+                    alert('✅ Copied to clipboard!');
+                }).catch(() => {
+                    // Fallback to older method
+                    document.execCommand('copy');
+                    alert('✅ Copied to clipboard!');
+                });
+            } else {
+                // Fallback for older browsers
+                document.execCommand('copy');
+                alert('✅ Copied to clipboard!');
             }
         }
 
