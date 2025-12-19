@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <!-- v1.1.0-20251219-0200 -->
-    <title>AADS - Multi-Organization Darts Stats Platform</title>
+    <title>DartStream Stats Platform - Multi-Organization Darts Statistics</title>
     <meta name="description" content="Atlantic Amateur Darts Series - Comprehensive statistics, head-to-head, player analysis, and form tracking">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎯</text></svg>">
     
@@ -492,7 +492,8 @@
     <!-- Auth Screen (Login/Signup) -->
     <div id="authScreen" class="container" style="display: none;">
         <div class="header">
-            <h1>🎯 AADS Stats Platform</h1>
+            <img src="dartstream-logo.png" alt="DartStream Logo" style="max-width: 300px; max-height: 100px; margin-bottom: 15px;">
+            <h1>🎯 DartStream Stats Platform</h1>
             <p>Multi-Organization Darts Statistics & Display System</p>
         </div>
         
@@ -531,7 +532,7 @@
                 
                 <div class="form-group">
                     <label for="signupOrgName">Organization Name *</label>
-                    <input type="text" id="signupOrgName" class="form-control" placeholder="Atlantic Amateur Darts Series">
+                    <input type="text" id="signupOrgName" class="form-control" placeholder="Your Organization Name">
                 </div>
                 
                 <div class="form-group">
@@ -571,7 +572,8 @@
         <button onclick="handleLogout()" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 69, 0, 0.2); color: #ff6b00; border: 1px solid rgba(255, 107, 0, 0.5); padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">
             🚪 Logout
         </button>
-            <h1>🎯 <span id="orgName">AADS</span> Statistics Center</h1>
+            <img src="dartstream-logo.png" alt="DartStream Logo" style="max-width: 300px; max-height: 80px; margin-bottom: 10px;">
+            <h1>🎯 <span id="orgName">DartStream</span> Statistics Center</h1>
             <p id="orgSubtitle">Multi-Organization Darts Stats Platform</p>
             <p style="font-size: 0.9em; color: #888; margin-top: 5px;">Logged in as: <span id="userEmail"></span> | <a href="#" onclick="showTab('settings'); return false;" style="color: #6495ED;">⚙️ Settings</a></p>
         </div>
@@ -928,7 +930,7 @@
                 <h2>🏢 Organization Information</h2>
                 <div class="form-group">
                     <label for="settingsOrgName">Organization Name *</label>
-                    <input type="text" id="settingsOrgName" class="form-control" placeholder="Atlantic Amateur Darts Series">
+                    <input type="text" id="settingsOrgName" class="form-control" placeholder="Your Organization Name">
                 </div>
                 
                 <div class="form-group">
@@ -2097,7 +2099,7 @@
                 
                 loadLeaderboard();
                 // Display version in console
-                console.log('%c🎯 AADS Multi-Tenant v1.1.0-20251219-0200', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
+                console.log('%c🎯 DartStream Stats Platform v1.1.0-20251219-0200', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
                 console.log('%cUpdated: December 19, 2025 02:00', 'color: #888; font-size: 12px;');
                 console.log('%cLogged in as: ' + user.email, 'color: #00ff88; font-size: 12px;');
             } else {
@@ -2305,7 +2307,7 @@
                     .single();
                 
                 if (orgData) {
-                    document.getElementById('orgName').textContent = orgData.organization_name || 'AADS';
+                    document.getElementById('orgName').textContent = orgData.organization_name || 'DartStream';
                     document.getElementById('settingsOrgName').value = orgData.organization_name || '';
                     
                     if (orgData.logo_url) {
