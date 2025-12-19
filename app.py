@@ -18,6 +18,9 @@ from datetime import datetime
 from scraper_html_parser import scrape_event_comprehensive
 from scraper_flask_integration import scrape_progress
 
+# Import the NEW comprehensive two-stage scraper
+from comprehensive_dart_scraper import TwoStageDartScraper
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -33,6 +36,7 @@ app = Flask(__name__,
 # Initialize database manager and scraper
 db_manager = AADSDataManager()
 scraper = DartConnectScraper()
+comprehensive_scraper = TwoStageDartScraper(delay=1.0)  # Fast scraping for live updates
 
 
 @app.route('/')
@@ -374,6 +378,91 @@ def get_scrape_progress(job_id):
         }), 404
     
     return jsonify(progress_data)
+
+@app.route('/api/scrape-comprehensive', methods=['POST'])
+def scrape_comprehensive():
+    """
+    NEW COMPREHENSIVE TWO-STAGE DART SCRAPER
+    
+    This endpoint uses the updated comprehensive scraper that extracts:
+    - All basic stats (3DA, legs won/lost, etc.)
+    - Detailed scoring breakdowns (100+, 120+, 140+, 160+, 180s)  
+    - Performance metrics (first 9 average, highest score)
+    - Finishing stats (checkout %, highest checkout, 100+ finishes)
+    - Tournament bracket information
+    
+    Returns results immediately and integrates with database.
+    """
+    try:
+        data = request.get_json()
+        event_url = data.get('event_url')
+        event_id = data.get('event_id', 1)
+        
+        if not event_url:
+            return jsonify({
+                "success": False,
+                "message": "Event URL is required"
+            }), 400
+        
+        logger.info(f"🚀 Starting comprehensive scrape for: {event_url}")
+        
+        # Run the comprehensive scraper
+        df = comprehensive_scraper.run_full_scrape(event_url)
+        
+        if df.empty:
+            return jsonify({
+                "success": False,
+                "message": "No data extracted from event"
+            }), 400
+        
+        # Convert DataFrame to database format and add to DB
+        added_players = []
+        total_records = len(df)
+        
+        for _, row in df.iterrows():
+            # Convert row data to database format
+            stats_dict = {
+                'three_dart_avg': row.get('3da', 0),
+                'legs_played': row.get('legs_played', 0),
+                'first_9_avg': row.get('first_nine_average', 0),
+                'hundreds_plus': row.get('100_plus', 0),
+                'one_forty_plus': row.get('140_plus', 0),
+                'one_eighties': row.get('180s', 0),
+                'high_finish': row.get('highest_checkout', 0),
+                # Additional advanced stats
+                'win_percentage': row.get('win_percentage', 0),
+                'checkout_percentage': row.get('checkout_percentage', 0),
+                'highest_score': row.get('highest_score', 0),
+                'points_scored': row.get('points_scored', 0),
+                'darts_thrown': row.get('darts_thrown', 0),
+            }
+            
+            player_name = row.get('player_name', '')
+            if player_name:
+                db_manager.add_match_stats(player_name, event_id, stats_dict)
+                if player_name not in added_players:
+                    added_players.append(player_name)
+        
+        # Get tournament bracket info if available
+        bracket_info = {}
+        if hasattr(df, 'attrs') and 'tournament_results' in df.attrs:
+            bracket_info = df.attrs['tournament_results']
+        
+        return jsonify({
+            "success": True,
+            "message": f"Successfully scraped and added {total_records} player records",
+            "players_added": added_players,
+            "total_records": total_records,
+            "unique_players": len(added_players),
+            "tournament_info": bracket_info
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Comprehensive scrape failed: {e}")
+        return jsonify({
+            "success": False,
+            "message": f"Scraping failed: {str(e)}"
+        }), 500
 
 @app.route('/api/scrape-event', methods=['POST'])
 def scrape_event():

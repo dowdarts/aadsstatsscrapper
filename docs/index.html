@@ -6,14 +6,14 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <!-- v1.1.1-20251219-0615 -->
+    <!-- v1.2.0-20251219-1200 - Enhanced Two-Stage Comprehensive Scraper -->
     <title>DartStream Stats Platform - Multi-Organization Darts Statistics</title>
     <meta name="description" content="Atlantic Amateur Darts Series - Comprehensive statistics, head-to-head, player analysis, and form tracking">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎯</text></svg>">
     
     <!-- Supabase CDN -->
     <script src="https://unpkg.com/@supabase/supabase-js@2?v=20251219020000"></script>
-    <script>window.ADMIN_VERSION = '1.1.1-20251219-0615';</script>
+    <script>window.ADMIN_VERSION = '1.2.0-20251219-1200';</script>
     
     <style>
         * {
@@ -657,6 +657,34 @@
                 <div style="margin-top: 10px; font-size: 12px; color: rgba(0, 255, 136, 0.7);">
                     Comprehensive stats: Basic stats, First 9 avg, 180s/140+/100+ counts, Checkout efficiency & stats
                 </div>
+                
+                <!-- NEW COMPREHENSIVE SCRAPER OPTION -->
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                    <h3 style="color: #ffd700; margin-bottom: 10px;">🚀 NEW: Enhanced Two-Stage Scraper</h3>
+                    <div class="form-group">
+                        <label for="eventIdComprehensive">Event Number (for database)</label>
+                        <select id="eventIdComprehensive" class="form-control">
+                            <option value="1">Event 1</option>
+                            <option value="2">Event 2</option>
+                            <option value="3">Event 3</option>
+                            <option value="4">Event 4</option>
+                            <option value="5">Event 5</option>
+                            <option value="6">Event 6</option>
+                            <option value="7">Event 7 (TOC)</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="scrapeComprehensive()" style="background: linear-gradient(45deg, #ffd700, #ffed4e); color: #1a1a1a; font-weight: bold;">
+                        ⭐ Enhanced Scrape (ALL Detailed Stats + Fast Processing)
+                    </button>
+                    <div style="margin-top: 10px; font-size: 12px; color: rgba(255, 215, 0, 0.8);">
+                        🎯 Two-stage extraction: Stage 1 (URL Discovery) + Stage 2 (Data Extraction)<br>
+                        📊 Comprehensive stats: 100+/120+/140+/160+/180s breakdowns, first 9 avg, checkout data<br>
+                        🏆 Tournament bracket: Champion, runner-up, placings<br>
+                        ⚡ Fast & reliable processing with detailed error handling
+                    </div>
+                    <div id="comprehensiveStatus"></div>
+                </div>
+                
                 <div id="eventStatus"></div>
             </div>
 
@@ -2981,6 +3009,81 @@
                 });
             }
         });
+        
+        // NEW COMPREHENSIVE SCRAPER FUNCTION
+        async function scrapeComprehensive() {
+            const eventUrl = document.getElementById('eventUrl').value;
+            const eventId = document.getElementById('eventIdComprehensive').value;
+            const statusDiv = document.getElementById('comprehensiveStatus');
+            
+            if (!eventUrl) {
+                statusDiv.innerHTML = '<div class="error-message">❌ Please enter an event URL</div>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div>🚀 Starting enhanced two-stage scraper...</div>';
+            
+            try {
+                // Call the new comprehensive scraper endpoint
+                const response = await fetch(`${API_BASE}/scrape-comprehensive`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({
+                        event_url: eventUrl,
+                        event_id: parseInt(eventId)
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (!result.success) {
+                    statusDiv.innerHTML = `<div class="error-message">❌ ${result.message || 'Scraping failed'}</div>`;
+                    return;
+                }
+                
+                // Show success results
+                const tournamentInfo = result.tournament_info || {};
+                const championInfo = tournamentInfo.champion ? `<br>🏆 Champion: <strong>${tournamentInfo.champion}</strong>` : '';
+                const runnerUpInfo = tournamentInfo.runner_up ? `<br>🥈 Runner-up: <strong>${tournamentInfo.runner_up}</strong>` : '';
+                
+                statusDiv.innerHTML = `
+                    <div style="background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); 
+                                border-radius: 8px; padding: 15px; margin-top: 15px;">
+                        <h3 style="color: #00ff88; margin-bottom: 10px;">✅ Enhanced Scraping Complete!</h3>
+                        <div style="font-size: 14px; line-height: 1.6;">
+                            📊 <strong>${result.total_records}</strong> player records processed<br>
+                            👥 <strong>${result.unique_players}</strong> unique players updated<br>
+                            🎯 Event <strong>#${eventId}</strong> data added to database
+                            ${championInfo}
+                            ${runnerUpInfo}
+                        </div>
+                        
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(255, 215, 0, 0.1); 
+                                    border-radius: 6px; font-size: 13px;">
+                            <strong>Players Updated:</strong><br>
+                            ${result.players_added.join(', ')}
+                        </div>
+                        
+                        <div style="margin-top: 10px; font-size: 12px; color: rgba(0, 255, 136, 0.7);">
+                            🚀 Stage 1: Match URL discovery completed<br>
+                            📈 Stage 2: Comprehensive data extraction completed<br>
+                            💾 All detailed stats (100+, 140+, 180s, checkout data) saved to database
+                        </div>
+                    </div>
+                `;
+                
+                // Optionally refresh leaderboard
+                if (typeof loadLeaderboard === 'function') {
+                    setTimeout(loadLeaderboard, 2000);
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="error-message">❌ Error: ${error.message}</div>`;
+            }
+        }
     </script>
 </body>
 </html>
