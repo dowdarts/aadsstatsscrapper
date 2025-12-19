@@ -1237,9 +1237,9 @@
                 return;
             }
             
-            // Get current user ID
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
+            // Get current user and session
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
                 statusDiv.innerHTML = '<div class="error-message">❌ Not authenticated</div>';
                 return;
             }
@@ -1249,7 +1249,10 @@
             try {
                 const response = await fetch(`${API_BASE}/scrape-event`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
                     body: JSON.stringify({ 
                         event_url: url,
                         event_name: eventName
