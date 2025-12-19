@@ -165,6 +165,51 @@
             cursor: pointer;
         }
 
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .quick-start-banner {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            border: 2px solid var(--primary-gold);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .quick-start-banner h2 {
+            color: var(--primary-gold);
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .quick-start-banner p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .quick-start-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: var(--primary-gold);
+            color: #1a1a1a;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .quick-start-btn:hover {
+            background: #ffed4e;
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
         .filter-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -447,7 +492,7 @@
 
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showTab('leaderboard')">Leaderboard</button>
-            <button class="nav-tab" onclick="showTab('events')">Event Manager</button>
+            <button class="nav-tab" onclick="showTab('events')" style="background: rgba(255, 215, 0, 0.2); font-weight: bold; animation: pulse 2s infinite;">🔄 Event Manager (Scrape Here)</button>
             <button class="nav-tab" onclick="showTab('eventDetails')">Event Details</button>
             <button class="nav-tab" onclick="showTab('achievements')">Achievements</button>
             <button class="nav-tab" onclick="showTab('allStats')">All Stats</button>
@@ -458,6 +503,17 @@
 
         <!-- Leaderboard Tab -->
         <div id="leaderboard" class="tab-content active">
+            <div class="quick-start-banner">
+                <h2>🎯 Need to Upload Event Stats?</h2>
+                <p>
+                    Click the <strong>"Event Manager (Scrape Here)"</strong> tab above to enter your event URL and scrape match statistics.<br>
+                    Data will automatically appear here and on the public stats display!
+                </p>
+                <button class="quick-start-btn" onclick="showTab('events'); document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.nav-tab')[1].classList.add('active');">
+                    🔄 Go to Event Manager →
+                </button>
+            </div>
+
             <div class="card">
                 <h2>🏆 Overall Leaderboard</h2>
                 <div id="leaderboardContent" class="loading">
