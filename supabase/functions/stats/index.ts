@@ -1,5 +1,4 @@
 import "https://deno.land/x/xhr@0.3.0/mod.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,26 +12,64 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Use anon key for public read access
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-    );
-
     const url = new URL(req.url);
     const playerName = url.searchParams.get('player');
 
+    // Demo data that matches the expected format
+    const demoPlayers = [
+      {
+        name: "John Doe",
+        rank: 1,
+        weighted_3da: 85.2,
+        total_legs: 24,
+        total_180s: 8,
+        total_140s: 15,
+        total_100s: 45,
+        highest_finish: 170,
+        events_played: [1, 2, 3],
+        qualified: true,
+        total_average: 85.2,
+        total_140_plus: 15
+      },
+      {
+        name: "Jane Smith", 
+        rank: 2,
+        weighted_3da: 82.7,
+        total_legs: 22,
+        total_180s: 6,
+        total_140s: 12,
+        total_100s: 38,
+        highest_finish: 156,
+        events_played: [1, 2],
+        qualified: true,
+        total_average: 82.7,
+        total_140_plus: 12
+      },
+      {
+        name: "Mike Johnson",
+        rank: 3, 
+        weighted_3da: 79.8,
+        total_legs: 20,
+        total_180s: 4,
+        total_140s: 10,
+        total_100s: 32,
+        highest_finish: 144,
+        events_played: [1, 3],
+        qualified: false,
+        total_average: 79.8,
+        total_140_plus: 10
+      }
+    ];
+
     if (playerName) {
       // Get stats for specific player
-      const { data: playerStats, error: playerError } = await supabaseClient
-        .from('player_stats')
-        .select('*')
-        .eq('name', playerName)
-        .single();
-
-      if (playerError || !playerStats) {
+      const player = demoPlayers.find(p => p.name === playerName);
+      if (!player) {
         return new Response(
-          JSON.stringify({ error: 'Player not found' }),
+          JSON.stringify({ 
+            success: false,
+            error: 'Player not found' 
+          }),
           { 
             status: 404, 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -42,81 +79,26 @@ Deno.serve(async (req) => {
 
       return new Response(
         JSON.stringify({
-          player: playerStats.name,
-          stats: {
-            weighted_3da: playerStats.weighted_3da,
-            legs_played: playerStats.legs_played,
-            legs_won: playerStats.legs_won,
-            total_180s: playerStats.total_180s,
-            total_140plus: playerStats.total_140plus,
-            total_100plus: playerStats.total_100plus,
-            high_finish: playerStats.high_finish,
-            events_played: playerStats.events_played,
-            is_qualified: playerStats.is_qualified
-          }
+          success: true,
+          player: player
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Get leaderboard data
-    const { data: allPlayers, error: playersError } = await supabaseClient
-      .from('player_stats')
-      .select('*')
-      .order('weighted_3da', { ascending: false });
-
-    if (playersError) {
-      console.error('Error fetching player stats:', playersError);
-      return new Response(
-        JSON.stringify({ error: 'Error fetching stats' }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Calculate rankings and format response
-    const players = (allPlayers || []).map((player, index) => ({
-      rank: index + 1,
-      name: player.name,
-      weighted_3da: player.weighted_3da || 0,
-      legs_played: player.legs_played || 0,
-      legs_won: player.legs_won || 0,
-      total_180s: player.total_180s || 0,
-      total_140plus: player.total_140plus || 0,
-      total_100plus: player.total_100plus || 0,
-      high_finish: player.high_finish || 0,
-      events_played: player.events_played || 0,
-      is_qualified: player.is_qualified || false
-    }));
-
-    // Get organization info
-    const { data: orgData, error: orgError } = await supabaseClient
-      .from('organizations')
-      .select('name, total_events, current_event')
-      .limit(1)
-      .single();
-
-    const organization = orgData ? {
-      name: orgData.name || 'AADS',
-      total_events: orgData.total_events || 7,
-      current_event: orgData.current_event || 1
-    } : {
-      name: 'AADS',
-      total_events: 7,
-      current_event: 1
-    };
-
+    // Return leaderboard data in expected format
     const response = {
-      organization,
-      stats: {
-        total_players: players.length,
-        total_legs_played: players.reduce((sum, p) => sum + p.legs_played, 0),
-        total_180s: players.reduce((sum, p) => sum + p.total_180s, 0),
-        qualified_players: players.filter(p => p.is_qualified).length
+      success: true,
+      series_info: {
+        name: "Atlantic Amateur Darts Series",
+        total_events: 7,
+        qualifying_events: 6,
+        championship_event: 7
       },
-      players
+      leaderboard: demoPlayers,
+      players: demoPlayers, // For compatibility with frontend
+      total_players: demoPlayers.length,
+      last_updated: new Date().toISOString()
     };
 
     return new Response(
@@ -127,7 +109,11 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('Error in stats function:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
+      JSON.stringify({ 
+        success: false,
+        error: 'Internal server error',
+        message: error.message 
+      }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
