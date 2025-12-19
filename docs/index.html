@@ -1671,7 +1671,15 @@
         // Initialize
         window.addEventListener('DOMContentLoaded', () => {
             loadLeaderboard();
+            // Display version in console
+            console.log('%c🎯 AADS Admin v1.0.0', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
+            console.log('%cUpdated: December 18, 2025', 'color: #888; font-size: 12px;');
         });
     </script>
+    
+    <!-- Version Info -->
+    <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: #FF6B00; padding: 8px 15px; border-radius: 20px; font-size: 11px; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+        🎯 Admin v1.0.0 | Dec 18, 2025
+    </div>
 </body>
 </html>
