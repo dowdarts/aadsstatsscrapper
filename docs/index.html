@@ -572,7 +572,7 @@
     <!-- Main Admin Interface -->
     <div id="adminInterface" class="container" style="display: none;">
         <div class="header">
-        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.5); box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); z-index: 10000;">🎯 v1.1.4-20251219-1302</div>
+        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.5); box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); z-index: 10000;">🎯 v1.1.5-20251219-1306</div>
         <button onclick="handleLogout()" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 69, 0, 0.2); color: #ff6b00; border: 1px solid rgba(255, 107, 0, 0.5); padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">
             🚪 Logout
         </button>
@@ -1187,7 +1187,7 @@
     </div>
 
     <script>
-        // Supabase Configuration - v1.1.4-20251219-1302
+        // Supabase Configuration - v1.1.5-20251219-1306
         // Declare global variable
         var supabase;
         var API_BASE;
@@ -1230,24 +1230,100 @@
             const content = document.getElementById('leaderboardContent');
             content.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading...</div>';
             
+            // Demo data fallback for when API is unavailable
+            const demoData = {
+                success: true,
+                players: [
+                    {
+                        rank: 1,
+                        name: "John Doe",
+                        total_average: 85.2,
+                        weighted_3da: 85.2,
+                        total_legs: 24,
+                        total_180s: 8,
+                        total_140_plus: 15,
+                        total_100s: 45,
+                        highest_finish: 170,
+                        events_played: [1, 2, 3],
+                        qualified: true
+                    },
+                    {
+                        rank: 2,
+                        name: "Jane Smith",
+                        total_average: 82.7,
+                        weighted_3da: 82.7,
+                        total_legs: 22,
+                        total_180s: 6,
+                        total_140_plus: 12,
+                        total_100s: 38,
+                        highest_finish: 156,
+                        events_played: [1, 2],
+                        qualified: true
+                    },
+                    {
+                        rank: 3,
+                        name: "Mike Johnson",
+                        total_average: 79.8,
+                        weighted_3da: 79.8,
+                        total_legs: 20,
+                        total_180s: 4,
+                        total_140_plus: 10,
+                        total_100s: 32,
+                        highest_finish: 144,
+                        events_played: [1, 3],
+                        qualified: false
+                    }
+                ]
+            };
+            
             try {
                 const response = await fetch(`${API_BASE}/stats`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
                 const data = await response.json();
                 
-                let html = '<table class="stats-table"><thead><tr>';
-                html += '<th>Rank</th><th>Player</th><th>Average</th><th>Legs</th>';
-                html += '<th>180s</th><th>140+</th><th>100+</th><th>High Finish</th><th>Events</th>';
-                html += '</tr></thead><tbody>';
+                // Use API data if successful
+                displayLeaderboardData(data);
                 
-                data.players.forEach(player => {
-                    const rankClass = player.rank <= 3 ? `rank-${player.rank}` : '';
-                    html += `<tr>
-                        <td><span class="rank-badge ${rankClass}">${player.rank}</span></td>
-                        <td><strong>${player.name}</strong></td>
-                        <td>${player.total_average.toFixed(2)}</td>
-                        <td>${player.total_legs}</td>
-                        <td>${player.total_180s}</td>
-                        <td>${player.total_140_plus}</td>
+            } catch (error) {
+                console.warn('Stats API unavailable, using demo data:', error.message);
+                // Use demo data as fallback
+                displayLeaderboardData(demoData);
+            }
+        }
+
+        // Separate function to display leaderboard data
+        function displayLeaderboardData(data) {
+            const content = document.getElementById('leaderboardContent');
+            let html = '<table class="stats-table"><thead><tr>';
+            html += '<th>Rank</th><th>Player</th><th>Average</th><th>Legs</th>';
+            html += '<th>180s</th><th>140+</th><th>100+</th><th>High Finish</th><th>Events</th>';
+            html += '</tr></thead><tbody>';
+            
+            data.players.forEach(player => {
+                const rankClass = player.rank <= 3 ? `rank-${player.rank}` : '';
+                html += `<tr>
+                    <td><span class="rank-badge ${rankClass}">${player.rank}</span></td>
+                    <td><strong>${player.name}</strong></td>
+                    <td>${(player.total_average || player.weighted_3da).toFixed(2)}</td>
+                    <td>${player.total_legs}</td>
+                    <td>${player.total_180s}</td>
+                    <td>${player.total_140_plus}</td>
+                    <td>${player.total_100s}</td>
+                    <td>${player.highest_finish}</td>
+                    <td>${Array.isArray(player.events_played) ? player.events_played.length : player.events_played}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            
+            // Add demo data notice if using fallback
+            if (!window.usingApiData) {
+                html += '<div style="margin-top: 15px; padding: 10px; background: rgba(255, 107, 0, 0.1); border: 1px solid #FF6B00; border-radius: 5px; font-size: 12px; color: #FF6B00;">📊 Displaying demo data - Connect to local server for live stats</div>';
+            }
+            
+            content.innerHTML = html;
                         <td>${player.total_100_plus}</td>
                         <td>${player.highest_finish}</td>
                         <td>${player.events_played}</td>
@@ -1458,22 +1534,41 @@
 
         // Load players list for dropdowns
         async function loadPlayersList() {
+            // Demo data fallback
+            const demoPlayers = [
+                { name: "John Doe" },
+                { name: "Jane Smith" },
+                { name: "Mike Johnson" }
+            ];
+            
             try {
                 const response = await fetch(`${API_BASE}/stats`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
                 const data = await response.json();
+                populatePlayerDropdowns(data.players);
                 
-                const selects = ['player1Select', 'player2Select', 'playerAnalysisSelect', 'formPlayerSelect'];
-                selects.forEach(selectId => {
-                    const select = document.getElementById(selectId);
-                    if (select) {
-                        const currentValue = select.value;
-                        select.innerHTML = '<option value="">Select Player</option>';
-                        data.players.forEach(player => {
-                            select.innerHTML += `<option value="${player.name}">${player.name}</option>`;
-                        });
-                        select.value = currentValue;
-                    }
-                });
+            } catch (error) {
+                console.warn('Stats API unavailable, using demo players:', error.message);
+                populatePlayerDropdowns(demoPlayers);
+            }
+        }
+
+        // Separate function to populate player dropdowns
+        function populatePlayerDropdowns(players) {
+            const selects = ['player1Select', 'player2Select', 'playerAnalysisSelect', 'formPlayerSelect'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const currentValue = select.value;
+                    select.innerHTML = '<option value="">Select Player</option>';
+                    players.forEach(player => {
+                        select.innerHTML += `<option value="${player.name}">${player.name}</option>`;
+                    });
+                    select.value = currentValue;
+                }
+            });
 
                 // Populate event filters
                 const eventSelects = ['player1Events', 'player2Events'];
@@ -2275,7 +2370,7 @@
                 
                 loadLeaderboard();
                 // Display version in console
-                console.log('%c🎯 DartStream Stats Platform v1.1.4-20251219-1302', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
+                console.log('%c🎯 DartStream Stats Platform v1.1.5-20251219-1306', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
                 console.log('%cUpdated: December 19, 2025 06:15', 'color: #888; font-size: 12px;');
                 console.log('%cLogged in as: ' + user.email, 'color: #00ff88; font-size: 12px;');
             } else {
