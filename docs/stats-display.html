@@ -844,7 +844,12 @@
 
                 // Update stat cards
                 document.getElementById('totalPlayers').textContent = data.players.length;
-                document.getElementById('totalEvents').textContent = data.total_events || 3;
+                
+                // Fetch actual event count
+                const eventsUrl = USER_ID ? `${API_BASE}/aads-api/events?user_id=${USER_ID}` : `${API_BASE}/aads-api/events`;
+                const eventsResponse = await fetch(eventsUrl);
+                const eventsData = await eventsResponse.json();
+                document.getElementById('totalEvents').textContent = eventsData.total_events || 0;
                 
                 let totalMatches = 0;
                 let highestAvg = 0;
@@ -853,7 +858,7 @@
                 });
                 
                 document.getElementById('totalMatches').textContent = data.total_matches || '-';
-                document.getElementById('highestAvg').textContent = highestAvg.toFixed(2);
+                document.getElementById('highestAvg').textContent = highestAvg > 0 ? highestAvg.toFixed(2) : '-';
 
                 // Populate standings table
                 const tbody = document.getElementById('standingsTable');
