@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AADS Stats Display - Embed Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .code-block {
+            background: #1a1a1a;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+        .embed-container {
+            width: 100%;
+            height: 800px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #FFD700;
+            color: #1a1a1a;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 10px 10px 10px 0;
+        }
+        .button:hover {
+            background: #FFED4E;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 AADS Official Stats Display</h1>
+    
+    <div class="info">
+        <h2>Professional Stats Display Page</h2>
+        <p>This is the official, read-only statistics display for the Atlantic Amateur Darts Series. 
+        It's designed to be embedded on websites and provides a professional, broadcast-quality stats experience.</p>
+        
+        <h3>Features:</h3>
+        <ul>
+            <li>✅ Professional sports-style design</li>
+            <li>✅ Real-time data from Supabase</li>
+            <li>✅ Responsive and embeddable</li>
+            <li>✅ Read-only (no user inputs)</li>
+            <li>✅ Auto-refreshes every 5 minutes</li>
+            <li>✅ Multiple views: Standings, Events, Champions, Statistics, Players</li>
+        </ul>
+
+        <h3>Direct Links:</h3>
+        <a href="stats-display.html" class="button" target="_blank">View Full Page</a>
+        <a href="https://dowdarts.github.io/aadsstatsscrapper/stats-display.html" class="button" target="_blank">View on GitHub Pages</a>
+    </div>
+
+    <div class="info">
+        <h2>How to Embed on Your Website</h2>
+        <p>Copy and paste this code into your website where you want the stats to appear:</p>
+        
+        <div class="code-block">
+&lt;iframe src="https://dowdarts.github.io/aadsstatsscrapper/stats-display.html" 
+        width="100%" 
+        height="800px" 
+        frameborder="0"
+        style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);"&gt;
+&lt;/iframe&gt;
+        </div>
+
+        <h3>Responsive Embed (Recommended):</h3>
+        <div class="code-block">
+&lt;div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden;"&gt;
+    &lt;iframe src="https://dowdarts.github.io/aadsstatsscrapper/stats-display.html" 
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"&gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;
+        </div>
+    </div>
+
+    <div class="info">
+        <h2>Live Preview:</h2>
+    </div>
+
+    <div class="embed-container">
+        <iframe src="stats-display.html"></iframe>
+    </div>
+
+    <div class="info" style="margin-top: 20px;">
+        <h3>Key Differences from Admin Interface:</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background: #f0f0f0;">
+                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Admin Interface (index.html)</th>
+                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Stats Display (stats-display.html)</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">✏️ Full control with scraping tools</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">👁️ Read-only display</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">📊 Detailed filters and analysis</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">📺 Broadcast-style presentation</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">🔧 Event management and data entry</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">🏆 Professional stats showcase</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Internal use</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Public-facing, embeddable</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

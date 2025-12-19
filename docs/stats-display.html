@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AADS Official Statistics | Atlantic Amateur Darts Series</title>
+    <meta name="description" content="Official statistics and standings for the Atlantic Amateur Darts Series">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎯</text></svg>">
+    
+    <!-- Supabase CDN -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gold: #FFD700;
+            --dark-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --border-color: rgba(255, 215, 0, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-blue: #4a9eff;
+            --success-green: #00ff88;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-bottom: 3px solid var(--primary-gold);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 3em;
+            filter: drop-shadow(0 0 10px var(--primary-gold));
+        }
+
+        .logo-text h1 {
+            font-size: 1.8em;
+            color: var(--primary-gold);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text p {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .season-badge {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 84px;
+            z-index: 999;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .nav-item.active {
+            color: var(--primary-gold);
+            border-bottom-color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+            border-color: var(--primary-gold);
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: 700;
+            color: var(--primary-gold);
+            display: block;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            padding: 20px;
+            border-bottom: 2px solid var(--primary-gold);
+        }
+
+        .table-header h2 {
+            color: var(--primary-gold);
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-gold);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .rank-cell {
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .rank-1 { color: #FFD700; }
+        .rank-2 { color: #C0C0C0; }
+        .rank-3 { color: #CD7F32; }
+
+        .player-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.05em;
+        }
+
+        .highlight-stat {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        /* Champion Showcase */
+        .champion-showcase {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 2px solid var(--primary-gold);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .champion-showcase::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .champion-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .champion-trophy {
+            font-size: 5em;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px var(--primary-gold));
+        }
+
+        .champion-title {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .champion-name {
+            font-size: 3em;
+            color: var(--primary-gold);
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .champion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .champion-stat {
+            text-align: center;
+        }
+
+        .champion-stat-value {
+            font-size: 2em;
+            color: var(--primary-gold);
+            font-weight: 700;
+        }
+
+        .champion-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        /* Event Cards */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .event-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.2);
+            border-color: var(--primary-gold);
+        }
+
+        .event-header {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            padding: 20px;
+            border-bottom: 2px solid var(--primary-gold);
+        }
+
+        .event-number {
+            font-size: 2em;
+            color: var(--primary-gold);
+            font-weight: 700;
+        }
+
+        .event-date {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .event-body {
+            padding: 20px;
+        }
+
+        .event-stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .event-stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .event-stat-label {
+            color: var(--text-secondary);
+        }
+
+        .event-stat-value {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        /* Loading State */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 215, 0, 0.1);
+            border-top: 4px solid var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        /* Player Profile Card */
+        .player-profile {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .player-info h2 {
+            font-size: 2.5em;
+            color: var(--primary-gold);
+            margin-bottom: 10px;
+        }
+
+        .player-rank {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        .player-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .logo-text h1 {
+                font-size: 1.3em;
+            }
+
+            .nav-container {
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+
+            .nav-item {
+                padding: 12px 18px;
+                white-space: nowrap;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .champion-name {
+                font-size: 2em;
+            }
+
+            .champion-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        /* Embed Mode */
+        body.embed-mode {
+            background: transparent;
+        }
+
+        body.embed-mode .header {
+            position: relative;
+            top: 0;
+        }
+
+        body.embed-mode .nav-bar {
+            position: relative;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🎯</div>
+                <div class="logo-text">
+                    <h1>ATLANTIC AMATEUR DARTS SERIES</h1>
+                    <p>Official Statistics & Standings</p>
+                </div>
+            </div>
+            <div class="season-badge">SEASON 1</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-item active" onclick="showSection('standings')">STANDINGS</div>
+            <div class="nav-item" onclick="showSection('events')">EVENTS</div>
+            <div class="nav-item" onclick="showSection('champions')">CHAMPIONS</div>
+            <div class="nav-item" onclick="showSection('statistics')">STATISTICS</div>
+            <div class="nav-item" onclick="showSection('players')">PLAYERS</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Standings Section -->
+        <div id="standings" class="section active">
+            <div class="stats-grid" id="overallStatsCards">
+                <div class="stat-card">
+                    <span class="stat-value" id="totalPlayers">-</span>
+                    <span class="stat-label">Total Players</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="totalEvents">-</span>
+                    <span class="stat-label">Events Completed</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="totalMatches">-</span>
+                    <span class="stat-label">Matches Played</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="highestAvg">-</span>
+                    <span class="stat-label">Highest Average</span>
+                </div>
+            </div>
+
+            <div class="data-table">
+                <div class="table-header">
+                    <h2>OVERALL STANDINGS</h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>RANK</th>
+                            <th>PLAYER</th>
+                            <th>AVERAGE</th>
+                            <th>LEGS</th>
+                            <th>180s</th>
+                            <th>140+</th>
+                            <th>100+</th>
+                            <th>HIGH FINISH</th>
+                            <th>EVENTS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standingsTable">
+                        <tr><td colspan="9" class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading standings...</div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Events Section -->
+        <div id="events" class="section">
+            <div class="events-grid" id="eventsGrid">
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading events...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Champions Section -->
+        <div id="champions" class="section">
+            <div id="championsContent">
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading champions...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div id="statistics" class="section">
+            <div class="data-table">
+                <div class="table-header">
+                    <h2>TOP PERFORMERS</h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CATEGORY</th>
+                            <th>PLAYER</th>
+                            <th>VALUE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topPerformersTable">
+                        <tr><td colspan="3" class="loading-container"><div class="loading-spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Players Section -->
+        <div id="players" class="section">
+            <div id="playersContent">
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading players...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://kswwbqumgsdissnwuiab.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzd3dicXVtZ3NkaXNzbnZ1aWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwOTk0ODUsImV4cCI6MjA4MTY3NTQ4NX0.w-VvEbvMJGQxl7q_4P4lxzrOHNR-5LYXGp0SYfvFBdk';
+        const API_BASE = `${SUPABASE_URL}/functions/v1`;
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Check for embed mode
+        if (window.location !== window.parent.location || window.self !== window.top) {
+            document.body.classList.add('embed-mode');
+        }
+
+        // Section Navigation
+        function showSection(sectionId) {
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            // Load section data
+            if (sectionId === 'standings') loadStandings();
+            if (sectionId === 'events') loadEvents();
+            if (sectionId === 'champions') loadChampions();
+            if (sectionId === 'statistics') loadStatistics();
+            if (sectionId === 'players') loadPlayers();
+        }
+
+        // Load Standings
+        async function loadStandings() {
+            try {
+                const response = await fetch(`${API_BASE}/aads-api/stats`);
+                const data = await response.json();
+
+                // Update stat cards
+                document.getElementById('totalPlayers').textContent = data.players.length;
+                document.getElementById('totalEvents').textContent = data.total_events || 3;
+                
+                let totalMatches = 0;
+                let highestAvg = 0;
+                data.players.forEach(p => {
+                    highestAvg = Math.max(highestAvg, p.total_average);
+                });
+                
+                document.getElementById('totalMatches').textContent = data.total_matches || '-';
+                document.getElementById('highestAvg').textContent = highestAvg.toFixed(2);
+
+                // Populate standings table
+                const tbody = document.getElementById('standingsTable');
+                tbody.innerHTML = data.players.map(player => {
+                    const rankClass = player.rank <= 3 ? `rank-${player.rank}` : '';
+                    return `
+                        <tr>
+                            <td class="rank-cell ${rankClass}">#${player.rank}</td>
+                            <td class="player-name">${player.name}</td>
+                            <td class="highlight-stat">${player.total_average.toFixed(2)}</td>
+                            <td>${player.total_legs}</td>
+                            <td>${player.total_180s}</td>
+                            <td>${player.total_140_plus}</td>
+                            <td>${player.total_100_plus}</td>
+                            <td class="highlight-stat">${player.highest_finish}</td>
+                            <td>${player.events_played}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading standings:', error);
+                document.getElementById('standingsTable').innerHTML = 
+                    '<tr><td colspan="9" style="text-align: center; color: #ff4444;">Error loading standings</td></tr>';
+            }
+        }
+
+        // Load Events
+        async function loadEvents() {
+            try {
+                const response = await fetch(`${API_BASE}/aads-api/events`);
+                const data = await response.json();
+
+                const grid = document.getElementById('eventsGrid');
+                if (data.events.length === 0) {
+                    grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No events completed yet</p>';
+                    return;
+                }
+
+                grid.innerHTML = data.events.map(event => `
+                    <div class="event-card" onclick="viewEventDetails(${event.event_number})">
+                        <div class="event-header">
+                            <div class="event-number">Event ${event.event_number}</div>
+                            <div class="event-date">${event.event_date || 'Date TBD'}</div>
+                        </div>
+                        <div class="event-body">
+                            <div class="event-stat-row">
+                                <span class="event-stat-label">Champion</span>
+                                <span class="event-stat-value">${event.winner_name || 'TBD'}</span>
+                            </div>
+                            <div class="event-stat-row">
+                                <span class="event-stat-label">Matches</span>
+                                <span class="event-stat-value">${event.total_matches || 0}</span>
+                            </div>
+                            <div class="event-stat-row">
+                                <span class="event-stat-label">Players</span>
+                                <span class="event-stat-value">${event.unique_players || 0}</span>
+                            </div>
+                            <div class="event-stat-row">
+                                <span class="event-stat-label">Runner-Up</span>
+                                <span class="event-stat-value">${event.runner_up_name || 'TBD'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading events:', error);
+                document.getElementById('eventsGrid').innerHTML = 
+                    '<p style="text-align: center; color: #ff4444;">Error loading events</p>';
+            }
+        }
+
+        // Load Champions
+        async function loadChampions() {
+            try {
+                const { data: events, error } = await supabase
+                    .from('events')
+                    .select('*, event_winners(*)');
+
+                if (error) throw error;
+
+                const content = document.getElementById('championsContent');
+                
+                if (events.length === 0) {
+                    content.innerHTML = '<p style="text-align: center;">No champions yet</p>';
+                    return;
+                }
+
+                let html = '';
+                
+                // Show most recent champion in showcase
+                const latestEvent = events[events.length - 1];
+                if (latestEvent.event_winners && latestEvent.event_winners.length > 0) {
+                    const winner = latestEvent.event_winners[0];
+                    html += `
+                        <div class="champion-showcase">
+                            <div class="champion-content">
+                                <div class="champion-trophy">🏆</div>
+                                <div class="champion-title">Latest Champion</div>
+                                <div class="champion-name">${winner.winner_name}</div>
+                                <div class="champion-stats">
+                                    <div class="champion-stat">
+                                        <div class="champion-stat-value">Event ${latestEvent.event_number}</div>
+                                        <div class="champion-stat-label">Winner</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // All champions table
+                html += `
+                    <div class="data-table">
+                        <div class="table-header">
+                            <h2>ALL EVENT CHAMPIONS</h2>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>EVENT</th>
+                                    <th>CHAMPION</th>
+                                    <th>RUNNER-UP</th>
+                                    <th>DATE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                events.forEach(event => {
+                    const winner = event.event_winners?.[0];
+                    html += `
+                        <tr>
+                            <td class="highlight-stat">Event ${event.event_number}</td>
+                            <td class="player-name">${winner?.winner_name || 'TBD'}</td>
+                            <td>${winner?.runner_up_name || 'TBD'}</td>
+                            <td>${event.event_date || 'TBD'}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                content.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading champions:', error);
+                document.getElementById('championsContent').innerHTML = 
+                    '<p style="text-align: center; color: #ff4444;">Error loading champions</p>';
+            }
+        }
+
+        // Load Statistics
+        async function loadStatistics() {
+            try {
+                const response = await fetch(`${API_BASE}/aads-api/stats`);
+                const data = await response.json();
+
+                const tbody = document.getElementById('topPerformersTable');
+                
+                // Find top performers in each category
+                const topAvg = data.players.reduce((prev, curr) => 
+                    prev.total_average > curr.total_average ? prev : curr);
+                const top180s = data.players.reduce((prev, curr) => 
+                    prev.total_180s > curr.total_180s ? prev : curr);
+                const top140s = data.players.reduce((prev, curr) => 
+                    prev.total_140_plus > curr.total_140_plus ? prev : curr);
+                const top100s = data.players.reduce((prev, curr) => 
+                    prev.total_100_plus > curr.total_100_plus ? prev : curr);
+                const topFinish = data.players.reduce((prev, curr) => 
+                    prev.highest_finish > curr.highest_finish ? prev : curr);
+                const mostLegs = data.players.reduce((prev, curr) => 
+                    prev.total_legs > curr.total_legs ? prev : curr);
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td class="player-name">Highest Average</td>
+                        <td>${topAvg.name}</td>
+                        <td class="highlight-stat">${topAvg.total_average.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td class="player-name">Most 180s</td>
+                        <td>${top180s.name}</td>
+                        <td class="highlight-stat">${top180s.total_180s}</td>
+                    </tr>
+                    <tr>
+                        <td class="player-name">Most 140+</td>
+                        <td>${top140s.name}</td>
+                        <td class="highlight-stat">${top140s.total_140_plus}</td>
+                    </tr>
+                    <tr>
+                        <td class="player-name">Most 100+</td>
+                        <td>${top100s.name}</td>
+                        <td class="highlight-stat">${top100s.total_100_plus}</td>
+                    </tr>
+                    <tr>
+                        <td class="player-name">Highest Checkout</td>
+                        <td>${topFinish.name}</td>
+                        <td class="highlight-stat">${topFinish.highest_finish}</td>
+                    </tr>
+                    <tr>
+                        <td class="player-name">Most Legs Played</td>
+                        <td>${mostLegs.name}</td>
+                        <td class="highlight-stat">${mostLegs.total_legs}</td>
+                    </tr>
+                `;
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Load Players
+        async function loadPlayers() {
+            try {
+                const response = await fetch(`${API_BASE}/aads-api/stats`);
+                const data = await response.json();
+
+                const content = document.getElementById('playersContent');
+                
+                let html = '<div class="data-table"><div class="table-header"><h2>ALL PLAYERS</h2></div><table><thead><tr>';
+                html += '<th>RANK</th><th>PLAYER</th><th>AVG</th><th>LEGS</th><th>EVENTS</th><th>180s</th><th>HIGH FINISH</th>';
+                html += '</tr></thead><tbody>';
+
+                data.players.forEach(player => {
+                    const rankClass = player.rank <= 3 ? `rank-${player.rank}` : '';
+                    html += `
+                        <tr>
+                            <td class="rank-cell ${rankClass}">#${player.rank}</td>
+                            <td class="player-name">${player.name}</td>
+                            <td class="highlight-stat">${player.total_average.toFixed(2)}</td>
+                            <td>${player.total_legs}</td>
+                            <td>${player.events_played}</td>
+                            <td>${player.total_180s}</td>
+                            <td class="highlight-stat">${player.highest_finish}</td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table></div>';
+                content.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading players:', error);
+            }
+        }
+
+        // View Event Details (for future implementation)
+        function viewEventDetails(eventNumber) {
+            alert(`Event ${eventNumber} detailed view - Coming soon!`);
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStandings();
+        });
+
+        // Auto-refresh every 5 minutes
+        setInterval(() => {
+            const activeSection = document.querySelector('.section.active');
+            if (activeSection) {
+                const sectionId = activeSection.id;
+                if (sectionId === 'standings') loadStandings();
+                else if (sectionId === 'events') loadEvents();
+                else if (sectionId === 'champions') loadChampions();
+                else if (sectionId === 'statistics') loadStatistics();
+                else if (sectionId === 'players') loadPlayers();
+            }
+        }, 300000); // 5 minutes
+    </script>
+</body>
+</html>
