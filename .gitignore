@@ -1,0 +1,59 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Test and development scripts
+test_*.py
+check_*.py
+analyze_*.py
+find_*.py
+batch_*.py
+parse_*.py
+show_*.py
+migrate_*.py
+deep_dive_*.py
+display_stats.py
+
+# JSON test data and responses
+*.json
+!docs/**/*.json
+
+# HTML test files (not in docs/)
+event*.html
+!docs/**/*.html
+
+# Text notes and documentation drafts
+dart scarper knowledge.txt
+*.md
+!README.md
+
+# Backup files
+*_backup.html
+*_old_backup.html
+index_old_backup.html
+
+# Logo files in root (they're in docs/ already)
+/*.png
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local development
+*.local
+.env
