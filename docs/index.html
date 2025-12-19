@@ -469,6 +469,21 @@
 
         <!-- Event Manager Tab -->
         <div id="events" class="tab-content">
+            <div class="card" style="background: rgba(0, 100, 255, 0.1); border: 1px solid rgba(0, 150, 255, 0.3);">
+                <h2 style="color: #4a9eff;">ℹ️ How It Works</h2>
+                <p style="margin-bottom: 15px; line-height: 1.6;">
+                    <strong>1.</strong> Enter event URL and number below<br>
+                    <strong>2.</strong> Click "Extract & Scrape Event" to upload data to database<br>
+                    <strong>3.</strong> Stats automatically appear on the public display page<br>
+                    <strong>4.</strong> Public page updates within seconds of scraping
+                </p>
+                <a href="stats-display.html" target="_blank" rel="noopener" 
+                   style="display: inline-block; padding: 10px 20px; background: #4a9eff; color: white; 
+                          text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 10px;">
+                    📺 View Public Stats Display
+                </a>
+            </div>
+
             <div class="card">
                 <h2>📅 Event Manager</h2>
                 <div class="form-group">
@@ -738,6 +753,14 @@
                             <p>Successfully Scraped: ${result.successful_scrapes}</p>
                             <p>Failed: ${result.failed_scrapes}</p>
                             <p>Players Updated: ${result.players_updated.length}</p>
+                            <hr style="margin: 15px 0; border: 1px solid rgba(0, 255, 0, 0.3);">
+                            <p style="font-weight: bold;">📺 Stats are now live on the public display!</p>
+                            <a href="stats-display.html" target="_blank" rel="noopener" 
+                               style="display: inline-block; padding: 8px 16px; background: rgba(0, 255, 0, 0.2); 
+                                      color: #0f0; text-decoration: none; border-radius: 5px; margin-top: 10px; 
+                                      border: 1px solid rgba(0, 255, 0, 0.3);">
+                                View Public Stats →
+                            </a>
                         </div>
                     `;
                 } else {
