@@ -6,14 +6,14 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <!-- v1.0.4-20251219-0005 -->
+    <!-- v1.0.5-20251219-0010 -->
     <title>AADS Official Statistics | Atlantic Amateur Darts Series</title>
     <meta name="description" content="Official statistics and standings for the Atlantic Amateur Darts Series">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎯</text></svg>">
     
     <!-- Supabase CDN -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2?v=20251219000500"></script>
-    <script>window.STATS_VERSION = '1.0.4-20251219-0005';</script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2?v=20251219001000"></script>
+    <script>window.STATS_VERSION = '1.0.5-20251219-0010';</script>
     
     <style>
         * {
@@ -670,7 +670,7 @@
             </div>
             <div class="season-badge">SEASON 1</div>
             <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.3);">
-                📊 v1.0.4-20251219-0005
+                📊 v1.0.5-20251219-0010
             </div>
         </div>
     </div>
@@ -786,17 +786,21 @@
     </div>
 
     <script>
-        // Supabase Configuration - v1.0.4-20251219-0005
+        // Supabase Configuration - v1.0.5-20251219-0010
+        // Declare global variable
+        var supabase;
+        var API_BASE;
+        
         (function() {
             const SUPABASE_URL = 'https://kswwbqumgsdissnwuiab.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzd3dicXVtZ3NkaXNzbnZ1aWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwOTk0ODUsImV4cCI6MjA4MTY3NTQ4NX0.w-VvEbvMJGQxl7q_4P4lxzrOHNR-5LYXGp0SYfvFBdk';
-            window.API_BASE = `${SUPABASE_URL}/functions/v1`;
+            API_BASE = `${SUPABASE_URL}/functions/v1`;
 
             // Initialize Supabase client (prevent duplicate declarations from cached scripts)
             if (!window.aadsSupabaseClient) {
                 window.aadsSupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
-            window.supabase = window.aadsSupabaseClient;
+            supabase = window.aadsSupabaseClient;
         })();
 
         // Check for embed mode
@@ -1150,7 +1154,7 @@
             <div class="footer-copyright">
                 © 2025 Atlantic Amateur Darts Series. All rights reserved.<br>
                 Powered by AADS Official Statistics System<br>
-                <span style="opacity: 0.6; font-size: 0.85em;">Version 1.0.4-20251219-0005 | Updated: December 19, 2025 00:05</span>
+                <span style="opacity: 0.6; font-size: 0.85em;">Version 1.0.5-20251219-0010 | Updated: December 19, 2025 00:10</span>
             </div>
         </div>
     </div>
