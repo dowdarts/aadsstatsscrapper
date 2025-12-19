@@ -1,6 +1,7 @@
 """
 AADS Flask Server
 Web API and dashboard for Atlantic Amateur Darts Series statistics
+With comprehensive advanced stats scraping (180s, 140+, 100+, checkout stats, etc.)
 """
 
 from flask import Flask, render_template, jsonify, request, send_from_directory
@@ -331,12 +332,19 @@ def health_check():
 @app.route('/api/scrape-event', methods=['POST'])
 def scrape_event():
     """
-    Extract and scrape all matches from an event page
+    COMPREHENSIVE TWO-PART EVENT SCRAPER WITH ADVANCED STATS
+    
+    PART 1: Extract match URLs using DartConnect API2
+    PART 2: Scrape individual match recaps with ALL advanced statistics:
+            - 180s, 140+, 100+ counts
+            - First 9 average
+            - Checkout efficiency and stats
+            - Per-match records (not aggregated)
     """
     try:
         data = request.get_json()
         event_url = data.get('event_url')
-        event_id = data.get('event_id', 1)
+        event_name = data.get('event_name', 'AADS Event')
         
         if not event_url:
             return jsonify({
@@ -344,100 +352,204 @@ def scrape_event():
                 "message": "Event URL is required"
             }), 400
         
-        # Import here to avoid circular imports
-        import requests
-        from bs4 import BeautifulSoup
+        import json
+        import time
         import re
-        import html as html_module
+        from urllib.request import Request, urlopen
+        from urllib.error import HTTPError
+        from scraper_comprehensive import scrape_match_comprehensive
+        from supabase import create_client
         
-        # Extract match URLs from event page
-        def extract_match_urls(url):
-            response = requests.get(url)
-            if response.status_code != 200:
-                return []
-            
-            soup = BeautifulSoup(response.text, 'html.parser')
-            match_urls = []
-            
-            # Check Inertia.js data
-            app_div = soup.find('div', {'id': 'app'})
-            if app_div and app_div.has_attr('data-page'):
-                try:
-                    page_data_encoded = app_div['data-page']
-                    page_data = html_module.unescape(page_data_encoded)
-                    
-                    # Search for match IDs (24-character hex strings)
-                    match_id_pattern = r'[0-9a-f]{24}'
-                    match_ids = re.findall(match_id_pattern, page_data)
-                    
-                    # Filter and deduplicate
-                    unique_ids = list(set(match_ids))
-                    filtered_ids = [mid for mid in unique_ids if len(set(mid)) > 3]
-                    
-                    for match_id in filtered_ids:
+        # Supabase config
+        SUPABASE_URL = "https://kswwbqumgsdissnwuiab.supabase.co"
+        SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzd3dicXVtZ3NkaXNzbnd1aWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0ODMwNTIsImV4cCI6MjA4MDA1OTA1Mn0.b-z8JqL1dBYJcrrzSt7u6VAaFAtTOl1vqqtFFgHkJ50"
+        USER_ID = "116cc929-d60f-4ae4-ac53-b228b91ea8b3"
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+        
+        # ========================================================================
+        # PART 1: EXTRACT MATCH URLs USING API2
+        # ========================================================================
+        logger.info(f"[PART 1] Extracting match URLs from: {event_url}")
+        
+        # Extract event ID from URL
+        event_id_match = re.search(r'/event/([a-zA-Z0-9_]+)', event_url)
+        if not event_id_match:
+            return jsonify({
+                "success": False,
+                "message": "Could not extract event ID from URL"
+            }), 400
+        
+        extracted_event_id = event_id_match.group(1)
+        
+        # Call DartConnect API2
+        api_url = f"https://tv.dartconnect.com/api2/event/{extracted_event_id}/matches"
+        request_obj = Request(api_url, method='POST')
+        request_obj.add_header('Content-Type', 'application/json')
+        request_obj.add_header('User-Agent', 'Mozilla/5.0')
+        
+        try:
+            with urlopen(request_obj, timeout=30) as response:
+                result = json.loads(response.read().decode())
+        except Exception as e:
+            logger.error(f"[PART 1] Failed to call API2: {e}")
+            return jsonify({
+                "success": False,
+                "message": f"Failed to extract matches: {str(e)}"
+            }), 500
+        
+        # Extract match URLs from API2 payload
+        match_urls = []
+        payload = result.get('payload', {})
+        
+        # Iterate through all sections (completed, pending, etc.)
+        for section_name, section_data in payload.items():
+            if isinstance(section_data, list):
+                for match in section_data:
+                    if isinstance(match, dict) and 'mi' in match:
+                        match_id = match['mi']
                         match_urls.append(f"https://recap.dartconnect.com/matches/{match_id}")
-                
-                except Exception:
-                    pass
-            
-            return list(set(match_urls))
-        
-        match_urls = extract_match_urls(event_url)
         
         if not match_urls:
             return jsonify({
                 "success": False,
-                "message": "No match URLs found on event page"
+                "message": "No match URLs found in event"
             })
         
-        # Scrape each match
-        scraper = DartConnectScraper()
+        logger.info(f"[PART 1] Found {len(match_urls)} match URLs")
+        
+        # ========================================================================
+        # PART 2: SCRAPE COMPREHENSIVE STATS FROM MATCH TABS
+        # ========================================================================
+        logger.info(f"[PART 2] Scraping {len(match_urls)} matches with comprehensive stats")
+        
         results = {
             "total_matches": len(match_urls),
             "successful": 0,
             "failed": 0,
-            "players_added": [],
+            "players": {},
             "errors": []
         }
         
-        for url in match_urls:
+        DELAY_BETWEEN_MATCHES = 2.0
+        MAX_RETRIES = 3
+        
+        def to_float(value, default=0.0):
+            if value is None or value == '-' or value == '':
+                return None if default is None else default
             try:
-                players = scraper.scrape_match_recap(url)
-                
-                if players:
-                    # Add to database
-                    for player in players:
-                        db_manager.add_match_stats(
-                            player_name=player['player_name'],
-                            event_id=event_id,
-                            three_dart_avg=player['three_dart_avg'],
-                            legs_played=player['legs_played'],
-                            one_eighties=player['one_eighties'],
-                            high_finish=player['high_finish']
-                        )
-                        
-                        if player['player_name'] not in results["players_added"]:
-                            results["players_added"].append(player['player_name'])
-                    
-                    results["successful"] += 1
-                else:
-                    results["failed"] += 1
-                    results["errors"].append(f"No data found: {url}")
-                    
-            except Exception as e:
+                return float(value)
+            except (ValueError, TypeError):
+                return None if default is None else default
+        
+        for i, url in enumerate(match_urls, 1):
+            logger.info(f"[PART 2] Match {i}/{len(match_urls)}")
+            
+            # Extract match ID
+            match_id_match = re.search(r'/matches/([a-f0-9]+)', url)
+            if not match_id_match:
                 results["failed"] += 1
-                results["errors"].append(f"Error scraping {url}: {str(e)}")
+                results["errors"].append(f"Invalid URL: {url}")
+                continue
+            
+            match_id = match_id_match.group(1)
+            
+            # Retry logic
+            for attempt in range(1, MAX_RETRIES + 1):
+                try:
+                    match_data = scrape_match_comprehensive(match_id)
+                    
+                    if match_data.get('players'):
+                        # Upload each player's match stats
+                        for player in match_data['players']:
+                            # Clean data
+                            points = player.get('points_scored', '0')
+                            if isinstance(points, str):
+                                points = points.replace(',', '')
+                            
+                            # Build complete record
+                            record = {
+                                'user_id': USER_ID,
+                                'name': player.get('name'),
+                                'event_name': event_name,
+                                'match_id': match_id,
+                                'legs_played': player.get('total_games', 0),
+                                'legs_won': player.get('total_wins', 0),
+                                'win_percentage': player.get('win_percentage', 0),
+                                'total_darts': int(player.get('darts_thrown', 0)),
+                                'total_points': int(points),
+                                'average': to_float(player.get('average'), 0),
+                                'first_nine_avg': to_float(player.get('first_nine_avg'), None),
+                                'count_180s': player.get('count_180s', 0),
+                                'count_140_plus': player.get('count_140_plus', 0),
+                                'count_100_plus': player.get('count_100_plus', 0),
+                                'highest_score': player.get('highest_score'),
+                                'checkout_efficiency': player.get('checkout_efficiency', '-'),
+                                'checkout_opportunities': player.get('checkout_opportunities', 0),
+                                'checkouts_hit': player.get('checkouts_hit', 0),
+                                'highest_checkout': player.get('highest_checkout'),
+                                'avg_finish': to_float(player.get('avg_finish'), None),
+                                'card_link': player.get('card_link')
+                            }
+                            
+                            # Upsert to Supabase
+                            supabase.table('aads_players').upsert(record).execute()
+                            
+                            # Track player for response
+                            player_name = player.get('name')
+                            if player_name not in results["players"]:
+                                results["players"][player_name] = {
+                                    'matches': 0,
+                                    'total_legs': 0,
+                                    'total_180s': 0,
+                                    'total_140_plus': 0,
+                                    'total_100_plus': 0
+                                }
+                            
+                            results["players"][player_name]['matches'] += 1
+                            results["players"][player_name]['total_legs'] += player.get('total_games', 0)
+                            results["players"][player_name]['total_180s'] += player.get('count_180s', 0)
+                            results["players"][player_name]['total_140_plus'] += player.get('count_140_plus', 0)
+                            results["players"][player_name]['total_100_plus'] += player.get('count_100_plus', 0)
+                        
+                        results["successful"] += 1
+                        logger.info(f"✅ Match {i} complete")
+                        break
+                    else:
+                        results["failed"] += 1
+                        results["errors"].append(f"No data: {match_id}")
+                        break
+                        
+                except Exception as e:
+                    if attempt < MAX_RETRIES:
+                        logger.warning(f"Retry {attempt}/{MAX_RETRIES}")
+                        time.sleep(5)
+                    else:
+                        results["failed"] += 1
+                        results["errors"].append(f"Error: {match_id}")
+                        break
+            
+            # Delay between matches
+            if i < len(match_urls):
+                time.sleep(DELAY_BETWEEN_MATCHES)
         
         return jsonify({
             "success": True,
-            "message": f"Scraped {results['successful']} of {results['total_matches']} matches",
-            "data": results
+            "message": f"Scraped {results['successful']}/{results['total_matches']} matches with comprehensive stats",
+            "data": {
+                "total_matches": results["total_matches"],
+                "successful": results["successful"],
+                "failed": results["failed"],
+                "total_players": len(results["players"]),
+                "players": results["players"],
+                "errors": results["errors"][:5]  # Limit errors in response
+            }
         })
         
     except Exception as e:
+        logger.error(f"Error: {e}")
         return jsonify({
             "success": False,
-            "message": f"Error processing event: {str(e)}"
+            "message": f"Error: {str(e)}"
         }), 500
 
 @app.route('/api/reset-database', methods=['POST'])

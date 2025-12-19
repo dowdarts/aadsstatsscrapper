@@ -537,22 +537,22 @@ async function handleSingleMatchScrape(event) {
     }
 }
 
-// Handle event scraping
+// Handle event scraping with comprehensive stats
 async function handleEventScrape(event) {
     event.preventDefault();
     
     const form = event.target;
     const formData = new FormData(form);
     const eventUrl = formData.get('eventUrl') || document.getElementById('eventUrl').value;
-    const eventId = formData.get('eventIdBatch') || document.getElementById('eventIdBatch').value;
+    const eventName = formData.get('eventIdBatch') || document.getElementById('eventIdBatch').value;
     
-    if (!eventUrl || !eventId) {
+    if (!eventUrl || !eventName) {
         showStatusMessage('Please fill in all fields', 'error');
         return;
     }
     
     setFormLoading(form, true);
-    showStatusMessage('🔄 Extracting matches from event page...', 'info');
+    showStatusMessage('🔄 Starting comprehensive event scrape (this may take a few minutes)...', 'info');
     
     try {
         const response = await fetch('/api/scrape-event', {
@@ -562,7 +562,7 @@ async function handleEventScrape(event) {
             },
             body: JSON.stringify({ 
                 event_url: eventUrl, 
-                event_id: parseInt(eventId) 
+                event_name: eventName
             })
         });
         
@@ -571,20 +571,29 @@ async function handleEventScrape(event) {
         if (result.success) {
             const data = result.data;
             showStatusMessage(
-                `✅ Event scraping complete! Processed ${data.total_matches} matches. ` +
-                `Success: ${data.successful}, Failed: ${data.failed}. ` +
-                `Players added: ${data.players_added.join(', ')}`, 
+                `✅ Event scraping complete! ` +
+                `Scraped ${data.successful}/${data.total_matches} matches. ` +
+                `Total Players: ${data.total_players}. ` +
+                `Failed: ${data.failed}`, 
                 'success'
             );
             
-            if (data.errors.length > 0) {
-                data.errors.forEach(error => {
-                    showStatusMessage(`⚠️ ${error}`, 'warning');
-                });
+            // Show player summary if available
+            if (data.players && Object.keys(data.players).length > 0) {
+                const playerSummary = Object.entries(data.players)
+                    .map(([name, stats]) => `${name}: ${stats.matches} matches, ${stats.total_180s} x 180s`)
+                    .join(' • ');
+                showStatusMessage(`📊 Players: ${playerSummary}`, 'info');
+            }
+            
+            if (data.errors && data.errors.length > 0) {
+                showStatusMessage(`⚠️ ${data.errors.length} errors occurred`, 'warning');
             }
             
             form.reset();
-            fetchAndUpdateStats(); // Refresh leaderboard
+            setTimeout(() => {
+                fetchAndUpdateStats(); // Refresh leaderboard after delay
+            }, 1000);
         } else {
             showStatusMessage(`❌ ${result.message}`, 'error');
         }

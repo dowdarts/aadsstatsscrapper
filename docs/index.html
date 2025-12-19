@@ -631,18 +631,28 @@
             </div>
 
             <div class="card">
-                <h2>📅 Event Manager</h2>
+                <h2>🏆 Scrape Event (Comprehensive Stats)</h2>
                 <div class="form-group">
                     <label for="eventUrl">Event URL</label>
                     <input type="text" id="eventUrl" class="form-control" 
                            placeholder="https://tv.dartconnect.com/event/mt_joe6163l_1">
                 </div>
                 <div class="form-group">
-                    <label for="eventNumber">Event Number</label>
-                    <input type="number" id="eventNumber" class="form-control" 
-                           placeholder="1" min="1" max="7">
+                    <label for="eventName">Event Name</label>
+                    <select id="eventName" class="form-control">
+                        <option value="Atlantic Amateur Dart Series Event #1">Event 1</option>
+                        <option value="Atlantic Amateur Dart Series Event #2">Event 2</option>
+                        <option value="Atlantic Amateur Dart Series Event #3">Event 3</option>
+                        <option value="Atlantic Amateur Dart Series Event #4">Event 4</option>
+                        <option value="Atlantic Amateur Dart Series Event #5">Event 5</option>
+                        <option value="Atlantic Amateur Dart Series Event #6">Event 6</option>
+                        <option value="Atlantic Amateur Dart Series TOC">TOC</option>
+                    </select>
                 </div>
-                <button class="btn" onclick="scrapeEvent()">🔄 Extract & Scrape Event</button>
+                <button class="btn" onclick="scrapeEvent()">⚡ Scrape All Matches (with 180s, Checkout Stats, etc.)</button>
+                <div style="margin-top: 10px; font-size: 12px; color: rgba(0, 255, 136, 0.7);">
+                    Comprehensive stats: Basic stats, First 9 avg, 180s/140+/100+ counts, Checkout efficiency & stats
+                </div>
                 <div id="eventStatus"></div>
             </div>
 
@@ -1216,14 +1226,14 @@
             }
         }
 
-        // Scrape event
+        // Scrape event with comprehensive stats
         async function scrapeEvent() {
             const url = document.getElementById('eventUrl').value;
-            const eventNum = document.getElementById('eventNumber').value;
+            const eventName = document.getElementById('eventName').value;
             const statusDiv = document.getElementById('eventStatus');
             
-            if (!url || !eventNum) {
-                statusDiv.innerHTML = '<div class="error-message">Please provide both URL and event number</div>';
+            if (!url || !eventName) {
+                statusDiv.innerHTML = '<div class="error-message">Please provide both URL and event name</div>';
                 return;
             }
             
@@ -1234,7 +1244,7 @@
                 return;
             }
             
-            statusDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Scraping event... This may take 1-2 minutes...</div>';
+            statusDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div>🔄 Starting comprehensive event scrape (this may take a few minutes)...</div>';
             
             try {
                 const response = await fetch(`${API_BASE}/scrape-event`, {
@@ -1242,7 +1252,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         event_url: url,
-                        user_id: user.id  // Include user_id for multi-tenant
+                        event_name: eventName
                     })
                 });
                 
@@ -1250,13 +1260,42 @@
                 
                 if (result.success) {
                     const displayUrl = `stats-display.html?user=${user.id}`;
+                    
+                    // Build player summary
+                    let playerSummary = '';
+                    if (result.players) {
+                        playerSummary = '<div style="margin-top: 15px;"><h4>Player Summary:</h4><ul style="list-style: none; padding-left: 0;">';
+                        for (const [name, stats] of Object.entries(result.players)) {
+                            playerSummary += `<li>${name}: ${stats.match_count} matches`;
+                            if (stats.count_180s > 0) {
+                                playerSummary += `, ${stats.count_180s} x 180s`;
+                            }
+                            playerSummary += '</li>';
+                        }
+                        playerSummary += '</ul></div>';
+                    }
+                    
+                    // Build error list if any
+                    let errorList = '';
+                    if (result.errors && result.errors.length > 0) {
+                        errorList = '<div style="margin-top: 15px; color: #ffaa00;"><h4>Errors:</h4><ul>';
+                        result.errors.slice(0, 5).forEach(err => {
+                            errorList += `<li>${err}</li>`;
+                        });
+                        if (result.errors.length > 5) {
+                            errorList += `<li>... and ${result.errors.length - 5} more</li>`;
+                        }
+                        errorList += '</ul></div>';
+                    }
+                    
                     statusDiv.innerHTML = `
                         <div class="success-message">
                             <h3>✅ Event Scraped Successfully!</h3>
-                            <p>Total Matches: ${result.total_matches}</p>
-                            <p>Successfully Scraped: ${result.successful_scrapes}</p>
-                            <p>Failed: ${result.failed_scrapes}</p>
-                            <p>Players Updated: ${result.players_updated.length}</p>
+                            <p>Successfully Scraped: ${result.successful}/${result.total_matches} matches</p>
+                            <p>Total Players: ${result.total_players}</p>
+                            ${result.failed > 0 ? `<p style="color: #ffaa00;">Failed: ${result.failed}</p>` : ''}
+                            ${playerSummary}
+                            ${errorList}
                             <hr style="margin: 15px 0; border: 1px solid rgba(0, 255, 0, 0.3);">
                             <p style="font-weight: bold;">📺 Stats are now live on your display!</p>
                             <a href="${displayUrl}" target="_blank" rel="noopener" 
@@ -1267,6 +1306,11 @@
                             </a>
                         </div>
                     `;
+                    
+                    // Refresh leaderboard after 1 second
+                    setTimeout(() => {
+                        loadLeaderboard();
+                    }, 1000);
                 } else {
                     statusDiv.innerHTML = `<div class="error-message">Error: ${result.error}</div>`;
                 }

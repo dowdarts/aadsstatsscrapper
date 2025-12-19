@@ -57,25 +57,34 @@
 
                 <!-- Event Batch Scraping -->
                 <div class="management-card">
-                    <h3>🏆 Scrape Event</h3>
+                    <h3>🏆 Scrape Event (Comprehensive Stats)</h3>
                     <form id="eventScrapeForm">
                         <div class="form-group">
                             <label for="eventUrl">Event Page URL:</label>
-                            <input type="url" id="eventUrl" placeholder="https://tv.dartconnect.com/event/..." required>
+                            <input type="url" id="eventUrl" placeholder="https://tv.dartconnect.com/event/mt_joe6163l_1" required>
                         </div>
                         <div class="form-group">
-                            <label for="eventIdBatch">Event Number:</label>
+                            <label for="eventIdBatch">Event Name:</label>
                             <select id="eventIdBatch" required>
-                                <option value="1">Event 1</option>
-                                <option value="2">Event 2</option>
-                                <option value="3">Event 3</option>
-                                <option value="4">Event 4</option>
-                                <option value="5">Event 5</option>
-                                <option value="6">Event 6</option>
-                                <option value="7">Tournament of Champions</option>
+                                <option value="Atlantic Amateur Dart Series Event #1">Event 1</option>
+                                <option value="Atlantic Amateur Dart Series Event #2">Event 2</option>
+                                <option value="Atlantic Amateur Dart Series Event #3">Event 3</option>
+                                <option value="Atlantic Amateur Dart Series Event #4">Event 4</option>
+                                <option value="Atlantic Amateur Dart Series Event #5">Event 5</option>
+                                <option value="Atlantic Amateur Dart Series Event #6">Event 6</option>
+                                <option value="Atlantic Amateur Dart Series Tournament of Champions">Tournament of Champions</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Scrape All Matches</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="icon">⚡</span> Scrape All Matches (with 180s, Checkout Stats, etc.)
+                        </button>
+                        <div class="help-text">
+                            ℹ️ Scrapes ALL matches with comprehensive stats:<br>
+                            • 180s, 140+, 100+ counts<br>
+                            • First 9 average<br>
+                            • Checkout efficiency & stats<br>
+                            • Per-match records (not aggregated)
+                        </div>
                     </form>
                 </div>
 
