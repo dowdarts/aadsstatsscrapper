@@ -6,14 +6,14 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <!-- v1.0.8-20251219-0028 -->
+    <!-- v1.0.9-20251219-0035 -->
     <title>AADS - Atlantic Amateur Darts Series - Comprehensive Stats</title>
     <meta name="description" content="Atlantic Amateur Darts Series - Comprehensive statistics, head-to-head, player analysis, and form tracking">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎯</text></svg>">
     
     <!-- Supabase CDN -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2?v=20251219002800"></script>
-    <script>window.ADMIN_VERSION = '1.0.8-20251219-0028';</script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2?v=20251219003500"></script>
+    <script>window.ADMIN_VERSION = '1.0.9-20251219-0035';</script>
     
     <style>
         * {
@@ -489,11 +489,60 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="container" style="display: none;">
         <div class="header">
-        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.5); box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); z-index: 10000;">🎯 v1.0.8-20251219-0028</div>
+            <h1>🔒 AADS Admin Login</h1>
+            <p>Sign in to manage statistics and events</p>
+        </div>
+        
+        <div class="card" style="max-width: 500px; margin: 50px auto;">
+            <h2>🔐 Authentication Required</h2>
+            <p style="margin-bottom: 20px; color: #888;">Only authorized administrators can access this panel.</p>
+            
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" class="form-control" placeholder="admin@aadsdarts.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" class="form-control" placeholder="Enter password">
+            </div>
+            
+            <button class="btn" onclick="handleLogin()" style="width: 100%;">
+                🔓 Sign In
+            </button>
+            
+            <div id="loginStatus" style="margin-top: 15px;"></div>
+            
+            <div style="margin-top: 30px; padding: 15px; background: rgba(100, 149, 237, 0.1); border: 1px solid rgba(100, 149, 237, 0.3); border-radius: 5px;">
+                <h3 style="color: #6495ED; margin-top: 0; font-size: 1em;">📝 First Time Setup</h3>
+                <p style="margin-bottom: 10px; font-size: 0.9em; line-height: 1.6;">
+                    To create your admin account:
+                </p>
+                <ol style="margin-left: 20px; line-height: 1.8; font-size: 0.9em;">
+                    <li>Go to <a href="https://supabase.com/dashboard/project/kswwbqumgsdissnwuiab/auth/users" target="_blank" style="color: #6495ED;">Supabase Dashboard → Authentication → Users</a></li>
+                    <li>Click "Add User" → "Create new user"</li>
+                    <li>Enter your email and password</li>
+                    <li>Uncheck "Auto Confirm User" (or confirm via email)</li>
+                    <li>Click "Create user"</li>
+                    <li>Use those credentials to login here</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Admin Interface -->
+    <div id="adminInterface" class="container" style="display: none;">
+        <div class="header">
+        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.5); box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); z-index: 10000;">🎯 v1.0.9-20251219-0035</div>
+        <button onclick="handleLogout()" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 69, 0, 0.2); color: #ff6b00; border: 1px solid rgba(255, 107, 0, 0.5); padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">
+            🚪 Logout
+        </button>
             <h1>🎯 AADS Statistics Center</h1>
             <p>Atlantic Amateur Darts Series - Comprehensive Player Analysis</p>
+            <p style="font-size: 0.9em; color: #888; margin-top: 5px;">Logged in as: <span id="userEmail"></span></p>
         </div>
 
         <div class="nav-tabs">
@@ -834,7 +883,7 @@
     </div>
 
     <script>
-        // Supabase Configuration - v1.0.8-20251219-0028
+        // Supabase Configuration - v1.0.9-20251219-0035
         // Declare global variable
         var supabase;
         var API_BASE;
@@ -1798,17 +1847,100 @@
         }
 
         // Initialize
-        window.addEventListener('DOMContentLoaded', () => {
-            loadLeaderboard();
-            // Display version in console
-            console.log('%c🎯 AADS Admin v1.0.8-20251219-0028', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
-            console.log('%cUpdated: December 19, 2025 00:28', 'color: #888; font-size: 12px;');
+        window.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+        });
+
+        // Check authentication status
+        async function checkAuth() {
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (user) {
+                // User is logged in
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminInterface').style.display = 'block';
+                document.getElementById('userEmail').textContent = user.email;
+                loadLeaderboard();
+                // Display version in console
+                console.log('%c🎯 AADS Admin v1.0.9-20251219-0035', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
+                console.log('%cUpdated: December 19, 2025 00:35', 'color: #888; font-size: 12px;');
+                console.log('%cLogged in as: ' + user.email, 'color: #00ff88; font-size: 12px;');
+            } else {
+                // User is not logged in
+                document.getElementById('loginScreen').style.display = 'block';
+                document.getElementById('adminInterface').style.display = 'none';
+            }
+        }
+
+        // Handle login
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const statusDiv = document.getElementById('loginStatus');
+            
+            if (!email || !password) {
+                statusDiv.innerHTML = '<p style="color: #ff4444;">⚠️ Please enter email and password</p>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<p style="color: #ffaa00;">🔄 Signing in...</p>';
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) throw error;
+                
+                statusDiv.innerHTML = '<p style="color: #00ff88;">✅ Login successful! Loading...</p>';
+                
+                // Reload to show admin interface
+                setTimeout(() => {
+                    checkAuth();
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                let errorMsg = error.message;
+                
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMsg = 'Invalid email or password. Please check your credentials.';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMsg = 'Please confirm your email address before logging in.';
+                }
+                
+                statusDiv.innerHTML = `
+                    <div style="background: rgba(255, 69, 0, 0.1); border: 1px solid rgba(255, 69, 0, 0.3); padding: 15px; border-radius: 5px;">
+                        <p style="color: #ff4444; margin-bottom: 10px;">❌ <strong>Login Failed</strong></p>
+                        <p style="color: #ffaa00; line-height: 1.6;">${errorMsg}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Handle logout
+        async function handleLogout() {
+            const confirmed = confirm('Are you sure you want to logout?');
+            if (!confirmed) return;
+            
+            await supabase.auth.signOut();
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('adminInterface').style.display = 'none';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // Add Enter key support for login
+        document.addEventListener('DOMContentLoaded', () => {
+            const passwordInput = document.getElementById('loginPassword');
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        handleLogin();
+                    }
+                });
+            }
         });
     </script>
-    
-    <!-- Version Info -->
-    <div style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 8px 15px; border-radius: 20px; font-size: 11px; z-index: 99999; box-shadow: 0 2px 10px rgba(0,0,0,0.5); border: 1px solid rgba(255, 107, 0, 0.3);">
-        🎯 Admin v1.0.8-20251219-0028
-    </div>
 </body>
 </html>
