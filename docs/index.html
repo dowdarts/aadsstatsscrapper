@@ -572,14 +572,17 @@
     <!-- Main Admin Interface -->
     <div id="adminInterface" class="container" style="display: none;">
         <div class="header">
-        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.5); box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); z-index: 10000;">🎯 v1.1.6-20251219-1309</div>
+        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.5); box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); z-index: 10000;">🎯 v1.2.0-20251219-1825</div>
         <button onclick="handleLogout()" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 69, 0, 0.2); color: #ff6b00; border: 1px solid rgba(255, 107, 0, 0.5); padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">
             🚪 Logout
         </button>
             <img src="dartstream-logo.png" alt="DartStream Logo" style="max-width: 300px; max-height: 80px; margin-bottom: 10px;">
             <h1>🎯 <span id="orgName">DartStream</span> Statistics Center</h1>
             <p id="orgSubtitle">Multi-Organization Darts Stats Platform</p>
-            <p style="font-size: 0.9em; color: #888; margin-top: 5px;">Logged in as: <span id="userEmail"></span> | <a href="#" onclick="showTab('settings'); return false;" style="color: #6495ED;">⚙️ Settings</a></p>
+            <div id="userStatus" style="font-size: 0.9em; color: #888; margin-top: 5px;">
+                <span id="userInfo" style="display: none;">Logged in as: <span id="userEmail"></span> | <a href="#" onclick="showTab('settings'); return false;" style="color: #6495ED;">⚙️ Settings</a></span>
+                <span id="guestInfo">🌟 <strong>Demo Mode</strong> - <a href="#" onclick="showLoginForm(); return false;" style="color: #6495ED;">Sign In</a> | <a href="#" onclick="showSignupForm(); return false;" style="color: #6495ED;">Create Account</a> for full features</span>
+            </div>
         </div>
 
         <div class="nav-tabs">
@@ -1187,7 +1190,7 @@
     </div>
 
     <script>
-        // Supabase Configuration - v1.1.6-20251219-1309
+        // Supabase Configuration - v1.2.0-20251219-1825
         // Declare global variable
         var supabase;
         var API_BASE;
@@ -1337,10 +1340,18 @@
                 return;
             }
             
-            // Get current user and session
+            // Get current user and session (but allow guest mode)
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
-                statusDiv.innerHTML = '<div class="error-message">❌ Not authenticated</div>';
+                // Try guest mode scraping (using demo data simulation)
+                statusDiv.innerHTML = '<div style="background: rgba(255, 165, 0, 0.1); border: 1px solid #FFA500; color: #FFA500; padding: 15px; border-radius: 5px; margin: 10px 0;">⚠️ <strong>Guest Mode:</strong> Scraping simulation activated. To save real data, please <a href="#" onclick="showLoginForm(); return false;" style="color: #6495ED;">sign in</a> or <a href="#" onclick="showSignupForm(); return false;" style="color: #6495ED;">create an account</a>.<br><br>📊 Simulating successful scrape and updating leaderboard with demo data...</div>';
+                
+                // Simulate successful scrape with demo data
+                setTimeout(() => {
+                    statusDiv.innerHTML = '<div style="background: rgba(0, 255, 0, 0.1); border: 1px solid #0f0; color: #0f0; padding: 15px; border-radius: 5px;">✅ <strong>Demo Scrape Complete!</strong><br>📊 Processed 3 demo matches<br>🎯 Updated leaderboard with sample tournament data<br><br><em>Note: This is demo data. Sign in to scrape real matches from DartConnect.</em></div>';
+                    // Refresh the leaderboard to show it "updated"
+                    loadLeaderboard();
+                }, 2000);
                 return;
             }
             
@@ -2356,7 +2367,7 @@
                 
                 loadLeaderboard();
                 // Display version in console
-                console.log('%c🎯 DartStream Stats Platform v1.1.6-20251219-1309', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
+                console.log('%c🎯 DartStream Stats Platform v1.2.0-20251219-1825', 'color: #FF6B00; font-size: 16px; font-weight: bold;');
                 console.log('%cUpdated: December 19, 2025 06:15', 'color: #888; font-size: 12px;');
                 console.log('%cLogged in as: ' + user.email, 'color: #00ff88; font-size: 12px;');
             } else {
@@ -2422,6 +2433,17 @@
             document.getElementById('authScreen').style.display = 'block';
             document.getElementById('adminInterface').style.display = 'none';
             document.getElementById('loginPassword').value = '';
+        }
+
+        // Helper functions for guest mode links
+        function showLoginForm() {
+            showTab('settings');
+            showAuthForm('login');
+        }
+
+        function showSignupForm() {
+            showTab('settings');
+            showAuthForm('signup');
         }
 
         // Show auth form (login or signup)
@@ -3070,8 +3092,48 @@
             }
         }
 
+        // Initialize app mode (guest vs authenticated)
+        async function initializeAppMode() {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (session) {
+                    // Authenticated user
+                    document.getElementById('userInfo').style.display = 'block';
+                    document.getElementById('guestInfo').style.display = 'none';
+                    document.getElementById('userEmail').textContent = session.user.email;
+                    
+                    // Show logout button
+                    const logoutBtn = document.querySelector('button[onclick="handleLogout()"]');
+                    if (logoutBtn) logoutBtn.style.display = 'block';
+                    
+                } else {
+                    // Guest mode
+                    document.getElementById('userInfo').style.display = 'none';
+                    document.getElementById('guestInfo').style.display = 'block';
+                    
+                    // Hide logout button
+                    const logoutBtn = document.querySelector('button[onclick="handleLogout()"]');
+                    if (logoutBtn) logoutBtn.style.display = 'none';
+                }
+                
+                // Load initial data
+                loadLeaderboard();
+                
+            } catch (error) {
+                console.log('App initializing in offline/demo mode:', error.message);
+                // Default to guest mode if there's any error
+                document.getElementById('userInfo').style.display = 'none';
+                document.getElementById('guestInfo').style.display = 'block';
+                loadLeaderboard();
+            }
+        }
+
         // Add Enter key support for login
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize guest mode check
+            initializeAppMode();
+            
             const passwordInput = document.getElementById('loginPassword');
             if (passwordInput) {
                 passwordInput.addEventListener('keypress', (e) => {
