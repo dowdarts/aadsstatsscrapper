@@ -18,10 +18,10 @@
         }
 
         :root {
-            --primary-gold: #FFD700;
+            --primary-orange: #FF6B00;
             --dark-bg: #0a0a0a;
             --card-bg: #1a1a1a;
-            --border-color: rgba(255, 215, 0, 0.2);
+            --border-color: rgba(255, 107, 0, 0.2);
             --text-primary: #ffffff;
             --text-secondary: #b0b0b0;
             --accent-blue: #4a9eff;
@@ -47,7 +47,7 @@
         /* Header */
         .header {
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            border-bottom: 4px solid var(--primary-gold);
+            border-bottom: 4px solid var(--primary-orange);
             padding: 25px 0;
             position: sticky;
             top: 0;
@@ -78,7 +78,7 @@
         .aads-logo-img {
             height: 90px;
             width: auto;
-            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+            filter: drop-shadow(0 0 20px rgba(255, 107, 0, 0.6));
             transition: transform 0.3s ease;
         }
 
@@ -88,10 +88,10 @@
 
         .logo-text h1 {
             font-size: 2em;
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             font-weight: 700;
             letter-spacing: 2px;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            text-shadow: 0 0 20px rgba(255, 107, 0, 0.4);
         }
 
         .logo-text p {
@@ -102,14 +102,14 @@
         }
 
         .season-badge {
-            background: var(--primary-gold);
-            color: var(--dark-bg);
+            background: var(--primary-orange);
+            color: #ffffff;
             padding: 10px 25px;
             border-radius: 30px;
             font-weight: 700;
             font-size: 1em;
             letter-spacing: 1px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
         }
 
         /* Navigation */
@@ -141,14 +141,14 @@
         }
 
         .nav-item:hover {
-            color: var(--primary-gold);
-            background: rgba(255, 215, 0, 0.05);
+            color: var(--primary-orange);
+            background: rgba(255, 107, 0, 0.05);
         }
 
         .nav-item.active {
-            color: var(--primary-gold);
-            border-bottom-color: var(--primary-gold);
-            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary-orange);
+            border-bottom-color: var(--primary-orange);
+            background: rgba(255, 107, 0, 0.1);
         }
 
         /* Main Content */
@@ -191,18 +191,18 @@
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
-            border-color: var(--primary-gold);
+            box-shadow: 0 15px 40px rgba(255, 107, 0, 0.3);
+            border-color: var(--primary-orange);
         }
 
         .stat-value {
             font-size: 3.5em;
             font-weight: 700;
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             display: block;
             margin-bottom: 12px;
             line-height: 1;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            text-shadow: 0 0 20px rgba(255, 107, 0, 0.4);
         }
 
         .stat-label {
@@ -226,15 +226,15 @@
         .table-header {
             background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
             padding: 25px;
-            border-bottom: 3px solid var(--primary-gold);
+            border-bottom: 3px solid var(--primary-orange);
         }
 
         .table-header h2 {
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             font-size: 1.8em;
             font-weight: 700;
             letter-spacing: 1px;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            text-shadow: 0 0 15px rgba(255, 107, 0, 0.3);
         }
 
         table {
@@ -243,14 +243,14 @@
         }
 
         thead {
-            background: rgba(255, 215, 0, 0.1);
+            background: rgba(255, 107, 0, 0.1);
         }
 
         th {
             padding: 18px 20px;
             text-align: left;
             font-weight: 700;
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             font-size: 1em;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -268,7 +268,7 @@
         }
 
         tbody tr:hover {
-            background: rgba(255, 215, 0, 0.05);
+            background: rgba(255, 107, 0, 0.05);
         }
 
         .rank-cell {
@@ -287,21 +287,21 @@
         }
 
         .highlight-stat {
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             font-weight: 600;
         }
 
         /* Champion Showcase */
         .champion-showcase {
             background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-            border: 3px solid var(--primary-gold);
+            border: 3px solid var(--primary-orange);
             border-radius: 20px;
             padding: 50px;
             text-align: center;
             margin-bottom: 40px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 40px rgba(255, 107, 0, 0.3);
         }
 
         .champion-showcase::before {
@@ -311,7 +311,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 107, 0, 0.1) 0%, transparent 70%);
             animation: rotate 20s linear infinite;
         }
 
@@ -328,7 +328,7 @@
         .champion-trophy {
             font-size: 6em;
             margin-bottom: 25px;
-            filter: drop-shadow(0 0 30px var(--primary-gold));
+            filter: drop-shadow(0 0 30px var(--primary-orange));
         }
 
         .champion-title {
@@ -342,10 +342,10 @@
 
         .champion-name {
             font-size: 3.5em;
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             font-weight: 700;
             margin-bottom: 20px;
-            text-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+            text-shadow: 0 0 40px rgba(255, 107, 0, 0.6);
             letter-spacing: 2px;
         }
 
@@ -362,9 +362,9 @@
 
         .champion-stat-value {
             font-size: 2.5em;
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             font-weight: 700;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            text-shadow: 0 0 15px rgba(255, 107, 0, 0.4);
         }
 
         .champion-stat-label {
@@ -435,7 +435,7 @@
         }
 
         .event-stat-value {
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             font-weight: 600;
         }
 
@@ -451,8 +451,8 @@
         .loading-spinner {
             width: 60px;
             height: 60px;
-            border: 4px solid rgba(255, 215, 0, 0.1);
-            border-top: 4px solid var(--primary-gold);
+            border: 4px solid rgba(255, 107, 0, 0.1);
+            border-top: 4px solid var(--primary-orange);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -487,7 +487,7 @@
 
         .player-info h2 {
             font-size: 2.5em;
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             margin-bottom: 10px;
         }
 
@@ -570,7 +570,7 @@
         /* Footer - Partner Logos */
         .footer {
             background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-            border-top: 4px solid var(--primary-gold);
+            border-top: 4px solid var(--primary-orange);
             padding: 50px 30px;
             margin-top: 80px;
         }
@@ -582,13 +582,13 @@
         }
 
         .footer-title {
-            color: var(--primary-gold);
+            color: var(--primary-orange);
             font-size: 1.5em;
             font-weight: 600;
             margin-bottom: 40px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            text-shadow: 0 0 15px rgba(255, 107, 0, 0.3);
         }
 
         .partners-grid {
