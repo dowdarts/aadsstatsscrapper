@@ -22,25 +22,16 @@ def add_stats():
 """
 AADS Flask Server
 Web API and dashboard for Atlantic Amateur Darts Series statistics
-With comprehensive advanced stats scraping (180s, 140+, 100+, checkout stats, etc.)
+Manual stats input with Supabase backend - No scraping
 """
 
 from flask import Flask, render_template, jsonify, request, send_from_directory
 from database_manager import AADSDataManager
-from scraper import DartConnectScraper
 import logging
 import os
 from typing import Dict, List
-import threading
-import time
 from datetime import datetime
-
-# Import the working scraper progress system
-from scraper_html_parser import scrape_event_comprehensive
-from scraper_flask_integration import scrape_progress
-
-import threading
-import time
+import json
 
 # Configure logging
 logging.basicConfig(
@@ -322,31 +313,8 @@ def health_check():
     return jsonify({
         "status": "healthy",
         "service": "AADS Stats API",
-        "version": "1.0.0"
+        "version": "2.0.0 - Manual Input System"
     })
-
-@app.route('/api/scrape-progress/<job_id>', methods=['GET'])
-def get_scrape_progress(job_id):
-    """
-    Get real-time progress of a scraping job.
-    
-    Returns:
-        JSON response with scraping progress, stats, and status
-    """
-    from scraper_flask_integration import get_progress
-    progress_data = get_progress(job_id)
-    
-    if progress_data.get('status') == 'Job not found':
-        return jsonify({
-            "success": False,
-            "message": "Job not found"
-        }), 404
-    
-    return jsonify(progress_data)
-
-    # Removed comprehensive scraping endpoint
-
-    # Removed event scraping endpoint
 
 @app.route('/api/reset-database', methods=['POST'])
 def reset_database():
@@ -375,6 +343,284 @@ def reset_database():
             "success": False,
             "message": f"Error resetting database: {str(e)}"
         }), 500
+
+
+# ============================================================================
+# NEW ROUTES FOR MANUAL STATS INPUT & SUPABASE BACKEND
+# ============================================================================
+
+@app.route('/stats-input')
+def stats_input():
+    """Serve the stats input admin interface."""
+    return render_template('stats_input.html')
+
+
+@app.route('/admin/save-tournament', methods=['POST'])
+def save_tournament():
+    """
+    Save complete tournament data (draft or published).
+    
+    Request JSON:
+        {
+            "series_name": "Series 1",
+            "year": 2025,
+            "event_number": 1,
+            "event_date": "2025-01-15",
+            "players": [...],
+            "matches": [...],
+            "is_draft": true/false
+        }
+    """
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"}), 400
+        
+        is_draft = data.get('is_draft', True)
+        
+        # Save tournament using database manager
+        event_id = db_manager.save_tournament(data, is_draft=is_draft)
+        
+        return jsonify({
+            "success": True,
+            "event_id": event_id,
+            "message": "Draft saved" if is_draft else "Published successfully"
+        })
+        
+    except Exception as e:
+        logger.error(f"Error saving tournament: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/admin/load-event/<event_id>')
+def load_event(event_id):
+    """
+    Load complete tournament data for editing.
+    
+    Returns:
+        JSON with tournament data including players, matches, stats
+    """
+    try:
+        tournament = db_manager.load_tournament(event_id)
+        
+        if not tournament:
+            return jsonify({"success": False, "error": "Event not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "tournament": tournament
+        })
+        
+    except Exception as e:
+        logger.error(f"Error loading event: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/api/stats-version')
+def get_stats_version():
+    """
+    Get current published version number for auto-refresh polling.
+    
+    Returns:
+        JSON with version number
+    """
+    try:
+        version = db_manager.get_current_version()
+        return jsonify({
+            "success": True,
+            "version": version
+        })
+    except Exception as e:
+        logger.error(f"Error getting version: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/api/all-time-standings')
+def get_all_time_standings():
+    """
+    Get all-time career standings ranked by legs won percentage.
+    
+    Returns:
+        JSON with player career statistics
+    """
+    try:
+        standings = db_manager.get_all_time_standings()
+        return jsonify({
+            "success": True,
+            "standings": standings
+        })
+    except Exception as e:
+        logger.error(f"Error getting standings: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/api/series')
+def get_series_list():
+    """Get list of all series."""
+    try:
+        series = db_manager.get_all_series()
+        return jsonify({
+            "success": True,
+            "series": series
+        })
+    except Exception as e:
+        logger.error(f"Error getting series: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/api/events-list')
+def get_events_list():
+    """
+    Get list of all events with series info.
+    
+    Query Parameters:
+        status: 'draft', 'published', or omit for all
+    """
+    try:
+        status = request.args.get('status')
+        events = db_manager.get_all_events(status=status)
+        
+        return jsonify({
+            "success": True,
+            "events": events
+        })
+    except Exception as e:
+        logger.error(f"Error getting events: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/api/player/<player_id>')
+def get_player_profile(player_id):
+    """
+    Get complete player profile with stats.
+    
+    Returns:
+        JSON with player info, dart setup, and career stats
+    """
+    try:
+        player = db_manager.get_player(player_id)
+        
+        if not player:
+            return jsonify({"success": False, "error": "Player not found"}), 404
+        
+        # Get career stats
+        career_stats = db_manager.calculate_career_stats(player_id)
+        
+        # Get personal best
+        personal_best = db_manager.get_player_personal_best(player_id)
+        
+        return jsonify({
+            "success": True,
+            "player": player,
+            "career_stats": career_stats,
+            "personal_best": personal_best
+        })
+    except Exception as e:
+        logger.error(f"Error getting player: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/api/players')
+def get_all_players_list():
+    """Get list of all players."""
+    try:
+        players = db_manager.get_all_players()
+        return jsonify({
+            "success": True,
+            "players": players
+        })
+    except Exception as e:
+        logger.error(f"Error getting players: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/admin/backup-data')
+def backup_data():
+    """
+    Export complete database as JSON for backup.
+    
+    Returns:
+        JSON file download with timestamp
+    """
+    try:
+        data = db_manager.export_all_data()
+        
+        # Create timestamped filename
+        timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M')
+        filename = f'aads_backup_{timestamp}.json'
+        
+        response = jsonify(data)
+        response.headers['Content-Disposition'] = f'attachment; filename={filename}'
+        response.headers['Content-Type'] = 'application/json'
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"Error backing up data: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/admin/restore-backup', methods=['POST'])
+def restore_backup():
+    """
+    Restore data from backup JSON.
+    
+    Request: JSON data from backup file
+    """
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"}), 400
+        
+        db_manager.import_data(data)
+        
+        return jsonify({
+            "success": True,
+            "message": "Data restored successfully"
+        })
+        
+    except Exception as e:
+        logger.error(f"Error restoring backup: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/api/stats-export', methods=['POST'])
+def export_stats():
+    """
+    Export stats in various formats (PDF, CSV, JSON).
+    
+    Request JSON:
+        {
+            "format": "pdf|csv|json",
+            "scope": "all|series|event|player",
+            "scope_id": "optional UUID"
+        }
+    """
+    try:
+        data = request.get_json()
+        format_type = data.get('format', 'json')
+        scope = data.get('scope', 'all')
+        
+        # This would generate the export
+        # For now, return placeholder
+        return jsonify({
+            "success": True,
+            "message": f"Export to {format_type} coming soon",
+            "format": format_type,
+            "scope": scope
+        })
+        
+    except Exception as e:
+        logger.error(f"Error exporting stats: {e}", exc_info=True)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/docs/official_stats_display.html')
+def official_stats_display():
+    """Serve the official stats display page."""
+    return send_from_directory('docs', 'official_stats_display.html')
 
 
 @app.errorhandler(404)

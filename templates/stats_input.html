@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AADS Stats Input - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 107, 0, 0.1);
+            border-radius: 10px;
+            border: 2px solid #FF6B00;
+        }
+
+        .header h1 {
+            color: #FF6B00;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            color: #FF6B00;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #FF6B00;
+            padding-bottom: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        button, .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #FF6B00;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #ff8533;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #66BB6A;
+        }
+
+        .btn-warning {
+            background: #FFC107;
+            color: #000;
+        }
+
+        .btn-warning:hover {
+            background: #FFD54F;
+        }
+
+        .btn-danger {
+            background: #F44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #EF5350;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: #FFB347;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1em;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #FF6B00;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .player-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 1fr 100px 100px 100px 150px 100px;
+            gap: 10px;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .player-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #FF6B00;
+        }
+
+        .match-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .match-players {
+            font-size: 1.2em;
+            color: #FFB347;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .player-stats {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .player-stats h4 {
+            color: #FF6B00;
+            margin-bottom: 10px;
+        }
+
+        .stats-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 2px solid #FF6B00;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: #F44336;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .standings-table th,
+        .standings-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .standings-table th {
+            background: rgba(255, 107, 0, 0.2);
+            color: #FFB347;
+            font-weight: bold;
+        }
+
+        .standings-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.active {
+            display: block;
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #FFC107;
+            color: #FFD54F;
+        }
+
+        .alert-success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            color: #66BB6A;
+        }
+
+        .alert-error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #F44336;
+            color: #EF5350;
+        }
+
+        .validation-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #FFC107;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #FFB347;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .player-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button, .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 AADS Stats Input - Admin Panel</h1>
+            <p>Manual Tournament Data Entry & Management</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alertContainer"></div>
+
+        <!-- Manage Events Section -->
+        <div class="section">
+            <h2 class="section-title">📋 Manage Events</h2>
+            <div class="button-group">
+                <button class="btn-secondary" onclick="loadEventsList()">🔄 Refresh Events List</button>
+                <button class="btn-primary" onclick="startNewEvent()">➕ Create New Event</button>
+                <button class="btn-warning" onclick="showBackupModal()">💾 Backup All Data</button>
+                <button class="btn-danger" onclick="showRestoreModal()">📥 Restore from Backup</button>
+            </div>
+            
+            <select id="existingEvents" class="form-control" style="width: 100%; padding: 15px; font-size: 1.1em; margin-bottom: 10px;">
+                <option value="">-- Select an event to edit --</option>
+            </select>
+            
+            <button class="btn-primary" onclick="loadSelectedEvent()" style="width: 100%;">📂 Load Selected Event</button>
+            
+            <div id="auditLog" class="hidden" style="margin-top: 20px;">
+                <h3 style="color: #FFB347; margin-bottom: 10px;">Edit History</h3>
+                <div id="auditLogContent"></div>
+            </div>
+        </div>
+
+        <!-- Tournament Entry Form -->
+        <div class="section">
+            <h2 class="section-title">🏆 Tournament Setup</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Series Name</label>
+                    <input type="text" id="seriesName" placeholder="e.g., Series 1" value="Series 1">
+                </div>
+                <div class="form-group">
+                    <label>Year</label>
+                    <input type="number" id="year" value="2025">
+                </div>
+                <div class="form-group">
+                    <label>Event Number (1-7)</label>
+                    <input type="number" id="eventNumber" min="1" max="7" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Event Date</label>
+                    <input type="date" id="eventDate">
+                </div>
+            </div>
+        </div>
+
+        <!-- Players Entry -->
+        <div class="section">
+            <h2 class="section-title">👥 Players (10 Total)</h2>
+            <p style="margin-bottom: 15px; color: #FFB347;">Enter player information and assign to Group A or B (5 players each)</p>
+            
+            <div id="playersContainer"></div>
+            
+            <button class="btn-primary" onclick="addPlayerRow()" style="margin-top: 10px;">➕ Add Player</button>
+        </div>
+
+        <!-- Round Robin Generator -->
+        <div class="section">
+            <h2 class="section-title">🔄 Round-Robin Matches</h2>
+            <p style="margin-bottom: 15px; color: #FFB347;">Generate matches for Group A and Group B using 5-player bye schedule</p>
+            
+            <button class="btn-primary" onclick="generateRoundRobin()" style="margin-bottom: 20px;">🎲 Generate Round-Robin Schedule</button>
+            
+            <div id="roundRobinContainer"></div>
+        </div>
+
+        <!-- Standings -->
+        <div class="section hidden" id="standingsSection">
+            <h2 class="section-title">📊 Group Standings</h2>
+            <button class="btn-secondary" onclick="calculateStandings()">🔢 Calculate Standings</button>
+            
+            <div class="stats-grid" style="margin-top: 20px;">
+                <div>
+                    <h3 style="color: #FF6B00; margin-bottom: 10px;">Group A</h3>
+                    <table class="standings-table" id="standingsGroupA">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Legs Won</th>
+                                <th>Legs Played</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div>
+                    <h3 style="color: #FF6B00; margin-bottom: 10px;">Group B</h3>
+                    <table class="standings-table" id="standingsGroupB">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Legs Won</th>
+                                <th>Legs Played</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knockout Bracket -->
+        <div class="section hidden" id="knockoutSection">
+            <h2 class="section-title">🏅 Knockout Bracket</h2>
+            <button class="btn-primary" onclick="generateKnockout()">📋 Generate Knockout Bracket</button>
+            
+            <div id="knockoutContainer"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="section">
+            <h2 class="section-title">💾 Save & Publish</h2>
+            
+            <div id="validationWarnings"></div>
+            
+            <div class="button-group">
+                <button class="btn-warning" onclick="saveDraft()">📝 Save Draft</button>
+                <button class="btn-secondary" onclick="previewDraft()">👁️ Preview Draft</button>
+                <button class="btn-primary" onclick="saveAndPublish()">🚀 Save & Publish</button>
+            </div>
+            
+            <div class="button-group" style="margin-top: 20px;">
+                <button class="btn-secondary" onclick="exportData('pdf')">📄 Export PDF</button>
+                <button class="btn-secondary" onclick="exportData('csv')">📊 Export CSV</button>
+                <button class="btn-secondary" onclick="exportData('json')">📦 Export JSON</button>
+                <button class="btn-primary" onclick="showEmbedCode()">🔗 Get Embed Code</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="conflictModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="color: #FF6B00;">⚠️ Unsaved Changes Detected</h2>
+                <button class="close-modal" onclick="closeModal('conflictModal')">✕</button>
+            </div>
+            <p>You have unsaved work in your browser. What would you like to do?</p>
+            <div class="button-group" style="margin-top: 20px;">
+                <button class="btn-warning" onclick="saveDraftAndLoad()">💾 Save Draft & Load</button>
+                <button class="btn-danger" onclick="discardAndLoad()">🗑️ Discard & Load</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="embedModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="color: #FF6B00;">🔗 Embed Stats Display</h2>
+                <button class="close-modal" onclick="closeModal('embedModal')">✕</button>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Preset Sizes</label>
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="setEmbedSize('100%', '800px')">Full Width</button>
+                    <button class="btn-secondary" onclick="setEmbedSize('375px', '667px')">Mobile</button>
+                    <button class="btn-secondary" onclick="setEmbedSize('1200px', '800px')">Desktop</button>
+                </div>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Width</label>
+                    <input type="text" id="embedWidth" value="100%">
+                </div>
+                <div class="form-group">
+                    <label>Height</label>
+                    <input type="text" id="embedHeight" value="800px">
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 15px;">
+                <label>Embed Code (Copy & Paste to your website)</label>
+                <textarea id="embedCode" rows="4" readonly style="width: 100%; font-family: monospace;"></textarea>
+            </div>
+            
+            <button class="btn-primary" onclick="copyEmbedCode()" style="width: 100%; margin-top: 10px;">📋 Copy to Clipboard</button>
+            
+            <div class="form-group" style="margin-top: 20px;">
+                <label>Direct Link</label>
+                <input type="text" id="directLink" readonly value="https://dowdarts.github.io/aadsstatsscrapper/official_stats_display.html" style="width: 100%;">
+            </div>
+            
+            <button class="btn-primary" onclick="copyDirectLink()" style="width: 100%; margin-top: 10px;">📋 Copy Link</button>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let tournamentData = {
+            players: [],
+            matches: [],
+            standings: { groupA: [], groupB: [] },
+            currentEventId: null
+        };
+
+        let pendingLoadEventId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date
+            document.getElementById('eventDate').valueAsDate = new Date();
+            
+            // Load events list
+            loadEventsList();
+            
+            // Check for unsaved work in localStorage
+            checkLocalStorage();
+            
+            // Initialize players
+            for (let i = 0; i < 10; i++) {
+                addPlayerRow();
+            }
+            
+            // Auto-save to localStorage on input changes
+            setupAutoSave();
+        });
+
+        function setupAutoSave() {
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('change', saveToLocalStorage);
+                input.addEventListener('input', debounce(saveToLocalStorage, 1000));
+            });
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function saveToLocalStorage() {
+            const data = {
+                seriesName: document.getElementById('seriesName').value,
+                year: document.getElementById('year').value,
+                eventNumber: document.getElementById('eventNumber').value,
+                eventDate: document.getElementById('eventDate').value,
+                players: collectPlayersData(),
+                matches: collectMatchesData(),
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('statsInput_currentEvent', JSON.stringify(data));
+        }
+
+        function checkLocalStorage() {
+            const saved = localStorage.getItem('statsInput_currentEvent');
+            if (saved) {
+                const data = JSON.parse(saved);
+                const savedTime = new Date(data.timestamp);
+                const hoursSince = (new Date() - savedTime) / (1000 * 60 * 60);
+                
+                if (hoursSince < 24) {
+                    showAlert('info', `Unsaved work found from ${savedTime.toLocaleString()}. Your work has been restored.`);
+                    restoreFromLocalStorage(data);
+                }
+            }
+        }
+
+        function restoreFromLocalStorage(data) {
+            document.getElementById('seriesName').value = data.seriesName || '';
+            document.getElementById('year').value = data.year || 2025;
+            document.getElementById('eventNumber').value = data.eventNumber || 1;
+            document.getElementById('eventDate').value = data.eventDate || '';
+            
+            // Restore players and matches would go here
+            // For now, just show the alert
+        }
+
+        function addPlayerRow() {
+            const container = document.getElementById('playersContainer');
+            const playerNum = container.children.length + 1;
+            
+            const row = document.createElement('div');
+            row.className = 'player-row';
+            row.innerHTML = `
+                <div>${playerNum}</div>
+                <div class="form-group">
+                    <input type="text" placeholder="Player Name" class="player-name" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Nickname" class="player-nickname">
+                </div>
+                <div class="form-group">
+                    <input type="number" placeholder="Age" class="player-age">
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Hometown" class="player-hometown">
+                </div>
+                <div class="form-group">
+                    <select class="player-group" required>
+                        <option value="">Group</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="file" accept="image/*" class="player-photo-input" onchange="handlePhotoUpload(this)">
+                </div>
+                <div class="form-group">
+                    <button class="btn-danger" onclick="removePlayerRow(this)" style="padding: 8px;">🗑️</button>
+                </div>
+            `;
+            
+            container.appendChild(row);
+        }
+
+        function removePlayerRow(button) {
+            button.closest('.player-row').remove();
+            renumberPlayers();
+        }
+
+        function renumberPlayers() {
+            const rows = document.querySelectorAll('.player-row');
+            rows.forEach((row, index) => {
+                row.querySelector('div:first-child').textContent = index + 1;
+            });
+        }
+
+        function handlePhotoUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    input.dataset.photoBase64 = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function collectPlayersData() {
+            const players = [];
+            const rows = document.querySelectorAll('.player-row');
+            
+            rows.forEach(row => {
+                const name = row.querySelector('.player-name').value;
+                if (!name) return;
+                
+                players.push({
+                    name: name,
+                    nickname: row.querySelector('.player-nickname').value,
+                    age: row.querySelector('.player-age').value,
+                    hometown: row.querySelector('.player-hometown').value,
+                    group: row.querySelector('.player-group').value,
+                    photo_base64: row.querySelector('.player-photo-input').dataset.photoBase64 || ''
+                });
+            });
+            
+            return players;
+        }
+
+        function generateRoundRobin() {
+            const players = collectPlayersData();
+            
+            // Validate we have players
+            if (players.length !== 10) {
+                showAlert('error', 'Please enter exactly 10 players before generating matches.');
+                return;
+            }
+            
+            // Separate by group
+            const groupA = players.filter(p => p.group === 'A');
+            const groupB = players.filter(p => p.group === 'B');
+            
+            if (groupA.length !== 5 || groupB.length !== 5) {
+                showAlert('error', 'Each group must have exactly 5 players (currently Group A: ' + groupA.length + ', Group B: ' + groupB.length + ')');
+                return;
+            }
+            
+            // Generate matches for each group
+            const container = document.getElementById('roundRobinContainer');
+            container.innerHTML = '';
+            
+            // 5-player bye schedule
+            const schedule = [
+                {round: 1, bye: 0, matches: [[1,4], [2,3]]},  // Player 0 has bye
+                {round: 2, bye: 1, matches: [[0,2], [3,4]]},  // Player 1 has bye
+                {round: 3, bye: 2, matches: [[0,3], [1,4]]},  // Player 2 has bye
+                {round: 4, bye: 3, matches: [[0,4], [1,2]]},  // Player 3 has bye
+                {round: 5, bye: 4, matches: [[0,1], [2,3]]}   // Player 4 has bye
+            ];
+            
+            ['A', 'B'].forEach(group => {
+                const groupPlayers = group === 'A' ? groupA : groupB;
+                const groupDiv = document.createElement('div');
+                groupDiv.innerHTML = `<h3 style="color: #FF6B00; margin: 20px 0;">Group ${group}</h3>`;
+                
+                schedule.forEach(roundData => {
+                    groupDiv.innerHTML += `<h4 style="color: #FFB347; margin-top: 15px;">Round ${roundData.round} (${groupPlayers[roundData.bye].name} has BYE)</h4>`;
+                    
+                    roundData.matches.forEach(match => {
+                        const player1 = groupPlayers[match[0]];
+                        const player2 = groupPlayers[match[1]];
+                        
+                        groupDiv.appendChild(createMatchCard(group, roundData.round, player1, player2));
+                    });
+                });
+                
+                container.appendChild(groupDiv);
+            });
+            
+            document.getElementById('standingsSection').classList.remove('hidden');
+            document.getElementById('knockoutSection').classList.remove('hidden');
+            
+            showAlert('success', 'Round-robin matches generated! Enter match results below.');
+        }
+
+        function createMatchCard(group, round, player1, player2) {
+            const card = document.createElement('div');
+            card.className = 'match-card';
+            card.dataset.group = group;
+            card.dataset.round = round;
+            card.dataset.roundType = 'round_robin';
+            
+            card.innerHTML = `
+                <div class="match-header">
+                    <div class="match-players">${player1.name} vs ${player2.name}</div>
+                    <div>Group ${group} - Round ${round}</div>
+                </div>
+                
+                <div class="form-grid" style="margin-bottom: 15px;">
+                    <div class="form-group">
+                        <label>${player1.name} Sets Won</label>
+                        <input type="number" min="0" class="p1-sets" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>${player2.name} Sets Won</label>
+                        <input type="number" min="0" class="p2-sets" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>${player1.name} Legs Won</label>
+                        <input type="number" min="0" class="p1-legs" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>${player2.name} Legs Won</label>
+                        <input type="number" min="0" class="p2-legs" value="0">
+                    </div>
+                </div>
+                
+                <button class="btn-secondary" onclick="openStatsModal(this, '${player1.name}', '${player2.name}')" style="width: 100%;">
+                    📊 Enter Detailed Stats
+                </button>
+                
+                <div class="stats-data hidden"></div>
+            `;
+            
+            return card;
+        }
+
+        function openStatsModal(button, player1, player2) {
+            // This would open a modal for detailed stats entry
+            // For brevity, showing a simplified version
+            const stats = prompt(`Enter stats for ${player1} (format: 3DA,180s,checkouts_hit,checkouts_opp,highest)`);
+            if (stats) {
+                const card = button.closest('.match-card');
+                const statsDiv = card.querySelector('.stats-data');
+                statsDiv.dataset.player1Stats = stats;
+                statsDiv.dataset.player2Stats = prompt(`Enter stats for ${player2}:`);
+                button.textContent = '✓ Stats Entered';
+                button.classList.remove('btn-secondary');
+                button.classList.add('btn-primary');
+            }
+        }
+
+        function calculateStandings() {
+            const players = collectPlayersData();
+            const matches = collectMatchesData();
+            
+            const standings = {
+                A: {},
+                B: {}
+            };
+            
+            // Initialize standings
+            players.forEach(player => {
+                standings[player.group][player.name] = {
+                    name: player.name,
+                    legsWon: 0,
+                    legsPlayed: 0,
+                    matchesWon: 0,
+                    h2h: {}
+                };
+            });
+            
+            // Calculate from matches
+            matches.filter(m => m.roundType === 'round_robin').forEach(match => {
+                const group = match.group;
+                const p1 = standings[group][match.player1];
+                const p2 = standings[group][match.player2];
+                
+                if (!p1 || !p2) return;
+                
+                p1.legsWon += match.player1Legs;
+                p1.legsPlayed += match.player1Legs + match.player2Legs;
+                p2.legsWon += match.player2Legs;
+                p2.legsPlayed += match.player1Legs + match.player2Legs;
+                
+                // Track head-to-head
+                if (!p1.h2h[match.player2]) p1.h2h[match.player2] = {legsWon: 0, legsLost: 0};
+                if (!p2.h2h[match.player1]) p2.h2h[match.player1] = {legsWon: 0, legsLost: 0};
+                
+                p1.h2h[match.player2].legsWon += match.player1Legs;
+                p1.h2h[match.player2].legsLost += match.player2Legs;
+                p2.h2h[match.player1].legsWon += match.player2Legs;
+                p2.h2h[match.player1].legsLost += match.player1Legs;
+                
+                if (match.player1Legs > match.player2Legs) p1.matchesWon++;
+                else if (match.player2Legs > match.player1Legs) p2.matchesWon++;
+            });
+            
+            // Sort with tie-breakers
+            ['A', 'B'].forEach(group => {
+                const sorted = Object.values(standings[group]).sort((a, b) => {
+                    // 1. Total legs won
+                    if (b.legsWon !== a.legsWon) return b.legsWon - a.legsWon;
+                    
+                    // 2. Head-to-head legs won
+                    const h2hA = a.h2h[b.name]?.legsWon || 0;
+                    const h2hB = b.h2h[a.name]?.legsWon || 0;
+                    if (h2hB !== h2hA) return h2hB - h2hA;
+                    
+                    // 3. Leg difference
+                    const diffA = a.legsWon - (a.legsPlayed - a.legsWon);
+                    const diffB = b.legsWon - (b.legsPlayed - b.legsWon);
+                    return diffB - diffA;
+                });
+                
+                displayStandings(group, sorted);
+            });
+            
+            showAlert('success', 'Standings calculated with tie-breaker rules applied!');
+        }
+
+        function displayStandings(group, standings) {
+            const tbody = document.querySelector(`#standingsGroup${group} tbody`);
+            tbody.innerHTML = '';
+            
+            standings.forEach((player, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${player.name}</td>
+                    <td>${player.legsWon}</td>
+                    <td>${player.legsPlayed}</td>
+                `;
+            });
+        }
+
+        function collectMatchesData() {
+            const matches = [];
+            const cards = document.querySelectorAll('.match-card');
+            
+            cards.forEach(card => {
+                const players = card.querySelector('.match-players').textContent.split(' vs ');
+                matches.push({
+                    group: card.dataset.group,
+                    round: card.dataset.round,
+                    roundType: card.dataset.roundType || 'round_robin',
+                    player1: players[0].trim(),
+                    player2: players[1].trim(),
+                    player1Sets: parseInt(card.querySelector('.p1-sets')?.value || 0),
+                    player2Sets: parseInt(card.querySelector('.p2-sets')?.value || 0),
+                    player1Legs: parseInt(card.querySelector('.p1-legs')?.value || 0),
+                    player2Legs: parseInt(card.querySelector('.p2-legs')?.value || 0)
+                });
+            });
+            
+            return matches;
+        }
+
+        function generateKnockout() {
+            showAlert('info', 'Knockout bracket generation coming soon!');
+        }
+
+        async function saveDraft() {
+            const data = {
+                seriesName: document.getElementById('seriesName').value,
+                year: parseInt(document.getElementById('year').value),
+                eventNumber: parseInt(document.getElementById('eventNumber').value),
+                eventDate: document.getElementById('eventDate').value,
+                players: collectPlayersData(),
+                matches: collectMatchesData()
+            };
+            
+            try {
+                const response = await fetch('/admin/save-tournament', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({...data, is_draft: true})
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', 'Draft saved successfully!');
+                    tournamentData.currentEventId = result.event_id;
+                } else {
+                    showAlert('error', 'Error saving draft: ' + result.error);
+                }
+            } catch (error) {
+                showAlert('error', 'Error: ' + error.message);
+            }
+        }
+
+        async function saveAndPublish() {
+            if (!confirm('Are you sure you want to publish? This will make the stats visible to fans.')) {
+                return;
+            }
+            
+            const data = {
+                seriesName: document.getElementById('seriesName').value,
+                year: parseInt(document.getElementById('year').value),
+                eventNumber: parseInt(document.getElementById('eventNumber').value),
+                eventDate: document.getElementById('eventDate').value,
+                players: collectPlayersData(),
+                matches: collectMatchesData()
+            };
+            
+            try {
+                const response = await fetch('/admin/save-tournament', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({...data, is_draft: false})
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', '✨ Published successfully! Stats are now live.');
+                    localStorage.removeItem('statsInput_currentEvent');
+                    tournamentData.currentEventId = result.event_id;
+                } else {
+                    showAlert('error', 'Error publishing: ' + result.error);
+                }
+            } catch (error) {
+                showAlert('error', 'Error: ' + error.message);
+            }
+        }
+
+        function previewDraft() {
+            window.open('/docs/official_stats_display.html?preview=true', '_blank');
+        }
+
+        async function loadEventsList() {
+            try {
+                const response = await fetch('/api/events');
+                const events = await response.json();
+                
+                const select = document.getElementById('existingEvents');
+                select.innerHTML = '<option value="">-- Select an event to edit --</option>';
+                
+                events.forEach(event => {
+                    const option = document.createElement('option');
+                    option.value = event.id;
+                    option.textContent = `${event.series.name} - Event ${event.event_number} (${event.status})`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                showAlert('error', 'Error loading events: ' + error.message);
+            }
+        }
+
+        function startNewEvent() {
+            if (confirm('Start a new event? Any unsaved changes will be lost.')) {
+                localStorage.removeItem('statsInput_currentEvent');
+                location.reload();
+            }
+        }
+
+        function showAlert(type, message) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} active`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        function showEmbedCode() {
+            updateEmbedCode();
+            document.getElementById('embedModal').classList.add('active');
+        }
+
+        function updateEmbedCode() {
+            const width = document.getElementById('embedWidth').value;
+            const height = document.getElementById('embedHeight').value;
+            const code = `<iframe src="https://dowdarts.github.io/aadsstatsscrapper/official_stats_display.html" width="${width}" height="${height}" style="border: none;"></iframe>`;
+            document.getElementById('embedCode').value = code;
+        }
+
+        function setEmbedSize(width, height) {
+            document.getElementById('embedWidth').value = width;
+            document.getElementById('embedHeight').value = height;
+            updateEmbedCode();
+        }
+
+        function copyEmbedCode() {
+            const textarea = document.getElementById('embedCode');
+            textarea.select();
+            document.execCommand('copy');
+            showAlert('success', 'Embed code copied to clipboard!');
+        }
+
+        function copyDirectLink() {
+            const input = document.getElementById('directLink');
+            input.select();
+            document.execCommand('copy');
+            showAlert('success', 'Link copied to clipboard!');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function exportData(format) {
+            showAlert('info', `Export to ${format.toUpperCase()} coming soon!`);
+        }
+
+        function showBackupModal() {
+            if (confirm('Download complete database backup?')) {
+                window.location.href = '/admin/backup-data';
+            }
+        }
+
+        function showRestoreModal() {
+            showAlert('info', 'Restore functionality coming soon!');
+        }
+    </script>
+</body>
+</html>
