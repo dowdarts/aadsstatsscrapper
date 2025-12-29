@@ -9,51 +9,205 @@
 <body>
     <!-- Main Container -->
     <div class="container" id="mainContainer">
-                <!-- Manual Entry Panel for Scores and Stats -->
+        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: #FF6B00; padding: 6px 12px; border-radius: 15px; font-size: 10px; border: 1px solid rgba(255, 107, 0, 0.3);">
+            📊 v1.2.1
+        </div>
+                <!-- Tournament Manual Input Section -->
                 <div class="management-card">
-                    <h3>Manual Entry: Add Player Stats</h3>
-                    <form id="manualEntryForm" method="POST" action="/admin/add-stats">
+                    <h3>Manual Tournament Input</h3>
+                    <form id="tournamentInputForm" method="POST" action="/admin/save-tournament">
+                        <!-- Series and Event Selection -->
                         <div class="form-group">
-                            <label for="playerName">Player Name:</label>
-                            <input type="text" id="playerName" name="playerName" required>
+                            <label for="series">Series:</label>
+                            <input type="text" id="series" name="series" value="Season 1" required>
                         </div>
                         <div class="form-group">
-                            <label for="eventId">Event:</label>
-                            <select id="eventId" name="eventId" required>
-                                <option value="1">Event 1</option>
-                                <option value="2">Event 2</option>
-                                <option value="3">Event 3</option>
-                                <option value="4">Event 4</option>
-                                <option value="5">Event 5</option>
-                                <option value="6">Event 6</option>
-                                <option value="7">Tournament of Champions</option>
+                            <label for="event">Event (1-7):</label>
+                            <select id="event" name="event" required>
+                                <option value="1">Event 1 (Qualifier)</option>
+                                <option value="2">Event 2 (Qualifier)</option>
+                                <option value="3">Event 3 (Qualifier)</option>
+                                <option value="4">Event 4 (Qualifier)</option>
+                                <option value="5">Event 5 (Qualifier)</option>
+                                <option value="6">Event 6 (Qualifier)</option>
+                                <option value="7">Event 7 (Championship)</option>
                             </select>
                         </div>
+
+                        <!-- Player Entry and Group Assignment -->
+                        <h4>Participants</h4>
                         <div class="form-group">
-                            <label for="threeDAvg">3 Dart Avg:</label>
-                            <input type="number" step="0.01" id="threeDAvg" name="threeDAvg" required>
+                            <label>Enter Player Names and Assign Groups (A/B):</label>
+                            <div id="playersList">
+                                <!-- 10 player rows, JS can enhance for dynamic entry -->
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 1" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 2" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 3" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 4" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 5" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 6" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 7" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 8" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 9" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                                <div class="player-row">
+                                    <input type="text" name="player_names[]" placeholder="Player 10" required>
+                                    <select name="player_groups[]" required>
+                                        <option value="A">Group A</option>
+                                        <option value="B">Group B</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Round Robin Match Input for Each Group -->
+                        <h4>Group Stage Matches</h4>
                         <div class="form-group">
-                            <label for="legsPlayed">Legs Played:</label>
-                            <input type="number" id="legsPlayed" name="legsPlayed" required>
+                            <label>Enter Scores for Each Group Match (10 matches per group):</label>
+                            <div class="group-matches">
+                                <h5>Group A Matches</h5>
+                                <div id="groupA-matches">
+                                    <!-- 10 match rows for Group A -->
+                                    <!-- Example: Player 1 vs Player 2: <input> - <input> -->
+                                    <!-- User will fill in player names and scores -->
+                                    <!-- For brevity, only 2 shown, add 10 in real UI -->
+                                    <div class="match-row">
+                                        <input type="text" name="groupA_match_player1[]" placeholder="Player A1" required>
+                                        vs
+                                        <input type="text" name="groupA_match_player2[]" placeholder="Player A2" required>
+                                        <input type="number" name="groupA_score1[]" placeholder="Score 1" required>
+                                        -
+                                        <input type="number" name="groupA_score2[]" placeholder="Score 2" required>
+                                    </div>
+                                    <!-- Repeat for 10 matches -->
+                                </div>
+                                <h5>Group B Matches</h5>
+                                <div id="groupB-matches">
+                                    <!-- 10 match rows for Group B -->
+                                    <div class="match-row">
+                                        <input type="text" name="groupB_match_player1[]" placeholder="Player B1" required>
+                                        vs
+                                        <input type="text" name="groupB_match_player2[]" placeholder="Player B2" required>
+                                        <input type="number" name="groupB_score1[]" placeholder="Score 1" required>
+                                        -
+                                        <input type="number" name="groupB_score2[]" placeholder="Score 2" required>
+                                    </div>
+                                    <!-- Repeat for 10 matches -->
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Knockout Bracket Input -->
+                        <h4>Knockout Bracket</h4>
                         <div class="form-group">
-                            <label for="oneEighties">180s:</label>
-                            <input type="number" id="oneEighties" name="oneEighties" required>
+                            <label>Enter Knockout Bracket Matchups and Scores:</label>
+                            <div class="knockout-bracket">
+                                <!-- Quarterfinals (4 matches) -->
+                                <h5>Quarterfinals</h5>
+                                <div class="match-row">
+                                    <input type="text" name="qf_player1[]" placeholder="A1/B4" required>
+                                    vs
+                                    <input type="text" name="qf_player2[]" placeholder="B4/A1" required>
+                                    <input type="number" name="qf_score1[]" placeholder="Score 1" required>
+                                    -
+                                    <input type="number" name="qf_score2[]" placeholder="Score 2" required>
+                                </div>
+                                <!-- Repeat for 4 quarterfinals -->
+                                <h5>Semifinals</h5>
+                                <div class="match-row">
+                                    <input type="text" name="sf_player1[]" placeholder="QF Winner 1" required>
+                                    vs
+                                    <input type="text" name="sf_player2[]" placeholder="QF Winner 2" required>
+                                    <input type="number" name="sf_score1[]" placeholder="Score 1" required>
+                                    -
+                                    <input type="number" name="sf_score2[]" placeholder="Score 2" required>
+                                </div>
+                                <!-- Repeat for 2 semifinals -->
+                                <h5>Final</h5>
+                                <div class="match-row">
+                                    <input type="text" name="final_player1" placeholder="SF Winner 1" required>
+                                    vs
+                                    <input type="text" name="final_player2" placeholder="SF Winner 2" required>
+                                    <input type="number" name="final_score1" placeholder="Score 1" required>
+                                    -
+                                    <input type="number" name="final_score2" placeholder="Score 2" required>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Match Stat Details -->
+                        <h4>Match Stat Details</h4>
                         <div class="form-group">
-                            <label for="oneFortyPlus">140+:</label>
-                            <input type="number" id="oneFortyPlus" name="oneFortyPlus" required>
+                            <label>Enter Individual Stats for Each Match:</label>
+                            <div class="match-stats-detail">
+                                <!-- Example for one match, repeat as needed -->
+                                <div class="match-detail-row">
+                                    <input type="text" name="stat_player1[]" placeholder="Player 1" required>
+                                    <input type="number" step="0.01" name="stat_3da1[]" placeholder="3DA" required>
+                                    <input type="number" name="stat_100s1[]" placeholder="100+" required>
+                                    <input type="number" name="stat_120s1[]" placeholder="120+" required>
+                                    <input type="number" name="stat_140s1[]" placeholder="140+" required>
+                                    <input type="number" name="stat_160s1[]" placeholder="160+" required>
+                                    <input type="number" name="stat_180s1[]" placeholder="180s" required>
+                                </div>
+                                <!-- Repeat for each match/player as needed -->
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="hundredsPlus">100+:</label>
-                            <input type="number" id="hundredsPlus" name="hundredsPlus" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="highFinish">High Finish:</label>
-                            <input type="number" id="highFinish" name="highFinish" required>
-                        </div>
-                        <button type="submit" class="btn btn-success">Add Stats</button>
+
+                        <button type="submit" class="btn btn-success">Save Tournament Data</button>
                     </form>
                 </div>
                     <form id="eventScrapeForm">
