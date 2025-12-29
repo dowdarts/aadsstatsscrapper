@@ -1,49 +1,53 @@
-# AADS Darts Scraper & Broadcast Engine
+# AADS Stats System v2.0 - Serverless Architecture
 
-**Atlantic Amateur Darts Series** - Professional statistics tracking and live broadcast overlay system.
+**Atlantic Amateur Darts Series** - Official statistics tracking and display system with manual input.
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue)
-![Flask](https://img.shields.io/badge/Flask-3.0.0-green)
 ![Status](https://img.shields.io/badge/Status-Production-success)
+![Architecture](https://img.shields.io/badge/Architecture-Serverless-blueviolet)
+![Database](https://img.shields.io/badge/Database-Supabase-green)
 
 ## 📋 Overview
 
-A comprehensive Python-based system that scrapes DartConnect Match Recap logs, aggregates player statistics across a 7-event series, and outputs a professional HTML/CSS leaderboard perfect for live stream overlays and website embedding.
+A **fully serverless** stats management system:
+- **Admin Interface** (`templates/stats_input.html`) - Enter tournament data directly into Supabase
+- **Public Display** (`docs/official_stats_display.html`) - Read and display stats from Supabase  
+- **No server needed** - Both HTML files connect directly to Supabase using JavaScript client
 
 ### Key Features
 
-- 🎯 **Automated Scraping**: Extract player stats from DartConnect Match Recap pages
-- 📊 **Weighted Averages**: Fair ranking system using weighted 3-dart averages across all legs
-- 🏆 **Qualification Tracking**: Automatic tracking of event winners and Tournament of Champions qualification
-- 📺 **Broadcast Mode**: Clean overlay mode for OBS/streaming software (transparent background, chroma-key ready)
-- 🔄 **Auto-Refresh**: Real-time updates with 30-second auto-refresh
-- 🎨 **Modern UI**: Professional dark theme with gold accents
-- 📱 **Responsive Design**: Works on desktop, tablet, and mobile
+- 🎯 **Serverless**: No Flask/Python server required - pure HTML/JS + Supabase
+- 📊 **Manual Input**: Admin interface for entering tournament data
+- 🏆 **Career Stats**: Auto-aggregated player statistics across all events
+- 📺 **Auto-Refresh**: Display polls Supabase every 10 seconds for updates
+- 🔄 **Draft/Publish**: Save work without making it live
+- 🎨 **Modern UI**: Beautiful gradient theme with player photos
+
+## 🚀 Quick Start
+
+### No Installation Required!
+
+**Admin Interface** (enter tournament data):
+- Open `templates/stats_input.html` in any web browser
+- Fill in tournament details and player info
+- Click "Save & Publish" to make stats live
+
+**Public Display** (view stats):
+- Visit: https://dowdarts.github.io/aadsstatsscrapper/official_stats_display.html
+- Or open `docs/official_stats_display.html` locally
+
+**That's it!** Both apps connect directly to Supabase - no server installation needed.
 
 ## 🏗️ System Architecture
 
 ```text
-aadsstatsscrapper/
-├── app.py                    # Flask web server & API
-├── database_manager.py       # Data persistence & statistics logic
-├── scraper.py               # DartConnect scraper
-├── requirements.txt         # Python dependencies
-├── aads_master_db.json      # Statistics database (auto-generated)
-├── templates/
-│   └── index.html          # Main dashboard template
-└── static/
-    ├── css/
-    │   └── style.css       # Professional styling
-    └── js/
-        └── overlay.js      # Frontend logic & auto-refresh
+Serverless Architecture:
+  Admin HTML ──┐
+               ├──► Supabase PostgreSQL
+  Display HTML ┘
+
+No Flask server needed!
+Both apps use Supabase JavaScript client
 ```
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.8 or higher
-- pip (Python package manager)
 
 ### Installation
 
