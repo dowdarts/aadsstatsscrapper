@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atlantic Amateur Darts Series - Official Statistics</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>AADS Official Statistics | Atlantic Amateur Darts Series</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
@@ -12,21 +15,42 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-orange: #FF6B00;
+            --dark-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --border-color: rgba(255, 107, 0, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1a1a1a;
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
             min-height: 100vh;
+            font-size: 18px;
         }
 
         /* Header */
         .header {
-            background: #2a2a2a;
-            padding: 20px 40px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-bottom: 4px solid var(--primary-orange);
+            padding: 25px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-content {
+            max-width: 1880px;
+            margin: 0 auto;
+            padding: 0 30px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid #ff6b00;
+            justify-content: space-between;
         }
 
         .header-left {
@@ -36,22 +60,29 @@
         }
 
         .logo {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
+            height: 90px;
+            width: auto;
+            filter: drop-shadow(0 0 20px rgba(255, 107, 0, 0.6));
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .title-section h1 {
-            font-size: 1.5em;
-            color: #ff6b00;
+            font-size: 2em;
+            color: var(--primary-orange);
+            font-weight: 700;
             letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 107, 0, 0.4);
+            margin-bottom: 4px;
         }
 
         .title-section p {
-            font-size: 0.85em;
-            color: #999;
+            font-size: 1em;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
         }
 
         .season-badge {
@@ -65,43 +96,46 @@
 
         /* Navigation Tabs */
         .nav-tabs {
-            background: #222;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 153px;
+            z-index: 999;
             display: flex;
             justify-content: center;
             gap: 0;
-            border-bottom: 1px solid #333;
         }
 
         .nav-tab {
-            padding: 18px 40px;
+            padding: 18px 35px;
             background: transparent;
             border: none;
-            color: #999;
-            font-size: 0.95em;
+            color: var(--text-secondary);
+            font-size: 1.05em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             border-bottom: 3px solid transparent;
         }
 
         .nav-tab:hover {
-            color: #ff6b00;
-            background: #2a2a2a;
+            color: var(--primary-orange);
+            background: rgba(255, 107, 0, 0.05);
         }
 
         .nav-tab.active {
-            color: #ff6b00;
-            border-bottom-color: #ff6b00;
-            background: #252525;
+            color: var(--primary-orange);
+            border-bottom-color: var(--primary-orange);
+            background: rgba(255, 107, 0, 0.1);
         }
 
         /* Main Container */
         .container {
-            max-width: 1400px;
+            max-width: 1880px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 40px 30px;
         }
 
         /* Stats Cards */
@@ -109,57 +143,62 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .stat-card {
-            background: #252525;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 30px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 35px;
             text-align: center;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .stat-card:hover {
-            border-color: #ff6b00;
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 107, 0, 0.3);
+            border-color: var(--primary-orange);
         }
 
         .stat-number {
-            font-size: 3em;
-            font-weight: bold;
-            color: #ff6b00;
-            margin-bottom: 10px;
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--primary-orange);
+            margin-bottom: 12px;
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(255, 107, 0, 0.4);
         }
 
         .stat-label {
-            font-size: 0.9em;
-            color: #999;
+            font-size: 1em;
+            color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            font-weight: 500;
         }
 
         /* Section Header */
         .section-header {
-            background: #252525;
-            padding: 15px 25px;
-            border-left: 4px solid #ff6b00;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            padding: 25px;
+            border-bottom: 3px solid var(--primary-orange);
             margin-bottom: 20px;
         }
 
         .section-header h2 {
-            color: #ff6b00;
-            font-size: 1.3em;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            color: var(--primary-orange);
+            font-size: 1.8em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(255, 107, 0, 0.3);
         }
 
         /* Table */
         .standings-table {
-            background: #252525;
-            border: 1px solid #333;
-            border-radius: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             overflow: hidden;
         }
 
@@ -169,18 +208,18 @@
         }
 
         thead {
-            background: #2a2a2a;
+            background: rgba(255, 107, 0, 0.1);
         }
 
         th {
-            padding: 15px;
+            padding: 18px 20px;
             text-align: left;
-            font-size: 0.85em;
-            font-weight: 600;
-            color: #ff6b00;
+            font-size: 1em;
+            font-weight: 700;
+            color: var(--primary-orange);
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 2px solid #ff6b00;
+            border-bottom: 2px solid var(--border-color);
         }
 
         th:first-child {
@@ -188,13 +227,18 @@
         }
 
         td {
-            padding: 15px;
-            border-bottom: 1px solid #2a2a2a;
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             color: #ddd;
+            font-size: 1.05em;
         }
 
-        tr:hover td {
-            background: #2a2a2a;
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 107, 0, 0.05);
         }
 
         tr:last-child td {
@@ -202,35 +246,42 @@
         }
 
         .rank-cell {
-            font-weight: bold;
-            font-size: 1.1em;
-            color: #ff6b00;
+            font-weight: 700;
+            font-size: 1.3em;
+            color: var(--primary-orange);
         }
+
+        .rank-1 { color: #FFD700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .rank-2 { color: #C0C0C0; text-shadow: 0 0 10px rgba(192, 192, 192, 0.5); }
+        .rank-3 { color: #CD7F32; text-shadow: 0 0 10px rgba(205, 127, 50, 0.5); }
 
         .player-cell {
             font-weight: 600;
-            color: #fff;
+            color: var(--text-primary);
+            font-size: 1.15em;
         }
 
         /* Footer */
         .footer {
-            background: #222;
-            border-top: 3px solid #ff6b00;
-            padding: 40px 20px;
-            margin-top: 60px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            border-top: 4px solid var(--primary-orange);
+            padding: 50px 30px;
+            margin-top: 80px;
         }
 
         .sponsors {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .sponsors h3 {
-            color: #ff6b00;
-            font-size: 1em;
-            margin-bottom: 25px;
+            color: var(--primary-orange);
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 40px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(255, 107, 0, 0.3);
         }
 
         .sponsors h3::before {
@@ -238,31 +289,38 @@
         }
 
         .sponsor-logos {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 40px;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-items: center;
+            margin-bottom: 40px;
         }
 
         .sponsor-logo {
-            width: 100px;
-            height: 100px;
+            max-width: 100%;
+            height: auto;
+            max-height: 95px;
             object-fit: contain;
-            transition: all 0.3s;
-            padding: 10px;
+            transition: all 0.3s ease;
+            filter: grayscale(20%) brightness(0.9);
+            opacity: 0.85;
         }
 
         .sponsor-logo:hover {
-            border-color: #ff6b00;
-            transform: scale(1.1);
+            filter: grayscale(0%) brightness(1);
+            opacity: 1;
+            transform: scale(1.15);
         }
 
         .footer-info {
             text-align: center;
-            color: #666;
-            font-size: 0.85em;
+            color: var(--text-secondary);
+            font-size: 0.95em;
             line-height: 1.8;
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-info p {
@@ -552,6 +610,43 @@
         }
 
         @media (max-width: 968px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-left {
+                flex-direction: column;
+            }
+
+            .logo {
+                height: 60px;
+            }
+
+            .title-section h1 {
+                font-size: 1.3em;
+            }
+
+            .title-section p {
+                font-size: 0.8em;
+            }
+
+            .nav-tabs {
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+
+            .nav-tab {
+                padding: 12px 18px;
+                white-space: nowrap;
+                font-size: 0.9em;
+            }
+
+            .stats-summary {
+                grid-template-columns: 1fr;
+            }
+
             .h2h-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -572,17 +667,28 @@
             .filter-group {
                 width: 100%;
             }
+
+            .sponsor-logos {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .sponsor-logo {
+                max-height: 60px;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
-        <div class="header-left">
-            <img src="Officail AADS Logo.png" alt="AADS Logo" class="logo">
-            <div class="title-section">
-                <h1>Atlantic Amateur Darts Series</h1>
-                <p>Official Statistics & Standings</p>
+        <div class="header-content">
+            <div class="header-left">
+                <img src="Officail AADS Logo.png" alt="AADS Logo" class="logo">
+                <div class="title-section">
+                    <h1>ATLANTIC AMATEUR DARTS SERIES</h1>
+                    <p>Official Statistics & Standings</p>
+                </div>
             </div>
         </div>
     </div>
@@ -1019,9 +1125,12 @@
                     return;
                 }
 
-                tbody.innerHTML = standings.map((player, index) => `
+                tbody.innerHTML = standings.map((player, index) => {
+                    const rank = index + 1;
+                    const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+                    return `
                     <tr>
-                        <td class="rank-cell">${index + 1}</td>
+                        <td class="rank-cell ${rankClass}">${rank}</td>
                         <td class="player-cell">${player.name || 'Unknown'}</td>
                         <td>${player.career_avg ? player.career_avg.toFixed(2) : '-'}</td>
                         <td>${player.total_legs_won || 0}</td>
@@ -1031,7 +1140,7 @@
                         <td>${player.highest_finish || 0}</td>
                         <td>${player.total_events || 0}</td>
                     </tr>
-                `).join('');
+                `}).join('');
             } catch (error) {
                 console.error('Error loading standings:', error);
                 document.getElementById('standingsBody').innerHTML = `
