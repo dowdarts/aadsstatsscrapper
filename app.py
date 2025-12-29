@@ -1,3 +1,24 @@
+@app.route('/admin/add-stats', methods=['POST'])
+def add_stats():
+    """
+    Handle manual entry of player stats from the admin interface.
+    """
+    try:
+        player_name = request.form.get('playerName')
+        event_id = int(request.form.get('eventId'))
+        stats = {
+            'three_dart_avg': float(request.form.get('threeDAvg', 0)),
+            'legs_played': int(request.form.get('legsPlayed', 0)),
+            'one_eighties': int(request.form.get('oneEighties', 0)),
+            'one_forty_plus': int(request.form.get('oneFortyPlus', 0)),
+            'hundreds_plus': int(request.form.get('hundredsPlus', 0)),
+            'high_finish': int(request.form.get('highFinish', 0)),
+        }
+        db_manager.add_match_stats(player_name, event_id, stats)
+        return '<h3>Stats added for {} (Event {})</h3><a href="/">Back to Admin</a>'.format(player_name, event_id)
+    except Exception as e:
+        logger.error(f"Error in /admin/add-stats: {e}", exc_info=True)
+        return f'<h3>Error: {str(e)}</h3><a href="/">Back to Admin</a>', 500
 """
 AADS Flask Server
 Web API and dashboard for Atlantic Amateur Darts Series statistics
@@ -18,8 +39,8 @@ from datetime import datetime
 from scraper_html_parser import scrape_event_comprehensive
 from scraper_flask_integration import scrape_progress
 
-# Import the NEW comprehensive two-stage scraper
-from comprehensive_dart_scraper import TwoStageDartScraper
+import threading
+import time
 
 # Configure logging
 logging.basicConfig(
@@ -33,10 +54,9 @@ app = Flask(__name__,
             static_folder='static',
             template_folder='templates')
 
-# Initialize database manager and scraper
+
+# Initialize database manager
 db_manager = AADSDataManager()
-scraper = DartConnectScraper()
-comprehensive_scraper = TwoStageDartScraper(delay=1.0)  # Fast scraping for live updates
 
 
 @app.route('/')
@@ -187,62 +207,7 @@ def get_events():
         }), 500
 
 
-@app.route('/api/scrape', methods=['POST'])
-def scrape_url():
-    """
-    API endpoint to scrape a DartConnect URL and add stats to database.
-    
-    Request JSON:
-        {
-            "url": "DartConnect Match Recap URL",
-            "event_id": Event number (1-7)
-        }
-    
-    Returns:
-        JSON response with scraping results
-    """
-    try:
-        data = request.get_json()
-        
-        if not data or 'url' not in data:
-            return jsonify({
-                "success": False,
-                "error": "Missing 'url' in request"
-            }), 400
-        
-        url = data['url']
-        event_id = data.get('event_id', 1)
-        
-        # Scrape the URL
-        logger.info(f"API scrape request for URL: {url}")
-        player_stats = scraper.scrape_match_recap(url)
-        
-        if not player_stats:
-            return jsonify({
-                "success": False,
-                "error": "Failed to scrape URL or no data found"
-            }), 400
-        
-        # Add stats to database
-        added_players = []
-        for stats in player_stats:
-            player_name = stats.pop('player_name')
-            db_manager.add_match_stats(player_name, event_id, stats)
-            added_players.append(player_name)
-        
-        return jsonify({
-            "success": True,
-            "message": f"Added stats for {len(added_players)} player(s)",
-            "players": added_players,
-            "event_id": event_id
-        })
-    
-    except Exception as e:
-        logger.error(f"Error in /api/scrape: {e}", exc_info=True)
-        return jsonify({
-            "success": False,
-            "error": str(e)
-        }), 500
+    # Removed scraping-related endpoint
 
 
 @app.route('/api/add-stats', methods=['POST'])
@@ -379,141 +344,9 @@ def get_scrape_progress(job_id):
     
     return jsonify(progress_data)
 
-@app.route('/api/scrape-comprehensive', methods=['POST'])
-def scrape_comprehensive():
-    """
-    NEW COMPREHENSIVE TWO-STAGE DART SCRAPER
-    
-    This endpoint uses the updated comprehensive scraper that extracts:
-    - All basic stats (3DA, legs won/lost, etc.)
-    - Detailed scoring breakdowns (100+, 120+, 140+, 160+, 180s)  
-    - Performance metrics (first 9 average, highest score)
-    - Finishing stats (checkout %, highest checkout, 100+ finishes)
-    - Tournament bracket information
-    
-    Returns results immediately and integrates with database.
-    """
-    try:
-        data = request.get_json()
-        event_url = data.get('event_url')
-        event_id = data.get('event_id', 1)
-        
-        if not event_url:
-            return jsonify({
-                "success": False,
-                "message": "Event URL is required"
-            }), 400
-        
-        logger.info(f"🚀 Starting comprehensive scrape for: {event_url}")
-        
-        # Run the comprehensive scraper
-        df = comprehensive_scraper.run_full_scrape(event_url)
-        
-        if df.empty:
-            return jsonify({
-                "success": False,
-                "message": "No data extracted from event"
-            }), 400
-        
-        # Convert DataFrame to database format and add to DB
-        added_players = []
-        total_records = len(df)
-        
-        for _, row in df.iterrows():
-            # Convert row data to database format
-            stats_dict = {
-                'three_dart_avg': row.get('3da', 0),
-                'legs_played': row.get('legs_played', 0),
-                'first_9_avg': row.get('first_nine_average', 0),
-                'hundreds_plus': row.get('100_plus', 0),
-                'one_forty_plus': row.get('140_plus', 0),
-                'one_eighties': row.get('180s', 0),
-                'high_finish': row.get('highest_checkout', 0),
-                # Additional advanced stats
-                'win_percentage': row.get('win_percentage', 0),
-                'checkout_percentage': row.get('checkout_percentage', 0),
-                'highest_score': row.get('highest_score', 0),
-                'points_scored': row.get('points_scored', 0),
-                'darts_thrown': row.get('darts_thrown', 0),
-            }
-            
-            player_name = row.get('player_name', '')
-            if player_name:
-                db_manager.add_match_stats(player_name, event_id, stats_dict)
-                if player_name not in added_players:
-                    added_players.append(player_name)
-        
-        # Get tournament bracket info if available
-        bracket_info = {}
-        if hasattr(df, 'attrs') and 'tournament_results' in df.attrs:
-            bracket_info = df.attrs['tournament_results']
-        
-        return jsonify({
-            "success": True,
-            "message": f"Successfully scraped and added {total_records} player records",
-            "players_added": added_players,
-            "total_records": total_records,
-            "unique_players": len(added_players),
-            "tournament_info": bracket_info
-        })
-        
-    except Exception as e:
-        logger.error(f"❌ Comprehensive scrape failed: {e}")
-        return jsonify({
-            "success": False,
-            "message": f"Scraping failed: {str(e)}"
-        }), 500
+    # Removed comprehensive scraping endpoint
 
-@app.route('/api/scrape-event', methods=['POST'])
-def scrape_event():
-    """
-    COMPREHENSIVE TWO-PART EVENT SCRAPER WITH ADVANCED STATS
-    
-    PART 1: Extract match URLs using DartConnect API2
-    PART 2: Scrape individual match recaps with ALL advanced statistics:
-            - 180s, 140+, 100+ counts
-            - First 9 average
-            - Checkout efficiency and stats
-            - Per-match records (not aggregated)
-    
-    Returns job_id immediately and runs scraping in background thread.
-    Poll /api/scrape-progress/<job_id> to get real-time progress.
-    """
-    try:
-        data = request.get_json()
-        event_url = data.get('event_url')
-        event_name = data.get('event_name', 'AADS Event')
-        
-        if not event_url:
-            return jsonify({
-                "success": False,
-                "message": "Event URL is required"
-            }), 400
-        
-        # Generate job ID
-        job_id = f"{int(time.time())}_{event_name.replace(' ', '_').replace('#', '')}"
-        
-        # Start background thread with working scraper
-        from scraper_flask_integration import scrape_full_event_comprehensive_flask
-        thread = threading.Thread(
-            target=scrape_full_event_comprehensive_flask, 
-            args=(event_url, job_id)
-        )
-        thread.daemon = True
-        thread.start()
-        
-        return jsonify({
-            "success": True,
-            "job_id": job_id,
-            "message": "Scraping started - poll /api/scrape-progress/" + job_id + " for progress"
-        })
-        
-    except Exception as e:
-        logger.error(f"Failed to start scrape: {e}")
-        return jsonify({
-            "success": False,
-            "message": str(e)
-        }), 500
+    # Removed event scraping endpoint
 
 @app.route('/api/reset-database', methods=['POST'])
 def reset_database():

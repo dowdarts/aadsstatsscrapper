@@ -9,39 +9,17 @@
 <body>
     <!-- Main Container -->
     <div class="container" id="mainContainer">
-        <!-- Header Section -->
-        <header class="header">
-            <div class="header-content">
-                <h1 class="title">Atlantic Amateur Darts Series</h1>
-                <p class="subtitle">2025 Championship Standings</p>
-            </div>
-            <div class="header-controls">
-                <button id="broadcastToggle" class="btn-toggle">
-                    <span class="icon">📺</span> Broadcast Mode
-                </button>
-                <button id="refreshBtn" class="btn-refresh">
-                    <span class="icon">🔄</span> Refresh
-                </button>
-                <button id="manageToggle" class="btn-manage">
-                    <span class="icon">⚙️</span> Manage
-                </button>
-            </div>
-        </header>
-
-        <!-- Management Panel -->
-        <div id="managementPanel" class="management-panel hidden">
-            <div class="management-grid">
-                <!-- Single Match Scraping -->
+                <!-- Manual Entry Panel for Scores and Stats -->
                 <div class="management-card">
-                    <h3>📊 Scrape Match</h3>
-                    <form id="singleMatchForm">
+                    <h3>Manual Entry: Add Player Stats</h3>
+                    <form id="manualEntryForm" method="POST" action="/admin/add-stats">
                         <div class="form-group">
-                            <label for="matchUrl">Match Recap URL:</label>
-                            <input type="url" id="matchUrl" placeholder="https://recap.dartconnect.com/matches/..." required>
+                            <label for="playerName">Player Name:</label>
+                            <input type="text" id="playerName" name="playerName" required>
                         </div>
                         <div class="form-group">
-                            <label for="eventId">Event Number:</label>
-                            <select id="eventId" required>
+                            <label for="eventId">Event:</label>
+                            <select id="eventId" name="eventId" required>
                                 <option value="1">Event 1</option>
                                 <option value="2">Event 2</option>
                                 <option value="3">Event 3</option>
@@ -51,13 +29,33 @@
                                 <option value="7">Tournament of Champions</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Scrape Match</button>
+                        <div class="form-group">
+                            <label for="threeDAvg">3 Dart Avg:</label>
+                            <input type="number" step="0.01" id="threeDAvg" name="threeDAvg" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="legsPlayed">Legs Played:</label>
+                            <input type="number" id="legsPlayed" name="legsPlayed" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="oneEighties">180s:</label>
+                            <input type="number" id="oneEighties" name="oneEighties" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="oneFortyPlus">140+:</label>
+                            <input type="number" id="oneFortyPlus" name="oneFortyPlus" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hundredsPlus">100+:</label>
+                            <input type="number" id="hundredsPlus" name="hundredsPlus" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="highFinish">High Finish:</label>
+                            <input type="number" id="highFinish" name="highFinish" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Add Stats</button>
                     </form>
                 </div>
-
-                <!-- Event Batch Scraping -->
-                <div class="management-card">
-                    <h3>🏆 Scrape Event (Comprehensive Stats)</h3>
                     <form id="eventScrapeForm">
                         <div class="form-group">
                             <label for="eventUrl">Event Page URL:</label>
