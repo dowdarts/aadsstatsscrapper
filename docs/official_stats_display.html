@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AADS Official Stats Display</title>
+    <meta property="og:title" content="Atlantic Amateur Darts Series - Official Stats">
+    <meta property="og:description" content="Live tournament statistics, player profiles, and all-time standings">
+    <meta name="description" content="Official statistics display for Atlantic Amateur Darts Series">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #FF6B00 0%, #ff8533 100%);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.4);
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 107, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-filters {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-filters select {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 2px solid #FF6B00;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-filters select:hover {
+            background: rgba(255, 107, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-filters select:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(255, 107, 0, 0.5);
+        }
+
+        /* Tabs */
+        .tabs {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 107, 0, 0.3);
+            color: #FFB347;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 107, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #FF6B00 0%, #ff8533 100%);
+            color: white;
+            border-color: #FF6B00;
+            box-shadow: 0 5px 20px rgba(255, 107, 0, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 107, 0, 0.3);
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.4);
+            border-color: #FF6B00;
+        }
+
+        .stat-card h3 {
+            color: #FF6B00;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #FFB347;
+        }
+
+        /* Leaderboard Table */
+        .leaderboard {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            border: 2px solid rgba(255, 107, 0, 0.3);
+        }
+
+        .leaderboard-header {
+            background: linear-gradient(135deg, #FF6B00 0%, #ff8533 100%);
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(255, 107, 0, 0.2);
+            color: #FFB347;
+            font-weight: bold;
+            border-bottom: 2px solid #FF6B00;
+        }
+
+        tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        tr:hover {
+            background: rgba(255, 107, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .rank-1 { color: #FFD700; font-weight: bold; }
+        .rank-2 { color: #C0C0C0; font-weight: bold; }
+        .rank-3 { color: #CD7F32; font-weight: bold; }
+
+        /* Roster Grid */
+        .roster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .player-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid rgba(255, 107, 0, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.5);
+            border-color: #FF6B00;
+        }
+
+        .player-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #FF6B00;
+            margin-bottom: 15px;
+        }
+
+        .player-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #FFB347;
+            margin-bottom: 5px;
+        }
+
+        .player-nickname {
+            color: #FF6B00;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .player-stats-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-pill {
+            background: rgba(255, 107, 0, 0.2);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        /* Player Profile */
+        .profile-header {
+            background: linear-gradient(135deg, #FF6B00 0%, #ff8533 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            object-fit: cover;
+        }
+
+        .profile-info h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .profile-details {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .detail-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .personal-best-banner {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .back-button {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #FF6B00;
+            color: #FFB347;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: #FF6B00;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* Share Button */
+        .share-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: #1877F2;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(24, 119, 242, 0.5);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(24, 119, 242, 0.7);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 2000;
+            animation: slideIn 0.5s;
+        }
+
+        .toast.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5em;
+            color: #FFB347;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #FF6B00;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .nav-filters { flex-direction: column; }
+            .tab-buttons { flex-direction: column; }
+            .profile-header { flex-direction: column; text-align: center; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .share-btn { bottom: 15px; right: 15px; font-size: 1em; padding: 12px 20px; }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>🎯 Atlantic Amateur Darts Series</h1>
+        <p>Official Tournament Statistics & Player Profiles</p>
+    </div>
+
+    <!-- Navigation Filters -->
+    <div class="nav-container">
+        <div class="nav-filters">
+            <select id="seriesFilter">
+                <option value="all">All Series</option>
+            </select>
+            
+            <select id="eventFilter">
+                <option value="all">All Events</option>
+                <option value="1">Event 1</option>
+                <option value="2">Event 2</option>
+                <option value="3">Event 3</option>
+                <option value="4">Event 4</option>
+                <option value="5">Event 5</option>
+                <option value="6">Event 6</option>
+                <option value="7">Event 7</option>
+            </select>
+            
+            <select id="viewFilter">
+                <option value="current">Current Event</option>
+                <option value="series">Series Stats</option>
+                <option value="alltime">All-Time Leaders</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('stats')">📊 Stats & Standings</button>
+                <button class="tab-btn" onclick="switchTab('roster')">👥 Roster</button>
+                <button class="tab-btn" onclick="switchTab('profile')" id="profileTabBtn" style="display: none;">
+                    👤 Player Profile
+                </button>
+            </div>
+
+            <!-- Stats Tab -->
+            <div id="statsTab" class="tab-content active">
+                <div id="statsContent">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading statistics...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Roster Tab -->
+            <div id="rosterTab" class="tab-content">
+                <h2 style="color: #FF6B00; margin-bottom: 20px; font-size: 2em;">
+                    🏆 Active Players
+                </h2>
+                <div id="rosterGrid" class="roster-grid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading roster...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Profile Tab -->
+            <div id="profileTab" class="tab-content">
+                <button class="back-button" onclick="backToRoster()">← Back to Roster</button>
+                <div id="profileContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Facebook Share Button -->
+    <button class="share-btn" onclick="shareOnFacebook()">
+        📘 Share on Facebook
+    </button>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        Stats Updated!
+    </div>
+
+    <script>
+        // Global state
+        let currentVersion = 0;
+        let currentSeries = 'all';
+        let currentEvent = 'all';
+        let currentView = 'current';
+        let currentPlayer = null;
+        let allPlayers = [];
+        let refreshInterval = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load filters from localStorage
+            loadFiltersFromStorage();
+            
+            // Load data
+            loadSeries();
+            loadStats();
+            loadRoster();
+            
+            // Setup filter listeners
+            document.getElementById('seriesFilter').addEventListener('change', onFilterChange);
+            document.getElementById('eventFilter').addEventListener('change', onFilterChange);
+            document.getElementById('viewFilter').addEventListener('change', onFilterChange);
+            
+            // Start auto-refresh polling
+            startAutoRefresh();
+        });
+
+        function loadFiltersFromStorage() {
+            const saved = localStorage.getItem('aadsFilters');
+            if (saved) {
+                const filters = JSON.parse(saved);
+                currentSeries = filters.series || 'all';
+                currentEvent = filters.event || 'all';
+                currentView = filters.view || 'current';
+                
+                document.getElementById('seriesFilter').value = currentSeries;
+                document.getElementById('eventFilter').value = currentEvent;
+                document.getElementById('viewFilter').value = currentView;
+            } else {
+                // Default to latest event
+                currentView = 'current';
+            }
+        }
+
+        function saveFiltersToStorage() {
+            const filters = {
+                series: currentSeries,
+                event: currentEvent,
+                view: currentView
+            };
+            localStorage.setItem('aadsFilters', JSON.stringify(filters));
+        }
+
+        function onFilterChange() {
+            currentSeries = document.getElementById('seriesFilter').value;
+            currentEvent = document.getElementById('eventFilter').value;
+            currentView = document.getElementById('viewFilter').value;
+            
+            saveFiltersToStorage();
+            loadStats();
+        }
+
+        async function loadSeries() {
+            try {
+                const response = await fetch('/api/series');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const select = document.getElementById('seriesFilter');
+                    select.innerHTML = '<option value="all">All Series</option>';
+                    
+                    data.series.forEach(series => {
+                        const option = document.createElement('option');
+                        option.value = series.id;
+                        option.textContent = `${series.name} (${series.year})`;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading series:', error);
+            }
+        }
+
+        async function loadStats() {
+            const container = document.getElementById('statsContent');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading statistics...</div>';
+            
+            try {
+                let endpoint = '/api/stats';
+                
+                if (currentView === 'alltime') {
+                    endpoint = '/api/all-time-standings';
+                }
+                
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayStats(data);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                container.innerHTML = '<p style="color: red;">Error loading statistics. Please refresh the page.</p>';
+            }
+        }
+
+        function displayStats(data) {
+            const container = document.getElementById('statsContent');
+            let html = '';
+            
+            if (currentView === 'alltime') {
+                html += '<div class="leaderboard">';
+                html += '<div class="leaderboard-header">🏆 All-Time Career Standings</div>';
+                html += '<table><thead><tr>';
+                html += '<th>Rank</th><th>Player</th><th>Legs Won</th><th>Legs Played</th>';
+                html += '<th>Win %</th><th>3DA</th><th>180s</th><th>Checkout %</th>';
+                html += '</tr></thead><tbody>';
+                
+                const standings = data.standings || [];
+                standings.forEach((player, index) => {
+                    const rankClass = index < 3 ? `rank-${index + 1}` : '';
+                    html += `<tr class="${rankClass}" onclick="showPlayerProfile('${player.player_id}')">`;
+                    html += `<td>${index + 1}</td>`;
+                    html += `<td><strong>${player.name}</strong></td>`;
+                    html += `<td>${player.total_legs_won || 0}</td>`;
+                    html += `<td>${player.total_legs_played || 0}</td>`;
+                    html += `<td>${player.legs_won_percentage || 0}%</td>`;
+                    html += `<td>${player.career_avg || 0}</td>`;
+                    html += `<td>${player.total_180s || 0}</td>`;
+                    html += `<td>${player.career_checkout_percentage || 0}%</td>`;
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table></div>';
+            } else {
+                // Current event leaderboard
+                const leaderboard = data.leaderboard || [];
+                
+                if (leaderboard.length === 0) {
+                    html = '<p style="text-align: center; font-size: 1.5em; color: #FFB347; padding: 50px;">No statistics available yet. Check back after events are published!</p>';
+                } else {
+                    html += '<div class="leaderboard">';
+                    html += '<div class="leaderboard-header">🎯 Current Leaderboard</div>';
+                    html += '<table><thead><tr>';
+                    html += '<th>Rank</th><th>Player</th><th>3DA</th><th>Legs</th><th>180s</th><th>Events</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    leaderboard.forEach((player, index) => {
+                        const rankClass = index < 3 ? `rank-${index + 1}` : '';
+                        html += `<tr class="${rankClass}">`;
+                        html += `<td>${player.rank}</td>`;
+                        html += `<td><strong>${player.name}</strong></td>`;
+                        html += `<td>${player.weighted_3da || 0}</td>`;
+                        html += `<td>${player.total_legs || 0}</td>`;
+                        html += `<td>${player.total_180s || 0}</td>`;
+                        html += `<td>${player.events_played?.length || 0}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table></div>';
+                }
+            }
+            
+            container.innerHTML = html;
+        }
+
+        async function loadRoster() {
+            try {
+                const response = await fetch('/api/players');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allPlayers = data.players;
+                    displayRoster(allPlayers);
+                }
+            } catch (error) {
+                console.error('Error loading roster:', error);
+            }
+        }
+
+        function displayRoster(players) {
+            const container = document.getElementById('rosterGrid');
+            
+            if (players.length === 0) {
+                container.innerHTML = '<p style="text-align: center; font-size: 1.5em; color: #FFB347;">No players in roster yet.</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            players.forEach(player => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+                card.onclick = () => showPlayerProfile(player.id);
+                
+                const photoSrc = player.photo_base64 || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120"%3E%3Crect fill="%23FF6B00" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-size="48" fill="white"%3E' + (player.name.charAt(0) || '?') + '%3C/text%3E%3C/svg%3E';
+                
+                card.innerHTML = `
+                    <img src="${photoSrc}" alt="${player.name}" class="player-photo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22%3E%3Crect fill=%22%23FF6B00%22 width=%22120%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2248%22 fill=%22white%22%3E?%3C/text%3E%3C/svg%3E'">
+                    <div class="player-name">${player.name}</div>
+                    ${player.nickname ? `<div class="player-nickname">"${player.nickname}"</div>` : ''}
+                    <div class="player-stats-summary">
+                        <div class="stat-pill">Age: ${player.age || 'N/A'}</div>
+                        <div class="stat-pill">${player.hometown || 'Unknown'}</div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        async function showPlayerProfile(playerId) {
+            currentPlayer = playerId;
+            
+            try {
+                const response = await fetch(`/api/player/${playerId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayPlayerProfile(data);
+                    
+                    // Show profile tab
+                    document.getElementById('profileTabBtn').style.display = 'block';
+                    switchTab('profile');
+                }
+            } catch (error) {
+                console.error('Error loading player profile:', error);
+            }
+        }
+
+        function displayPlayerProfile(data) {
+            const player = data.player;
+            const stats = data.career_stats || {};
+            const personalBest = data.personal_best;
+            
+            const photoSrc = player.photo_base64 || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="150" height="150"%3E%3Crect fill="%23FF6B00" width="150" height="150"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-size="60" fill="white"%3E' + (player.name.charAt(0) || '?') + '%3C/text%3E%3C/svg%3E';
+            
+            let html = `
+                <div class="profile-header">
+                    <img src="${photoSrc}" alt="${player.name}" class="profile-photo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22%3E%3Crect fill=%22%23FF6B00%22 width=%22150%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2260%22 fill=%22white%22%3E?%3C/text%3E%3C/svg%3E'">
+                    <div class="profile-info">
+                        <h2>${player.name}</h2>
+                        ${player.nickname ? `<p style="font-size: 1.3em; font-style: italic;">"${player.nickname}"</p>` : ''}
+                        <div class="profile-details">
+                            ${player.age ? `<div class="detail-item">Age: ${player.age}</div>` : ''}
+                            ${player.hometown ? `<div class="detail-item">📍 ${player.hometown}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Personal Best Banner
+            if (personalBest) {
+                const placement = personalBest.best_placement;
+                let placementText = '';
+                if (placement === 1) placementText = '🏆 Champion';
+                else if (placement === 2) placementText = '🥈 Finalist';
+                else if (placement === 3) placementText = '🥉 Semi-Finalist';
+                else if (placement === 4) placementText = 'Quarter-Finalist';
+                else placementText = `${placement}th Place`;
+                
+                html += `
+                    <div class="personal-best-banner">
+                        ⭐ Personal Best: ${placementText}
+                    </div>
+                `;
+            }
+            
+            // Career Stats
+            html += '<div class="leaderboard">';
+            html += '<div class="leaderboard-header">📊 Career Statistics</div>';
+            html += '<div class="stats-grid">';
+            
+            html += `
+                <div class="stat-card">
+                    <h3>Events Played</h3>
+                    <div class="stat-value">${stats.total_events || 0}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Legs Won</h3>
+                    <div class="stat-value">${stats.total_legs_won || 0}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Win Percentage</h3>
+                    <div class="stat-value">${stats.legs_won_percentage || 0}%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Career Average</h3>
+                    <div class="stat-value">${stats.career_avg || 0}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total 180s</h3>
+                    <div class="stat-value">${stats.total_180s || 0}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Checkout %</h3>
+                    <div class="stat-value">${stats.career_checkout_percentage || 0}%</div>
+                </div>
+            `;
+            
+            html += '</div></div>';
+            
+            // Dart Setup
+            if (player.player_dart_setup && player.player_dart_setup.length > 0) {
+                const setup = player.player_dart_setup[0];
+                html += '<div class="leaderboard" style="margin-top: 20px;">';
+                html += '<div class="leaderboard-header">🎯 Dart Setup</div>';
+                html += '<div style="padding: 20px; font-size: 1.1em;">';
+                html += `<p><strong>Barrel:</strong> ${setup.barrel || 'N/A'}</p>`;
+                html += `<p><strong>Shaft:</strong> ${setup.shaft || 'N/A'}</p>`;
+                html += `<p><strong>Flight:</strong> ${setup.flight || 'N/A'}</p>`;
+                html += `<p><strong>Weight:</strong> ${setup.weight || 'N/A'}</p>`;
+                if (setup.details) html += `<p><strong>Details:</strong> ${setup.details}</p>`;
+                html += '</div></div>';
+            }
+            
+            document.getElementById('profileContent').innerHTML = html;
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Activate button
+            event.target.classList.add('active');
+        }
+
+        function backToRoster() {
+            document.getElementById('profileTabBtn').style.display = 'none';
+            switchTab('roster');
+        }
+
+        function startAutoRefresh() {
+            // Check for version updates every 10 seconds
+            refreshInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/stats-version');
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        if (currentVersion === 0) {
+                            // First load
+                            currentVersion = data.version;
+                        } else if (data.version > currentVersion) {
+                            // Version updated!
+                            currentVersion = data.version;
+                            showToast('Stats Updated!');
+                            
+                            // Reload data
+                            loadStats();
+                            loadRoster();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error checking version:', error);
+                }
+            }, 10000); // 10 seconds
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('active');
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        function shareOnFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Check out the AADS tournament stats! 🎯');
+            
+            window.open(
+                `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`,
+                'facebook-share-dialog',
+                'width=800,height=600'
+            );
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+    </script>
+</body>
+</html>
