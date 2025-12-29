@@ -7,6 +7,7 @@
     <meta property="og:title" content="Atlantic Amateur Darts Series - Official Stats">
     <meta property="og:description" content="Live tournament statistics, player profiles, and all-time standings">
     <meta name="description" content="Official statistics display for Atlantic Amateur Darts Series">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -530,6 +531,11 @@
     </div>
 
     <script>
+        // Initialize Supabase client
+        const SUPABASE_URL = 'https://nelkwitsvxufhyvfgdjq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lbGt3aXRzdnh1Zmh5dmZnZGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDc5MzIsImV4cCI6MjA0NzUyMzkzMn0.eiRjrJiOHY8R5qBKg3l8PSmq-z5mLNYgz_ZCMuKEo32TM';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         // Global state
         let currentVersion = 0;
         let currentSeries = 'all';
@@ -595,20 +601,22 @@
 
         async function loadSeries() {
             try {
-                const response = await fetch('/api/series');
-                const data = await response.json();
+                const { data: series, error } = await supabase
+                    .from('series')
+                    .select('*')
+                    .order('year', { ascending: false });
                 
-                if (data.success) {
-                    const select = document.getElementById('seriesFilter');
-                    select.innerHTML = '<option value="all">All Series</option>';
-                    
-                    data.series.forEach(series => {
-                        const option = document.createElement('option');
-                        option.value = series.id;
-                        option.textContent = `${series.name} (${series.year})`;
-                        select.appendChild(option);
-                    });
-                }
+                if (error) throw error;
+                
+                const select = document.getElementById('seriesFilter');
+                select.innerHTML = '<option value="all">All Series</option>';
+                
+                series.forEach(s => {
+                    const option = document.createElement('option');
+                    option.value = s.id;
+                    option.textContent = `${s.name} (${s.year})`;
+                    select.appendChild(option);
+                });
             } catch (error) {
                 console.error('Error loading series:', error);
             }
@@ -619,17 +627,18 @@
             container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading statistics...</div>';
             
             try {
-                let endpoint = '/api/stats';
-                
                 if (currentView === 'alltime') {
-                    endpoint = '/api/all-time-standings';
-                }
-                
-                const response = await fetch(endpoint);
-                const data = await response.json();
-                
-                if (data.success) {
-                    displayStats(data);
+                    // Query player_career_stats view
+                    const { data, error } = await supabase
+                        .from('player_career_stats')
+                        .select('*')
+                        .order('legs_won_percentage', { ascending: false });
+                    
+                    if (error) throw error;
+                    displayStats({ standings: data });
+                } else {
+                    // For now, show placeholder
+                    displayStats({ leaderboard: [] });
                 }
             } catch (error) {
                 console.error('Error loading stats:', error);
@@ -699,13 +708,15 @@
 
         async function loadRoster() {
             try {
-                const response = await fetch('/api/players');
-                const data = await response.json();
+                const { data: players, error } = await supabase
+                    .from('players')
+                    .select('*')
+                    .order('name');
                 
-                if (data.success) {
-                    allPlayers = data.players;
-                    displayRoster(allPlayers);
-                }
+                if (error) throw error;
+                
+                allPlayers = players;
+                displayRoster(allPlayers);
             } catch (error) {
                 console.error('Error loading roster:', error);
             }
@@ -746,16 +757,34 @@
             currentPlayer = playerId;
             
             try {
-                const response = await fetch(`/api/player/${playerId}`);
-                const data = await response.json();
+                // Get player info
+                const { data: player, error: playerError } = await supabase
+                    .from('players')
+                    .select('*, player_dart_setup(*)')
+                    .eq('id', playerId)
+                    .single();
                 
-                if (data.success) {
-                    displayPlayerProfile(data);
-                    
-                    // Show profile tab
-                    document.getElementById('profileTabBtn').style.display = 'block';
-                    switchTab('profile');
-                }
+                if (playerError) throw playerError;
+                
+                // Get career stats from view
+                const { data: stats, error: statsError } = await supabase
+                    .from('player_career_stats')
+                    .select('*')
+                    .eq('player_id', playerId)
+                    .single();
+                
+                // Get personal best
+                const { data: personalBest, error: pbError } = await supabase
+                    .from('player_personal_bests')
+                    .select('*')
+                    .eq('player_id', playerId)
+                    .single();
+                
+                displayPlayerProfile({ player, career_stats: stats, personal_best: personalBest });
+                
+                // Show profile tab
+                document.getElementById('profileTabBtn').style.display = 'block';
+                switchTab('profile');
             } catch (error) {
                 console.error('Error loading player profile:', error);
             }
@@ -877,22 +906,25 @@
             // Check for version updates every 10 seconds
             refreshInterval = setInterval(async () => {
                 try {
-                    const response = await fetch('/api/stats-version');
-                    const data = await response.json();
+                    const { data, error } = await supabase
+                        .from('app_version')
+                        .select('version')
+                        .eq('id', 1)
+                        .single();
                     
-                    if (data.success) {
-                        if (currentVersion === 0) {
-                            // First load
-                            currentVersion = data.version;
-                        } else if (data.version > currentVersion) {
-                            // Version updated!
-                            currentVersion = data.version;
-                            showToast('Stats Updated!');
-                            
-                            // Reload data
-                            loadStats();
-                            loadRoster();
-                        }
+                    if (error) throw error;
+                    
+                    if (currentVersion === 0) {
+                        // First load
+                        currentVersion = data.version;
+                    } else if (data.version > currentVersion) {
+                        // Version updated!
+                        currentVersion = data.version;
+                        showToast('Stats Updated!');
+                        
+                        // Reload data
+                        loadStats();
+                        loadRoster();
                     }
                 } catch (error) {
                     console.error('Error checking version:', error);

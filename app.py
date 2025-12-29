@@ -1,24 +1,3 @@
-@app.route('/admin/add-stats', methods=['POST'])
-def add_stats():
-    """
-    Handle manual entry of player stats from the admin interface.
-    """
-    try:
-        player_name = request.form.get('playerName')
-        event_id = int(request.form.get('eventId'))
-        stats = {
-            'three_dart_avg': float(request.form.get('threeDAvg', 0)),
-            'legs_played': int(request.form.get('legsPlayed', 0)),
-            'one_eighties': int(request.form.get('oneEighties', 0)),
-            'one_forty_plus': int(request.form.get('oneFortyPlus', 0)),
-            'hundreds_plus': int(request.form.get('hundredsPlus', 0)),
-            'high_finish': int(request.form.get('highFinish', 0)),
-        }
-        db_manager.add_match_stats(player_name, event_id, stats)
-        return '<h3>Stats added for {} (Event {})</h3><a href="/">Back to Admin</a>'.format(player_name, event_id)
-    except Exception as e:
-        logger.error(f"Error in /admin/add-stats: {e}", exc_info=True)
-        return f'<h3>Error: {str(e)}</h3><a href="/">Back to Admin</a>', 500
 """
 AADS Flask Server
 Web API and dashboard for Atlantic Amateur Darts Series statistics

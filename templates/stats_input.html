@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AADS Stats Input - Admin</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -545,6 +546,11 @@
     </div>
 
     <script>
+        // Initialize Supabase client
+        const SUPABASE_URL = 'https://nelkwitsvxufhyvfgdjq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lbGt3aXRzdnh1Zmh5dmZnZGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDc5MzIsImV4cCI6MjA0NzUyMzkzMn0.eiRjrJiOHY8R5qBKg3l8PSmq-z5mLNYgz_ZCMuKEo32TM';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         // Global state
         let tournamentData = {
             players: [],
@@ -949,21 +955,45 @@
             };
             
             try {
-                const response = await fetch('/admin/save-tournament', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({...data, is_draft: true})
-                });
+                // Get or create series
+                const { data: series, error: seriesError } = await supabase
+                    .from('series')
+                    .select('id')
+                    .eq('name', data.seriesName)
+                    .eq('year', data.year)
+                    .single();
                 
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('success', 'Draft saved successfully!');
-                    tournamentData.currentEventId = result.event_id;
+                let seriesId;
+                if (series) {
+                    seriesId = series.id;
                 } else {
-                    showAlert('error', 'Error saving draft: ' + result.error);
+                    const { data: newSeries, error } = await supabase
+                        .from('series')
+                        .insert({ name: data.seriesName, year: data.year })
+                        .select()
+                        .single();
+                    if (error) throw error;
+                    seriesId = newSeries.id;
                 }
+                
+                // Insert or update event
+                const { data: event, error: eventError } = await supabase
+                    .from('events')
+                    .upsert({
+                        series_id: seriesId,
+                        event_number: data.eventNumber,
+                        event_date: data.eventDate,
+                        status: 'draft'
+                    })
+                    .select()
+                    .single();
+                
+                if (eventError) throw eventError;
+                
+                showAlert('success', 'Draft saved successfully!');
+                tournamentData.currentEventId = event.id;
             } catch (error) {
+                console.error('Error saving draft:', error);
                 showAlert('error', 'Error: ' + error.message);
             }
         }
@@ -983,22 +1013,52 @@
             };
             
             try {
-                const response = await fetch('/admin/save-tournament', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({...data, is_draft: false})
-                });
+                // Get or create series
+                const { data: series, error: seriesError } = await supabase
+                    .from('series')
+                    .select('id')
+                    .eq('name', data.seriesName)
+                    .eq('year', data.year)
+                    .single();
                 
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('success', '✨ Published successfully! Stats are now live.');
-                    localStorage.removeItem('statsInput_currentEvent');
-                    tournamentData.currentEventId = result.event_id;
+                let seriesId;
+                if (series) {
+                    seriesId = series.id;
                 } else {
-                    showAlert('error', 'Error publishing: ' + result.error);
+                    const { data: newSeries, error } = await supabase
+                        .from('series')
+                        .insert({ name: data.seriesName, year: data.year })
+                        .select()
+                        .single();
+                    if (error) throw error;
+                    seriesId = newSeries.id;
                 }
+                
+                // Insert or update event as published
+                const { data: event, error: eventError } = await supabase
+                    .from('events')
+                    .upsert({
+                        series_id: seriesId,
+                        event_number: data.eventNumber,
+                        event_date: data.eventDate,
+                        status: 'published'
+                    })
+                    .select()
+                    .single();
+                
+                if (eventError) throw eventError;
+                
+                // Increment version for auto-refresh
+                const { error: versionError } = await supabase
+                    .from('app_version')
+                    .update({ version: supabase.raw('version + 1') })
+                    .eq('id', 1);
+                
+                showAlert('success', '✨ Published successfully! Stats are now live.');
+                localStorage.removeItem('statsInput_currentEvent');
+                tournamentData.currentEventId = event.id;
             } catch (error) {
+                console.error('Error publishing:', error);
                 showAlert('error', 'Error: ' + error.message);
             }
         }
@@ -1009,8 +1069,19 @@
 
         async function loadEventsList() {
             try {
-                const response = await fetch('/api/events');
-                const events = await response.json();
+                const { data: events, error } = await supabase
+                    .from('events')
+                    .select(`
+                        id,
+                        event_number,
+                        status,
+                        series:series_id (
+                            name
+                        )
+                    `)
+                    .order('event_date', { ascending: false });
+                
+                if (error) throw error;
                 
                 const select = document.getElementById('existingEvents');
                 select.innerHTML = '<option value="">-- Select an event to edit --</option>';
@@ -1022,6 +1093,7 @@
                     select.appendChild(option);
                 });
             } catch (error) {
+                console.error('Error loading events:', error);
                 showAlert('error', 'Error loading events: ' + error.message);
             }
         }
