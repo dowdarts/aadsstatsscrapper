@@ -695,11 +695,11 @@
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
-        <button class="nav-tab active" onclick="switchView('standings')">STANDINGS</button>
-        <button class="nav-tab" onclick="switchView('events')">EVENTS</button>
-        <button class="nav-tab" onclick="switchView('champions')">CHAMPIONS</button>
-        <button class="nav-tab" onclick="switchView('headtohead')">HEAD TO HEAD</button>
-        <button class="nav-tab" onclick="switchView('players')">PLAYERS</button>
+        <button class="nav-tab active" data-view="standings">STANDINGS</button>
+        <button class="nav-tab" data-view="events">EVENTS</button>
+        <button class="nav-tab" data-view="champions">CHAMPIONS</button>
+        <button class="nav-tab" data-view="headtohead">HEAD TO HEAD</button>
+        <button class="nav-tab" data-view="players">PLAYERS</button>
     </div>
 
     <!-- Main Container -->
@@ -768,13 +768,13 @@
             <div class="filter-section">
                 <div class="filter-group">
                     <label for="seriesSelect">Select Series:</label>
-                    <select id="seriesSelect" onchange="loadSeriesEvents()">
+                    <select id="seriesSelect">
                         <option value="">-- Select a Series --</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label for="eventSelect">Select Event:</label>
-                    <select id="eventSelect" onchange="loadEventDetails()" disabled>
+                    <select id="eventSelect" disabled>
                         <option value="">-- Select an Event --</option>
                     </select>
                 </div>
@@ -901,7 +901,7 @@
                         <option value="">-- Select Player --</option>
                     </select>
                 </div>
-                <button onclick="loadHeadToHead()" class="compare-btn">Compare Players</button>
+                <button id="comparePlayersBtn" class="compare-btn">Compare Players</button>
             </div>
 
             <div id="h2hResults" class="hidden">
@@ -1006,21 +1006,51 @@
     </div>
 
     <script>
-        // Initialize Supabase client
-        const SUPABASE_URL = 'https://nelkwitsvxufhyvfgdjq.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lbGt3aXRzdnh1Zmh5dmZnZGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDc5MzIsImV4cCI6MjA0NzUyMzkzMn0.eiRjrJiOHY8R5qBKg3l8PSmq-z5mLNYgz_ZCMuKEo32TM';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+        // Wait for Supabase library to load
+        let supabase;
         let currentView = 'standings';
         let refreshInterval = null;
 
+        // Initialize Supabase client when library is ready
+        window.addEventListener('load', function() {
+            const SUPABASE_URL = 'https://nelkwitsvxufhyvfgdjq.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lbGt3aXRzdnh1Zmh5dmZnZGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDc5MzIsImV4cCI6MjA0NzUyMzkzMn0.eiRjrJiOHY8R5qBKg3l8PSmq-z5mLNYgz_ZCMuKEo32TM';
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            // Initialize app
+            initializeApp();
+        });
+
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        function initializeApp() {
+            // Set up navigation click handlers
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchView(this.getAttribute('data-view'));
+                });
+            });
+
+            // Set up event filter handlers
+            const seriesSelect = document.getElementById('seriesSelect');
+            if (seriesSelect) {
+                seriesSelect.addEventListener('change', loadSeriesEvents);
+            }
+
+            const eventSelect = document.getElementById('eventSelect');
+            if (eventSelect) {
+                eventSelect.addEventListener('change', loadEventDetails);
+            }
+
+            const compareBtn = document.getElementById('comparePlayersBtn');
+            if (compareBtn) {
+                compareBtn.addEventListener('click', loadHeadToHead);
+            }
+
             loadData();
             loadSeriesDropdowns();
             loadPlayersDropdowns();
             startAutoRefresh();
-        });
+        }
 
         // Switch between views
         function switchView(view) {
