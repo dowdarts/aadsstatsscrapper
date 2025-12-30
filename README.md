@@ -1,52 +1,51 @@
-# AADS Stats System v2.0 - Serverless Architecture
+# AADS Official Statistics System v1.0.8
 
-**Atlantic Amateur Darts Series** - Official statistics tracking and display system with manual input.
+🎯 **Professional serverless statistics and tournament management system for the Atlantic Amateur Darts Series**
 
 ![Status](https://img.shields.io/badge/Status-Production-success)
 ![Architecture](https://img.shields.io/badge/Architecture-Serverless-blueviolet)
 ![Database](https://img.shields.io/badge/Database-Supabase-green)
 
+## 🌐 Live System
+
+- **Public Display**: https://dowdarts.github.io/aadsstatsscrapper/official_stats_display.html
+- **Status**: ✅ Active and deployed
+
 ## 📋 Overview
 
-A **fully serverless** stats management system:
-- **Admin Interface** (`templates/stats_input.html`) - Enter tournament data directly into Supabase
-- **Public Display** (`docs/official_stats_display.html`) - Read and display stats from Supabase  
-- **No server needed** - Both HTML files connect directly to Supabase using JavaScript client
+A **fully serverless** stats management system with professional organization:
+- **Admin Interface** - Enter tournament data directly into Supabase
+- **Public Display** - Real-time stats from Supabase with auto-refresh
+- **No server needed** - Pure HTML/JS architecture
+- **Clean structure** - Old scraper files archived, professional layout
 
-### Key Features
+## 📁 Project Structure
 
-- 🎯 **Serverless**: No Flask/Python server required - pure HTML/JS + Supabase
-- 📊 **Manual Input**: Admin interface for entering tournament data
-- 🏆 **Career Stats**: Auto-aggregated player statistics across all events
-- 📺 **Auto-Refresh**: Display polls Supabase every 10 seconds for updates
-- 🔄 **Draft/Publish**: Save work without making it live
-- 🎨 **Modern UI**: Beautiful gradient theme with player photos
+This repository has been cleaned and reorganized for professional standards:
 
-## 🚀 Quick Start
-
-### No Installation Required!
-
-**Admin Interface** (enter tournament data):
-- Open `templates/stats_input.html` in any web browser
-- Fill in tournament details and player info
-- Click "Save & Publish" to make stats live
-
-**Public Display** (view stats):
-- Visit: https://dowdarts.github.io/aadsstatsscrapper/official_stats_display.html
-- Or open `docs/official_stats_display.html` locally
-
-**That's it!** Both apps connect directly to Supabase - no server installation needed.
-
-## 🏗️ System Architecture
-
-```text
-Serverless Architecture:
-  Admin HTML ──┐
-               ├──► Supabase PostgreSQL
-  Display HTML ┘
-
-No Flask server needed!
-Both apps use Supabase JavaScript client
+```
+aadsstatsscrapper/
+├── docs/                          # GitHub Pages (public-facing) ✅
+│   ├── official_stats_display.html  # Main statistics display
+│   └── *.png                        # Logos and assets
+│
+├── aads-stats-system/             # New modular structure ⭐
+│   ├── public/                    # Standalone public display
+│   ├── admin/                     # Admin interface  
+│   ├── assets/logos/              # Brand assets
+│   ├── supabase/                  # Database schema
+│   └── README.md                  # Detailed documentation
+│
+├── templates/                     # Admin templates ✅
+│   └── stats_input.html          # Tournament data entry
+│
+├── supabase/                      # Database migrations ✅
+│   └── migrations/
+│
+└── archive/                       # Old scraping system (archived) 📦
+    ├── old-scrapers/              # Python scraper scripts
+    ├── old-docs/                  # Legacy documentation
+    └── old-data/                  # Old JSON database
 ```
 
 ### Installation
