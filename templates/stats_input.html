@@ -408,7 +408,7 @@
             
             <div id="playersContainer"></div>
             
-            <button class="btn-primary" onclick="addPlayerRow()" style="margin-top: 10px;">➕ Add Player</button>
+            <button class="btn-primary" id="addPlayerBtn" style="margin-top: 10px;">➕ Add Player</button>
         </div>
 
         <!-- Round Robin Generator -->
@@ -416,7 +416,7 @@
             <h2 class="section-title">🔄 Round-Robin Matches</h2>
             <p style="margin-bottom: 15px; color: #FFB347;">Generate matches for Group A and Group B using 5-player bye schedule</p>
             
-            <button class="btn-primary" onclick="generateRoundRobin()" style="margin-bottom: 20px;">🎲 Generate Round-Robin Schedule</button>
+            <button class="btn-primary" id="generateRoundRobinBtn" style="margin-bottom: 20px;">🎲 Generate Round-Robin Schedule</button>
             
             <div id="roundRobinContainer"></div>
         </div>
@@ -541,15 +541,20 @@
                 <input type="text" id="directLink" readonly value="https://dowdarts.github.io/aadsstatsscrapper/official_stats_display.html" style="width: 100%;">
             </div>
             
-            <button class="btn-primary" onclick="copyDirectLink()" style="width: 100%; margin-top: 10px;">📋 Copy Link</button>
+            <button class="btn-primary" id="copyDirectLinkBtn" style="width: 100%; margin-top: 10px;">📋 Copy Link</button>
         </div>
     </div>
 
     <script>
         // Initialize Supabase client
+        let supabase;
         const SUPABASE_URL = 'https://nelkwitsvxufhyvfgdjq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lbGt3aXRzdnh1Zmh5dmZnZGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDc5MzIsImV4cCI6MjA0NzUyMzkzMn0.eiRjrJiOHY8R5qBKg3l8PSmq-z5mLNYgz_ZCMuKEo32TM';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        window.addEventListener('load', function() {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            initializeApp();
+        });
 
         // Global state
         let tournamentData = {
@@ -559,10 +564,8 @@
             currentEventId: null
         };
 
-        let pendingLoadEventId = null;
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize app and set up event listeners
+        function initializeApp() {
             // Set today's date
             document.getElementById('eventDate').valueAsDate = new Date();
             
@@ -572,14 +575,34 @@
             // Check for unsaved work in localStorage
             checkLocalStorage();
             
-            // Initialize players
+            // Initialize 10 players
             for (let i = 0; i < 10; i++) {
                 addPlayerRow();
             }
             
             // Auto-save to localStorage on input changes
             setupAutoSave();
-        });
+            
+            // Add Player button
+            const addPlayerBtn = document.getElementById('addPlayerBtn');
+            if (addPlayerBtn) {
+                addPlayerBtn.addEventListener('click', addPlayerRow);
+            }
+
+            // Generate Round Robin button
+            const generateRRBtn = document.getElementById('generateRoundRobinBtn');
+            if (generateRRBtn) {
+                generateRRBtn.addEventListener('click', generateRoundRobin);
+            }
+
+            // Copy Direct Link button
+            const copyLinkBtn = document.getElementById('copyDirectLinkBtn');
+            if (copyLinkBtn) {
+                copyLinkBtn.addEventListener('click', copyDirectLink);
+            }
+        }
+
+        let pendingLoadEventId = null;
 
         function setupAutoSave() {
             const inputs = document.querySelectorAll('input, select, textarea');
